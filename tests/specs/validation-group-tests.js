@@ -146,7 +146,6 @@ describe('Validation Group', function () {
         }, 100);
     });
 
-    //TODO: NOT WORKING
     it('should correctly notify on property in nested object validation change', function (done) {
 
         var ruleRegistry = new Treacherous.RuleRegistry();

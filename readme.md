@@ -45,7 +45,7 @@ var ruleset = Treacherous.createRuleset()
         .addRule("required")        // The property is required
         .addRule("maxValue", 20)    // The property needs a value <= 20
     .forProperty("bar")
-        .addRule("maxLength, 5)     // The property neds a length <= 5
+        .addRule("maxLength", 5)     // The property neds a length <= 5
     .build();
     
 var validationGroup = Treacherous.create(simpleModel, ruleset);
@@ -71,18 +71,107 @@ var ruleset = Treacherous.createRuleset()
     
 var validationGroup = Treacherous.create(simpleModel, ruleset);
 
-validationGroup.isValid()
-    .then(function(isValid){
-        console.log(isValid); // should write false
-    });
-
 validationGroup.getErrors()
     .then(function(errors){
         console.log(errors); // should contain { "foo[2]": "<some error about max value>" }
     });
 ```
 
-## Validation Rules
+## Validation State
+
+You can manually call the validation group to confirm the validation state, you can also subscribe 
+to be notified when validation changes occur, allowing you to reactively handle validation changes.
+
+For the examples below imagine the model and ruleset are already set.
+
+### Check current validity
+```js
+var validationGroup = Treacherous.create(simpleModel, ruleset);
+
+validationGroup.isValid()
+    .then(function(isValid){
+        // true is valid, false is invalid
+    ));
+```
+
+### Get current validation errors
+```js
+var validationGroup = Treacherous.create(simpleModel, ruleset);
+
+validationGroup.getErrors()
+    .then(function(propertyErrors){
+        /*
+            propertyErrors is a json object with the name of the property per error.
+            
+            So for example if you had a property called foo which was required and had failed
+            then you would be passed back the error structure:
+            
+            {
+                "foo": "some error message here"
+            }
+            
+            You will only get the most recent validation error as the library will stop processing
+            after the first failure. Also another thing to keep in mind is that the validation field
+            will contain the property route, not just the actual property.
+            
+            So for example if you had an object called foo, which contained the property bar which was
+            and array and the second element had failed validation you would get back the error structure:
+            
+            {
+                "foo.bar[1]": "some error message here"
+            }
+            
+            It is recommended that you process these errors in a for loop as you never know what
+            will be in there:
+            
+            for(var relatedPropertyName in propertyErrors) { ... }
+        */
+    ));
+```
+
+### Subscribe to per property validation changes
+```js
+var validationGroup = Treacherous.create(simpleModel, ruleset);
+
+validationGroup.propertyChangedEvent.subscribe(function(propertyValidationChangedEvent){
+    /*
+        The propertyValidationChangedEvent is of type PropertyValidationChangedEvent
+        and contains the following fields:
+        
+        {
+            property: string,   // The property/route which has failed, i.e 'foo' or 'foo.bar[2].woo'
+            isValid: boolean,   // The validation state
+            error?: string      // The error message if isValid is false
+        }
+        
+        The event is only raised when the validation state of a property changes, however if a property
+        is invalid and then it changes and is still invalid but for a different reason this event would
+        be triggered but the error string would be different.
+    */
+));
+```
+
+### Subscribe to model validation changes
+```js
+var validationGroup = Treacherous.create(simpleModel, ruleset);
+
+validationGroup.validationStateChangedEvent.subscribe(function(validationStateChangedEvent){
+    /*
+        The validationStateChangedEvent is of type ValidationStateChangedEvent
+        and contains the following fields:
+        
+        {
+            isValid: boolean,   // The validation state
+        }
+        
+        The event is only raised when the validation state of a model changes, so if a single
+        property has an error, then suddenly 20 properties have an error no event will be sent
+        until the model is all valid.
+    */
+));
+```
+
+## Validation rules
 
 The framework comes with built in validators for the following:
 
@@ -101,7 +190,7 @@ The framework comes with built in validators for the following:
 * `required`    - The value is not a null-like value
 * `step`        - The value conforms to the numeric steps provided
 
-### Creating Custom Rules
+### Creating custom rules
 
 So if you want to make your own rule you need to do 2 things, one is create the rule handler class
 which should conform to the `IValidationRule` interface, which in raw JS would conform to this:
