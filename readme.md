@@ -240,7 +240,8 @@ english but feel free to raise this if you need this functionality sooner rather
 ## Developing
 
 If you want to develop it further just clone the repo, `npm install` and `gulp` it should then provide you 
-a working version to play with.
+a working version to play with. If you want to minify it you can do `gulp minify` which will minify the
+output files, we don't minify by default.
 
 ## Why should I use it?
 
