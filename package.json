@@ -1,0 +1,44 @@
+{
+  "name": "treacherous",
+  "version": "0.0.1",
+  "dependencies": {
+    "bluebird": "latest",
+    "property-resolver": "grofit/property-resolver",
+    "eventjs": "grofit/eventjs"
+  },
+  "bugs": {
+    "url": "https://github.com/grofit/treacherous/issues"
+  },
+  "keywords": [
+    "validation",
+    "validate"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/grofit/treacherous"
+  },
+  "devDependencies": {
+    "gulp": "3.9.0",
+    "gulp-typescript": "2.10.0",
+    "gulp-es6-exporter": "grofit/gulp-es6-exporter",
+    "gulp-uglify": "latest",
+    "gulp-rename": "latest",
+    "webpack-stream": "^3.1.0",
+    "gulp-bump": "latest",
+    "rimraf": "latest",
+    "mkdirp": "latest",
+    "require-dir": "^0.1.0",
+    "merge2": "latest",
+    "del": "latest",
+    "chai": "latest",
+    "chai-as-promised": "5.2.0",
+    "karma": "^0.13.19",
+    "mocha": "latest",
+    "karma-mocha": "latest",
+    "karma-firefox-launcher": "latest",
+    "karma-chai": "^0.1.0",
+    "karma-chai-as-promised": "0.1.2",
+    "chai-spies": "latest",
+    "karma-chai-spies": "latest"
+  }
+}
