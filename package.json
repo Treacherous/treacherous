@@ -1,11 +1,12 @@
 {
   "name": "treacherous",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "dependencies": {
-    "bluebird": "latest",
+    "bluebird": "^3.3.4",
     "property-resolver": "grofit/property-resolver",
     "eventjs": "grofit/eventjs"
   },
+  "main": "dist/treacherous.minimal.js",
   "bugs": {
     "url": "https://github.com/grofit/treacherous/issues"
   },

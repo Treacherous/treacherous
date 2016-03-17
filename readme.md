@@ -9,23 +9,34 @@ agnostic of frameworks/platforms but can be plugged into them. This was the idea
 a simple validation framework which could be shared between browser and server as well as 
 being able to expose MVVM style subscriptions for other frameworks to hook into.
 
-## Why should I use it?
+## Installing
 
-If you share code between multiple worlds (i.e nodejs, browser, mobile) then you may have had
-issues before where you are tied into a specific framework for your front ends and want to 
-re-use your models in the back end as a contractual layer or something. In these cases 
-you often either end up maintaining 2 sets of validation which is ok, but it could be better, 
-and this is where Treacherous attempts to improve this approach.
+### Via NPM
 
-It is also useful for libraries which contain pure data concerns and have no notion 
-of front end frameworks, so you may have one central library and have one front end
-using ng and one front end using aurelia or knockout for different devices etc. 
-In this case you can have validation as a pure data concern and just plug the validation 
-logic into your MVVM framework so it will automatically listen for the validation concerns 
-letting you re-use more of your code base in a more consistent way.
+Just do an `npm install treacherous`
 
-Ultimately each framework tends to have it's own validation system, but with Treacherous you 
-can write your validation rules once, and consume them anywhere (that has a compatible binding layer)..
+### In browser
+
+There are 3 flavours in the dist dir:
+
+* `treacherous.all.js`      - Contains treacherous and all dependencies (including bluebird)
+* `treacherous.minimal.js`  - Contains only treacherous and no dependencies
+* `treacherous.js`          - Contains treacherous dependencies without bluebird
+
+The reason there are 3 flavours is because some people will use this in a non-module aware
+browser scenario, and `treacherous.all.js` will contain everything for it to just work, it is also
+used by the unit tests in the project.
+
+`treacherous.minimal.js` is purely just the treacherous library without any dependencies, this is
+the most modular version of the package and what the `package.json` defaults to. However there 
+are 2 dependencies to other libraries I have written which were originally part of this but 
+were split out for re-use, however I am aware most people will not use them outside of here, so
+this is where the last version comes from.
+
+`treacherous.js` contains the 2 custom modules that are required for this library 
+([event-js](https://github.com/grofit/eventjs), [property-resolver](https://github.com/grofit/property-resolver)), 
+without you needing to include them, as chances are if you are using this you already have bluebird
+or some other promise library included so dont want it bundled with this.
 
 ## How do I use it
 
@@ -179,12 +190,12 @@ The framework comes with built in validators for the following:
 * `decimal`     - The value is expressible as a float/single
 * `email`       - The value conforms to a valid email address
 * `equal`       - The value is equal to another value
-* `iso-date`    - The value conforms to a valid ISO date format
-* `max-length`  - The value must have a length <= value
-* `max-value`   - The value must have a value <= value
-* `min-length`  - The value must have a length >= value
-* `min-value`   - The value must have a value >= value
-* `not-equal`   - The value is not equal to another value
+* `isoDate`    - The value conforms to a valid ISO date format
+* `maxLength`  - The value must have a length <= value
+* `maxValue`   - The value must have a value <= value
+* `minLength`  - The value must have a length >= value
+* `minValue`   - The value must have a value >= value
+* `notEqual`   - The value is not equal to another value
 * `number`      - The value is expressible as an integer
 * `regex`       - The value matches the regex pattern
 * `required`    - The value is not a null-like value
@@ -225,3 +236,26 @@ to do that you need to call `Treacherous.ruleRegistry.registerRule(new SomeCusto
 This is a todo, if needed this will probably be implemented by having a class representing the 
 validation message for a given language linked via the `ruleName` for now all messages are in 
 english but feel free to raise this if you need this functionality sooner rather than later.
+
+## Developing
+
+If you want to develop it further just clone the repo, `npm install` and `gulp` it should then provide you 
+a working version to play with.
+
+## Why should I use it?
+
+If you share code between multiple worlds (i.e nodejs, browser, mobile) then you may have had
+issues before where you are tied into a specific framework for your front ends and want to 
+re-use your models in the back end as a contractual layer or something. In these cases 
+you often either end up maintaining 2 sets of validation which is ok, but it could be better, 
+and this is where Treacherous attempts to improve this approach.
+
+It is also useful for libraries which contain pure data concerns and have no notion 
+of front end frameworks, so you may have one central library and have one front end
+using ng and one front end using aurelia or knockout for different devices etc. 
+In this case you can have validation as a pure data concern and just plug the validation 
+logic into your MVVM framework so it will automatically listen for the validation concerns 
+letting you re-use more of your code base in a more consistent way.
+
+Ultimately each framework tends to have it's own validation system, but with Treacherous you 
+can write your validation rules once, and consume them anywhere (that has a compatible binding layer).
