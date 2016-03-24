@@ -51,7 +51,8 @@ export class ModelWatcher implements IModelWatcher
 
         this.watchCacheKeys.forEach((key, index) => {
             if(previousKeyCache.indexOf(key) == -1) {
-                var propertyChangedArgs = new PropertyChangedEvent(key, this.watchCache[index], null);
+                var previousValue = this.watchCache[index].previousValue;
+                var propertyChangedArgs = new PropertyChangedEvent(key, previousValue, null);
                 setTimeout(() => { this.onPropertyChanged.publish(propertyChangedArgs); }, 1);
             }
         })
@@ -128,16 +129,6 @@ export class ModelWatcher implements IModelWatcher
             {
                 if(currentValue.length != propertyWatcher.previousValue.length)
                 { refreshOnNextCycle = true; }
-
-                /*
-                if(currentValue.length > propertyWatcher.previousValue.length)
-                {
-                    for(var i=propertyWatcher.previousValue.length; i< currentValue.length;i++)
-                    {
-                        var propertyChangedArgs = new PropertyChangedEvent(`${propertyWatcher.propertyPath}[${i}]`, currentValue[i], null);
-                        setTimeout(() => { this.onPropertyChanged.publish(propertyChangedArgs); }, 1);
-                    }
-                }*/
             }
             else if (currentValue !== propertyWatcher.previousValue) {
                 var propertyChangedArgs = new PropertyChangedEvent(propertyWatcher.propertyPath, currentValue, propertyWatcher.previousValue);

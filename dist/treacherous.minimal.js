@@ -68,6 +68,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	__export(__webpack_require__(10));
 	__export(__webpack_require__(11));
 	__export(__webpack_require__(36));
+	__export(__webpack_require__(32));
+	__export(__webpack_require__(31));
+	__export(__webpack_require__(9));
+	__export(__webpack_require__(29));
+	__export(__webpack_require__(30));
 	__export(__webpack_require__(13));
 	__export(__webpack_require__(14));
 	__export(__webpack_require__(15));
@@ -84,11 +89,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	__export(__webpack_require__(27));
 	__export(__webpack_require__(12));
 	__export(__webpack_require__(28));
-	__export(__webpack_require__(32));
-	__export(__webpack_require__(31));
-	__export(__webpack_require__(9));
-	__export(__webpack_require__(29));
-	__export(__webpack_require__(30));
 	__export(__webpack_require__(38));
 	__export(__webpack_require__(33));
 	__export(__webpack_require__(35));
@@ -1116,7 +1116,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            _this.cacheWatchTargets("", _this.ruleset);
 	            _this.watchCacheKeys.forEach(function (key, index) {
 	                if (previousKeyCache.indexOf(key) == -1) {
-	                    var propertyChangedArgs = new property_changed_event_1.PropertyChangedEvent(key, _this.watchCache[index], null);
+	                    var previousValue = _this.watchCache[index].previousValue;
+	                    var propertyChangedArgs = new property_changed_event_1.PropertyChangedEvent(key, previousValue, null);
 	                    setTimeout(function () { _this.onPropertyChanged.publish(propertyChangedArgs); }, 1);
 	                }
 	            });
