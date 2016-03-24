@@ -44,15 +44,6 @@ export class RuleResolver
 
     private traverseRulesForRoutes = (propertyRouteSections: Array<string>, ruleset: any): any => {
         var currentProperty = propertyRouteSections.shift();
-
-        if (ruleset.isForEach)
-        {
-            if(propertyRouteSections.length == 0)
-            { return ruleset.internalRule; }
-
-            return this.traverseRulesForRoutes(propertyRouteSections, ruleset.internalRule);
-        }
-
         var childRules = ruleset.rules[currentProperty];
 
         if (!childRules)
@@ -76,7 +67,7 @@ export class RuleResolver
 
         if(propertyRouteSections.length > 0)
         { return this.traverseRulesForRoutes(propertyRouteSections, nextChildRule); }
-        
+
         return nextChildRule;
     }
 }

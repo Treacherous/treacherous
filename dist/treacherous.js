@@ -63,6 +63,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	__export(__webpack_require__(9));
 	__export(__webpack_require__(10));
 	__export(__webpack_require__(2));
+	__export(__webpack_require__(12));
+	__export(__webpack_require__(13));
+	__export(__webpack_require__(38));
 	__export(__webpack_require__(20));
 	__export(__webpack_require__(19));
 	__export(__webpack_require__(15));
@@ -70,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	__export(__webpack_require__(17));
 	__export(__webpack_require__(18));
 	__export(__webpack_require__(21));
-	__export(__webpack_require__(38));
+	__export(__webpack_require__(39));
 	__export(__webpack_require__(22));
 	__export(__webpack_require__(23));
 	__export(__webpack_require__(24));
@@ -81,9 +84,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	__export(__webpack_require__(29));
 	__export(__webpack_require__(14));
 	__export(__webpack_require__(30));
-	__export(__webpack_require__(12));
-	__export(__webpack_require__(13));
-	__export(__webpack_require__(39));
 	__export(__webpack_require__(34));
 	__export(__webpack_require__(33));
 	__export(__webpack_require__(11));
@@ -665,12 +665,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        };
 	        this.traverseRulesForRoutes = function (propertyRouteSections, ruleset) {
 	            var currentProperty = propertyRouteSections.shift();
-	            if (ruleset.isForEach) {
-	                if (propertyRouteSections.length == 0) {
-	                    return ruleset.internalRule;
-	                }
-	                return _this.traverseRulesForRoutes(propertyRouteSections, ruleset.internalRule);
-	            }
 	            var childRules = ruleset.rules[currentProperty];
 	            if (!childRules) {
 	                return null;
@@ -1479,13 +1473,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 38 */
 /***/ function(module, exports) {
 
-	
-
-
-/***/ },
-/* 39 */
-/***/ function(module, exports) {
-
 	var ValidationError = (function () {
 	    function ValidationError(propertyName, message) {
 	        this.propertyName = propertyName;
@@ -1494,6 +1481,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return ValidationError;
 	})();
 	exports.ValidationError = ValidationError;
+
+
+/***/ },
+/* 39 */
+/***/ function(module, exports) {
+
+	
 
 
 /***/ },
