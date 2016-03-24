@@ -147,6 +147,7 @@ describe('Validation Group', function () {
         setTimeout(function(){
             validationGroup.getErrors()
                 .then(function(errors){
+                    console.log(errors);
                     expect(errors).not.to.be.null;
                     expect(errors).to.include.keys("foo[1].bar");
                     expect(errors["foo[1].bar"]).to.contain("required");

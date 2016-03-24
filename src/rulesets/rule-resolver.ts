@@ -44,13 +44,9 @@ export class RuleResolver
 
     private traverseRulesForRoutes = (propertyRouteSections: Array<string>, ruleset: any): any => {
         var currentProperty = propertyRouteSections.shift();
-        console.log("current scope", currentProperty, ruleset);
 
         if (ruleset.isForEach)
         {
-            console.log("foreach", currentProperty);
-            console.log("next", propertyRouteSections);
-
             if(propertyRouteSections.length == 0)
             { return ruleset.internalRule; }
 
@@ -63,34 +59,24 @@ export class RuleResolver
         { return null; }
 
         if(propertyRouteSections.length == 0)
-        {
-            console.log(currentProperty, ruleset);
-            return childRules;
-        }
+        { return childRules; }
 
         var nextProperty = propertyRouteSections[0];
         if(!nextProperty) { return ruleset; }
 
         if (this.isIndexRoute(nextProperty)) {
-            console.log("index route", nextProperty, childRules);
             propertyRouteSections.shift();
             nextProperty = propertyRouteSections[0];
         }
 
-        if(propertyRouteSections.length == 0){
-            console.log("leaving with", childRules);
+        if(propertyRouteSections.length == 0)
+        { return childRules; }
 
-            var anyChildMatched = this.getMatchingRuleForProperty(nextProperty, childRules);
-            return anyChildMatched;
-        }
-
-        console.log("looking in (n,c)", childRules, nextProperty, currentProperty);
         var nextChildRule = this.getMatchingRuleForProperty(nextProperty, childRules);
 
-        if(propertyRouteSections.length > 0) {
-            console.log("entering", nextChildRule, propertyRouteSections);
-            return this.traverseRulesForRoutes(propertyRouteSections, nextChildRule);
-        }
+        if(propertyRouteSections.length > 0)
+        { return this.traverseRulesForRoutes(propertyRouteSections, nextChildRule); }
+        
         return nextChildRule;
     }
 }

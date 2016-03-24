@@ -87,14 +87,11 @@ describe('Rule resolver', function () {
             .addRulesetForEach(elementRuleset)
             .build();
 
-        console.log(JSON.stringify(ruleset));
-
         var propertyRoute = "foo[1].bar";
 
         var ruleResolver = new Treacherous.RuleResolver();
         var locatedRules = ruleResolver.resolvePropertyRules(propertyRoute, ruleset);
 
-        console.log(locatedRules);
         expect(locatedRules).not.to.be.null;
         expect(locatedRules.length).to.equal(2);
         expect(locatedRules[0].ruleName).to.equal("required");
@@ -132,27 +129,6 @@ describe('Rule resolver', function () {
         expect(locatedRules[0].ruleOptions).to.be.true;
         expect(locatedRules[1].ruleName).to.equal("maxLength");
         expect(locatedRules[1].ruleOptions).to.equal(10);
-    });
-
-    it('should not resolve a property when no rules exist for it', function () {
-        var rulesetBuilder = new Treacherous.RulesetBuilder();
-
-        var forEachRuleset = rulesetBuilder.create()
-            .forProperty("bar")
-            .addRule("required")
-            .build();
-
-        var ruleset = rulesetBuilder.create()
-            .forProperty("foo")
-            .addRulesetForEach(forEachRuleset)
-            .build();
-
-        var propertyRoute = "foo[2]";
-
-        var ruleResolver = new Treacherous.RuleResolver();
-        var locatedRules = ruleResolver.resolvePropertyRules(propertyRoute, ruleset);
-
-        expect(locatedRules).to.be.null;
     });
 
 });
