@@ -1,6 +1,6 @@
 {
   "name": "treacherous",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "dependencies": {
     "bluebird": "^3.3.4",
     "property-resolver": "grofit/property-resolver",
