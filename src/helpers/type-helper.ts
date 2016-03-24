@@ -8,4 +8,8 @@ export class TypeHelper
         return (typeof value == "string" || typeof value == "number");
     }
 
+    public static isArrayType(value): boolean {
+        return Object.prototype.toString.call(value) === '[object Array]';
+    }
+
 }

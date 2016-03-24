@@ -21,7 +21,8 @@ describe('Validation Group', function () {
             foo: "hello"
         };
 
-        var validationGroup = new Treacherous.ValidationGroup(fieldErrorProcessor, ruleset, dummyModel);
+        var modelWatcher = new Treacherous.ModelWatcher();
+        var validationGroup = new Treacherous.ValidationGroup(fieldErrorProcessor, modelWatcher, ruleset, dummyModel);
         validationGroup.getErrors()
             .then(function(errors){
                 expect(errors).not.to.be.null;
@@ -55,7 +56,8 @@ describe('Validation Group', function () {
             foo: { bar: "not valid" }
         };
 
-        var validationGroup = new Treacherous.ValidationGroup(fieldErrorProcessor, ruleset, dummyModel);
+        var modelWatcher = new Treacherous.ModelWatcher();
+        var validationGroup = new Treacherous.ValidationGroup(fieldErrorProcessor, modelWatcher, ruleset, dummyModel);
         validationGroup.getErrors()
             .then(function(errors){
                 expect(errors).not.to.be.null;
@@ -95,7 +97,8 @@ describe('Validation Group', function () {
             ]
         };
 
-        var validationGroup = new Treacherous.ValidationGroup(fieldErrorProcessor, ruleset, dummyModel);
+        var modelWatcher = new Treacherous.ModelWatcher();
+        var validationGroup = new Treacherous.ValidationGroup(fieldErrorProcessor, modelWatcher, ruleset, dummyModel);
         validationGroup.getErrors()
             .then(function(errors){
                 expect(errors).not.to.be.null;
@@ -107,6 +110,53 @@ describe('Validation Group', function () {
                 validationGroup.release();
                 done();
             });
+    });
+
+    it('should correctly get errors when invalid elements added to arrays', function (done) {
+
+        var ruleRegistry = new Treacherous.RuleRegistry();
+        ruleRegistry.registerRule(new Treacherous.RequiredValidaitonRule());
+        ruleRegistry.registerRule(new Treacherous.MaxLengthValidationRule());
+
+        var fieldErrorProcessor = new Treacherous.FieldErrorProcessor(ruleRegistry);
+
+        var rulesetBuilder = new Treacherous.RulesetBuilder();
+        var elementRuleset = rulesetBuilder.create()
+            .forProperty("bar")
+            .addRule("required")
+            .addRule("maxLength", 5)
+            .build();
+
+        var ruleset = rulesetBuilder.create()
+            .forProperty("foo")
+            .addRulesetForEach(elementRuleset)
+            .build();
+
+        var dummyModel = {
+            foo: [
+                { bar: "hello" },
+                { bar: "" }
+            ]
+        };
+
+        var modelWatcher = new Treacherous.ModelWatcher();
+        var validationGroup = new Treacherous.ValidationGroup(fieldErrorProcessor, modelWatcher, ruleset, dummyModel, 50);
+
+        dummyModel.foo.push({ bar: "too long" });
+
+        setTimeout(function(){
+            validationGroup.getErrors()
+                .then(function(errors){
+                    expect(errors).not.to.be.null;
+                    expect(errors).to.include.keys("foo[1].bar");
+                    expect(errors["foo[1].bar"]).to.contain("required");
+                    expect(errors).to.include.keys("foo[2].bar");
+                    expect(errors["foo[2].bar"]).to.contain("8");
+                    expect(errors["foo[2].bar"]).to.contain("5");
+                    validationGroup.release();
+                    done();
+                });
+        }, 100);
     });
 
     it('should correctly notify on property validation change', function (done) {
@@ -126,7 +176,8 @@ describe('Validation Group', function () {
             foo: "hello"
         };
 
-        var validationGroup = new Treacherous.ValidationGroup(fieldErrorProcessor, ruleset, dummyModel);
+        var modelWatcher = new Treacherous.ModelWatcher();
+        var validationGroup = new Treacherous.ValidationGroup(fieldErrorProcessor, modelWatcher, ruleset, dummyModel);
         validationGroup.propertyChangedEvent.subscribe(function(args){
             expect(args.isValid).to.be.false;
             expect(args.error).contains("15");
@@ -170,7 +221,8 @@ describe('Validation Group', function () {
             }
         };
 
-        var validationGroup = new Treacherous.ValidationGroup(fieldErrorProcessor, ruleset, dummyModel);
+        var modelWatcher = new Treacherous.ModelWatcher();
+        var validationGroup = new Treacherous.ValidationGroup(fieldErrorProcessor, modelWatcher, ruleset, dummyModel);
         validationGroup.propertyChangedEvent.subscribe(function(args){
             expect(args.isValid).to.be.false;
             expect(args.error).contains("27");
@@ -206,7 +258,8 @@ describe('Validation Group', function () {
             foo: "hello"
         };
 
-        var validationGroup = new Treacherous.ValidationGroup(fieldErrorProcessor, ruleset, dummyModel);
+        var modelWatcher = new Treacherous.ModelWatcher();
+        var validationGroup = new Treacherous.ValidationGroup(fieldErrorProcessor, modelWatcher, ruleset, dummyModel);
         validationGroup.validationStateChangedEvent.subscribe(function(args){
             expect(args.isValid).to.be.false;
             validationGroup.release();
@@ -239,7 +292,8 @@ describe('Validation Group', function () {
             foo: "this is not valid so should fail"
         };
 
-        var validationGroup = new Treacherous.ValidationGroup(fieldErrorProcessor, ruleset, dummyModel);
+        var modelWatcher = new Treacherous.ModelWatcher();
+        var validationGroup = new Treacherous.ValidationGroup(fieldErrorProcessor, modelWatcher, ruleset, dummyModel);
         validationGroup.getErrors().then(function(errors){
             expect(errors).not.to.be.null;
             expect(errors).to.include.keys("foo");
@@ -267,7 +321,8 @@ describe('Validation Group', function () {
             foo: "this is not valid so should fail"
         };
 
-        var validationGroup = new Treacherous.ValidationGroup(fieldErrorProcessor, ruleset, dummyModel);
+        var modelWatcher = new Treacherous.ModelWatcher();
+        var validationGroup = new Treacherous.ValidationGroup(fieldErrorProcessor, modelWatcher, ruleset, dummyModel);
         validationGroup.getErrors().then(function(errors){
             expect(errors).not.to.be.null;
             expect(errors).to.include.keys("foo");
@@ -307,7 +362,8 @@ describe('Validation Group', function () {
         };
 
         // Explicitly refresh every 50ms
-        var validationGroup = new Treacherous.ValidationGroup(fieldErrorProcessor, ruleset, dummyModel, 50);
+        var modelWatcher = new Treacherous.ModelWatcher();
+        var validationGroup = new Treacherous.ValidationGroup(fieldErrorProcessor, modelWatcher, ruleset, dummyModel, 50);
 
         validationGroup.getErrors()
             .then(function(errors){
@@ -348,7 +404,8 @@ describe('Validation Group', function () {
         };
 
         // Explicitly refresh every 50ms
-        var validationGroup = new Treacherous.ValidationGroup(fieldErrorProcessor, ruleset, dummyModel, 50);
+        var modelWatcher = new Treacherous.ModelWatcher();
+        var validationGroup = new Treacherous.ValidationGroup(fieldErrorProcessor, modelWatcher, ruleset, dummyModel, 50);
 
         validationGroup.isValid()
             .then(function(isValid){
@@ -390,7 +447,8 @@ describe('Validation Group', function () {
         };
 
         // Explicitly refresh every 50ms
-        var validationGroup = new Treacherous.ValidationGroup(fieldErrorProcessor, ruleset, dummyModel, 50);
+        var modelWatcher = new Treacherous.ModelWatcher();
+        var validationGroup = new Treacherous.ValidationGroup(fieldErrorProcessor, modelWatcher, ruleset, dummyModel, 50);
 
         // This starts the initial validation chain so delays it
         var promise1 = validationGroup.getErrors()

@@ -7,7 +7,7 @@
 		exports["Treacherous"] = factory(require("bluebird"), require("property-resolver"), require("eventjs"));
 	else
 		root["Treacherous"] = factory(root["bluebird"], root["property-resolver"], root["eventjs"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_4__, __WEBPACK_EXTERNAL_MODULE_5__, __WEBPACK_EXTERNAL_MODULE_7__) {
+})(this, function(__WEBPACK_EXTERNAL_MODULE_4__, __WEBPACK_EXTERNAL_MODULE_5__, __WEBPACK_EXTERNAL_MODULE_6__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -60,38 +60,39 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 	__export(__webpack_require__(1));
 	__export(__webpack_require__(3));
+	__export(__webpack_require__(7));
+	__export(__webpack_require__(8));
+	__export(__webpack_require__(2));
+	__export(__webpack_require__(18));
+	__export(__webpack_require__(17));
 	__export(__webpack_require__(10));
 	__export(__webpack_require__(11));
-	__export(__webpack_require__(2));
-	__export(__webpack_require__(21));
-	__export(__webpack_require__(20));
-	__export(__webpack_require__(16));
-	__export(__webpack_require__(17));
-	__export(__webpack_require__(18));
-	__export(__webpack_require__(19));
-	__export(__webpack_require__(22));
 	__export(__webpack_require__(36));
+	__export(__webpack_require__(32));
+	__export(__webpack_require__(31));
+	__export(__webpack_require__(9));
+	__export(__webpack_require__(29));
+	__export(__webpack_require__(30));
+	__export(__webpack_require__(13));
+	__export(__webpack_require__(14));
+	__export(__webpack_require__(15));
+	__export(__webpack_require__(16));
+	__export(__webpack_require__(19));
+	__export(__webpack_require__(37));
+	__export(__webpack_require__(20));
+	__export(__webpack_require__(21));
+	__export(__webpack_require__(22));
 	__export(__webpack_require__(23));
 	__export(__webpack_require__(24));
 	__export(__webpack_require__(25));
 	__export(__webpack_require__(26));
 	__export(__webpack_require__(27));
+	__export(__webpack_require__(12));
 	__export(__webpack_require__(28));
-	__export(__webpack_require__(29));
-	__export(__webpack_require__(30));
-	__export(__webpack_require__(15));
-	__export(__webpack_require__(31));
-	__export(__webpack_require__(13));
-	__export(__webpack_require__(14));
-	__export(__webpack_require__(37));
-	__export(__webpack_require__(6));
-	__export(__webpack_require__(9));
-	__export(__webpack_require__(8));
+	__export(__webpack_require__(38));
+	__export(__webpack_require__(33));
 	__export(__webpack_require__(35));
 	__export(__webpack_require__(34));
-	__export(__webpack_require__(12));
-	__export(__webpack_require__(32));
-	__export(__webpack_require__(33));
 
 
 /***/ },
@@ -99,23 +100,24 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var validation_group_factory_1 = __webpack_require__(2);
-	var field_error_processor_1 = __webpack_require__(13);
-	var rule_registry_1 = __webpack_require__(15);
-	var date_validation_rule_1 = __webpack_require__(16);
-	var decimal_validation_rule_1 = __webpack_require__(17);
-	var email_validation_rule_1 = __webpack_require__(18);
-	var equal_validation_rule_1 = __webpack_require__(19);
-	var iso_date_validation_rule_1 = __webpack_require__(22);
-	var max_length_validation_rule_1 = __webpack_require__(23);
-	var max_value_validation_rule_1 = __webpack_require__(24);
-	var min_length_validation_rule_1 = __webpack_require__(25);
-	var min_value_validation_rule_1 = __webpack_require__(26);
-	var not_equal_validation_rule_1 = __webpack_require__(27);
-	var number_validation_rule_1 = __webpack_require__(28);
-	var regex_validation_rule_1 = __webpack_require__(29);
-	var required_validation_rule_1 = __webpack_require__(30);
-	var step_validation_rule_1 = __webpack_require__(31);
-	var ruleset_builder_1 = __webpack_require__(32);
+	var field_error_processor_1 = __webpack_require__(10);
+	var rule_registry_1 = __webpack_require__(12);
+	var date_validation_rule_1 = __webpack_require__(13);
+	var decimal_validation_rule_1 = __webpack_require__(14);
+	var email_validation_rule_1 = __webpack_require__(15);
+	var equal_validation_rule_1 = __webpack_require__(16);
+	var iso_date_validation_rule_1 = __webpack_require__(19);
+	var max_length_validation_rule_1 = __webpack_require__(20);
+	var max_value_validation_rule_1 = __webpack_require__(21);
+	var min_length_validation_rule_1 = __webpack_require__(22);
+	var min_value_validation_rule_1 = __webpack_require__(23);
+	var not_equal_validation_rule_1 = __webpack_require__(24);
+	var number_validation_rule_1 = __webpack_require__(25);
+	var regex_validation_rule_1 = __webpack_require__(26);
+	var required_validation_rule_1 = __webpack_require__(27);
+	var step_validation_rule_1 = __webpack_require__(28);
+	var ruleset_builder_1 = __webpack_require__(29);
+	var model_watcher_1 = __webpack_require__(33);
 	exports.ruleRegistry = new rule_registry_1.RuleRegistry();
 	exports.ruleRegistry.registerRule(new date_validation_rule_1.DateValidationRule());
 	exports.ruleRegistry.registerRule(new decimal_validation_rule_1.DecimalValidationRule());
@@ -132,7 +134,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.ruleRegistry.registerRule(new required_validation_rule_1.RequiredValidaitonRule());
 	exports.ruleRegistry.registerRule(new step_validation_rule_1.StepValidationRule());
 	var fieldErrorProcessor = new field_error_processor_1.FieldErrorProcessor(exports.ruleRegistry);
-	var validationGroupFactory = new validation_group_factory_1.ValidationGroupFactory(fieldErrorProcessor);
+	var modelWatcher = new model_watcher_1.ModelWatcher();
+	var validationGroupFactory = new validation_group_factory_1.ValidationGroupFactory(fieldErrorProcessor, modelWatcher);
 	function createRuleset() {
 	    return new ruleset_builder_1.RulesetBuilder().create();
 	}
@@ -154,11 +157,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var validation_group_1 = __webpack_require__(3);
 	var ValidationGroupFactory = (function () {
-	    function ValidationGroupFactory(fieldErrorProcessor) {
+	    function ValidationGroupFactory(fieldErrorProcessor, modelWatcher) {
 	        var _this = this;
 	        this.fieldErrorProcessor = fieldErrorProcessor;
+	        this.modelWatcher = modelWatcher;
 	        this.createValidationGroup = function (model, ruleset) {
-	            return new validation_group_1.ValidationGroup(_this.fieldErrorProcessor, ruleset, model);
+	            return new validation_group_1.ValidationGroup(_this.fieldErrorProcessor, _this.modelWatcher, ruleset, model);
 	        };
 	    }
 	    return ValidationGroupFactory;
@@ -172,16 +176,16 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var Promise = __webpack_require__(4);
 	var property_resolver_1 = __webpack_require__(5);
-	var model_watcher_1 = __webpack_require__(6);
-	var eventjs_1 = __webpack_require__(7);
-	var property_validation_changed_event_1 = __webpack_require__(10);
-	var validation_state_changed_event_1 = __webpack_require__(11);
-	var rule_resolver_1 = __webpack_require__(12);
+	var eventjs_1 = __webpack_require__(6);
+	var property_validation_changed_event_1 = __webpack_require__(7);
+	var validation_state_changed_event_1 = __webpack_require__(8);
+	var rule_resolver_1 = __webpack_require__(9);
 	var ValidationGroup = (function () {
-	    function ValidationGroup(fieldErrorProcessor, ruleset, model, refreshRate) {
+	    function ValidationGroup(fieldErrorProcessor, modelWatcher, ruleset, model, refreshRate) {
 	        var _this = this;
 	        if (refreshRate === void 0) { refreshRate = 500; }
 	        this.fieldErrorProcessor = fieldErrorProcessor;
+	        this.modelWatcher = modelWatcher;
 	        this.ruleset = ruleset;
 	        this.model = model;
 	        this.refreshRate = refreshRate;
@@ -311,7 +315,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        };
 	        this.propertyChangedEvent = new eventjs_1.EventHandler(this);
 	        this.validationStateChangedEvent = new eventjs_1.EventHandler(this);
-	        this.modelWatcher = new model_watcher_1.ModelWatcher(model, ruleset, refreshRate);
+	        this.modelWatcher.setupWatcher(model, ruleset, refreshRate);
 	        this.modelWatcher.onPropertyChanged.subscribe(this.onModelChanged);
 	        this.validateModel();
 	    }
@@ -340,127 +344,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 6 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
-	var property_resolver_1 = __webpack_require__(5);
-	var eventjs_1 = __webpack_require__(7);
-	var property_watcher_1 = __webpack_require__(8);
-	var property_changed_event_1 = __webpack_require__(9);
-	var ModelWatcher = (function () {
-	    function ModelWatcher(model, ruleset, scanInterval, propertyResolver) {
-	        var _this = this;
-	        if (scanInterval === void 0) { scanInterval = 500; }
-	        if (propertyResolver === void 0) { propertyResolver = new property_resolver_1.PropertyResolver(); }
-	        this.model = model;
-	        this.ruleset = ruleset;
-	        this.scanInterval = scanInterval;
-	        this.propertyResolver = propertyResolver;
-	        this.watchCache = [];
-	        this.watcherInterval = null;
-	        this.startWatching = function () {
-	            _this.stopWatching();
-	            _this.watcherInterval = setInterval(_this.scanProperties, _this.scanInterval);
-	        };
-	        this.stopWatching = function () {
-	            if (_this.watcherInterval) {
-	                clearInterval(_this.watcherInterval);
-	            }
-	        };
-	        this.cacheWatchTargets = function (propertyStack, ruleset) {
-	            var paramRoute, parameterRules;
-	            for (var param in ruleset.rules) {
-	                paramRoute = propertyStack ? propertyStack + "." + param : param;
-	                parameterRules = ruleset.rules[param];
-	                parameterRules.forEach(function (rule) {
-	                    if (rule.isForEach) {
-	                        // ruleset
-	                        if (rule.internalRule.getRulesForProperty) {
-	                            _this.model[param].forEach(function (element, index) {
-	                                _this.cacheWatchTargets(paramRoute + "[" + index + "]", rule.internalRule);
-	                            });
-	                        }
-	                        else {
-	                            _this.model[param].forEach(function (element, index) {
-	                                _this.watchCache.push(new property_watcher_1.PropertyWatcher(paramRoute + "[" + index + "]", _this.model[param][index]));
-	                            });
-	                        }
-	                    }
-	                    else {
-	                        // ruleset
-	                        if (rule.getRulesForProperty) {
-	                            _this.cacheWatchTargets(paramRoute, rule);
-	                        }
-	                        else {
-	                            var currentValue = _this.propertyResolver.resolveProperty(_this.model, paramRoute);
-	                            _this.watchCache.push(new property_watcher_1.PropertyWatcher(paramRoute, currentValue));
-	                        }
-	                    }
-	                });
-	            }
-	        };
-	        this.scanProperties = function () {
-	            if (_this.onPropertyChanged.getSubscriptionCount() == 0) {
-	                return;
-	            }
-	            if (_this.watchCache.length == 0) {
-	                return;
-	            }
-	            _this.watchCache.forEach(function (propertyWatcher) {
-	                var currentValue = _this.propertyResolver.resolveProperty(_this.model, propertyWatcher.propertyPath);
-	                if (currentValue !== propertyWatcher.previousValue) {
-	                    var propertyChangedArgs = new property_changed_event_1.PropertyChangedEvent(propertyWatcher.propertyPath, currentValue, propertyWatcher.previousValue);
-	                    setTimeout(function () { _this.onPropertyChanged.publish(propertyChangedArgs); }, 1);
-	                    propertyWatcher.previousValue = currentValue;
-	                }
-	            });
-	        };
-	        this.onPropertyChanged = new eventjs_1.EventHandler(this);
-	        this.cacheWatchTargets("", this.ruleset);
-	        this.scanProperties();
-	        this.startWatching();
-	    }
-	    return ModelWatcher;
-	})();
-	exports.ModelWatcher = ModelWatcher;
-
+	module.exports = __WEBPACK_EXTERNAL_MODULE_6__;
 
 /***/ },
 /* 7 */
-/***/ function(module, exports) {
-
-	module.exports = __WEBPACK_EXTERNAL_MODULE_7__;
-
-/***/ },
-/* 8 */
-/***/ function(module, exports) {
-
-	var PropertyWatcher = (function () {
-	    function PropertyWatcher(propertyPath, previousValue) {
-	        this.propertyPath = propertyPath;
-	        this.previousValue = previousValue;
-	    }
-	    return PropertyWatcher;
-	})();
-	exports.PropertyWatcher = PropertyWatcher;
-
-
-/***/ },
-/* 9 */
-/***/ function(module, exports) {
-
-	var PropertyChangedEvent = (function () {
-	    function PropertyChangedEvent(propertyPath, newValue, oldValue) {
-	        this.propertyPath = propertyPath;
-	        this.newValue = newValue;
-	        this.oldValue = oldValue;
-	    }
-	    return PropertyChangedEvent;
-	})();
-	exports.PropertyChangedEvent = PropertyChangedEvent;
-
-
-/***/ },
-/* 10 */
 /***/ function(module, exports) {
 
 	var PropertyValidationChangedEvent = (function () {
@@ -475,7 +364,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 11 */
+/* 8 */
 /***/ function(module, exports) {
 
 	var ValidationStateChangedEvent = (function () {
@@ -488,7 +377,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 12 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var property_resolver_1 = __webpack_require__(5);
@@ -505,45 +394,74 @@ return /******/ (function(modules) { // webpackBootstrap
 	        };
 	        this.resolvePropertyRules = function (propertyRoute, ruleset) {
 	            var propertyRouteSections = _this.propertyResolver.decomposePropertyRoute(propertyRoute);
+	            var finalProperty = propertyRouteSections[propertyRouteSections.length - 1];
 	            if (propertyRouteSections.length == 1) {
 	                return ruleset.getRulesForProperty(propertyRoute);
 	            }
-	            var currentDepth = 0;
-	            var currentRuleset = ruleset;
-	            while (currentDepth < (propertyRouteSections.length - 1)) {
-	                if (currentRuleset.isForEach) {
-	                    currentRuleset = currentRuleset.internalRule;
-	                }
-	                if (!currentRuleset.rules.hasOwnProperty(propertyRouteSections[currentDepth])) {
-	                    return null;
-	                }
-	                var matchingRules = currentRuleset.rules[propertyRouteSections[currentDepth++]];
-	                if (_this.isIndexRoute(propertyRouteSections[currentDepth])) {
-	                    if (currentDepth == propertyRouteSections.length - 1) {
-	                        return matchingRules;
-	                    }
-	                    currentDepth++;
-	                }
-	                var matchedRule = null;
-	                matchingRules.forEach(function (rule) {
-	                    var currentRule = rule;
-	                    if (rule.isForEach) {
-	                        currentRule = rule.internalRule;
-	                    }
-	                    if (!currentRule.getRulesForProperty) {
-	                        return;
-	                    }
-	                    if (currentRule.rules.hasOwnProperty(propertyRouteSections[currentDepth])) {
-	                        matchedRule = currentRule;
-	                        return;
-	                    }
-	                });
-	                if (!matchedRule) {
-	                    return null;
-	                }
-	                currentRuleset = matchedRule;
+	            var matchingRules = _this.traverseRulesForRoutes(propertyRouteSections, ruleset);
+	            if (!matchingRules) {
+	                return null;
 	            }
-	            return currentRuleset.getRulesForProperty(propertyRouteSections[currentDepth]);
+	            if (matchingRules.getRulesForProperty) {
+	                return matchingRules.getRulesForProperty(finalProperty);
+	            }
+	            return matchingRules;
+	        };
+	        this.getMatchingRuleForProperty = function (property, rules) {
+	            var currentRule;
+	            for (var i = 0; i < rules.length; i++) {
+	                currentRule = rules[i];
+	                if (currentRule.isForEach) {
+	                    currentRule = currentRule.internalRule;
+	                }
+	                if (currentRule.getRulesForProperty) {
+	                    return [currentRule];
+	                }
+	                if (currentRule.rules[property]) {
+	                    return currentRule;
+	                }
+	            }
+	        };
+	        this.traverseRulesForRoutes = function (propertyRouteSections, ruleset) {
+	            var currentProperty = propertyRouteSections.shift();
+	            console.log("current scope", currentProperty, ruleset);
+	            if (ruleset.isForEach) {
+	                console.log("foreach", currentProperty);
+	                console.log("next", propertyRouteSections);
+	                if (propertyRouteSections.length == 0) {
+	                    return ruleset.internalRule;
+	                }
+	                return _this.traverseRulesForRoutes(propertyRouteSections, ruleset.internalRule);
+	            }
+	            var childRules = ruleset.rules[currentProperty];
+	            if (!childRules) {
+	                return null;
+	            }
+	            if (propertyRouteSections.length == 0) {
+	                console.log(currentProperty, ruleset);
+	                return childRules;
+	            }
+	            var nextProperty = propertyRouteSections[0];
+	            if (!nextProperty) {
+	                return ruleset;
+	            }
+	            if (_this.isIndexRoute(nextProperty)) {
+	                console.log("index route", nextProperty, childRules);
+	                propertyRouteSections.shift();
+	                nextProperty = propertyRouteSections[0];
+	            }
+	            if (propertyRouteSections.length == 0) {
+	                console.log("leaving with", childRules);
+	                var anyChildMatched = _this.getMatchingRuleForProperty(nextProperty, childRules);
+	                return anyChildMatched;
+	            }
+	            console.log("looking in (n,c)", childRules, nextProperty, currentProperty);
+	            var nextChildRule = _this.getMatchingRuleForProperty(nextProperty, childRules);
+	            if (propertyRouteSections.length > 0) {
+	                console.log("entering", nextChildRule, propertyRouteSections);
+	                return _this.traverseRulesForRoutes(propertyRouteSections, nextChildRule);
+	            }
+	            return nextChildRule;
 	        };
 	    }
 	    return RuleResolver;
@@ -552,11 +470,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 13 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Promise = __webpack_require__(4);
-	var field_has_error_1 = __webpack_require__(14);
+	var field_has_error_1 = __webpack_require__(11);
 	var FieldErrorProcessor = (function () {
 	    function FieldErrorProcessor(ruleRegistry) {
 	        this.ruleRegistry = ruleRegistry;
@@ -592,7 +510,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 14 */
+/* 11 */
 /***/ function(module, exports) {
 
 	var __extends = (this && this.__extends) || function (d, b) {
@@ -612,7 +530,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 15 */
+/* 12 */
 /***/ function(module, exports) {
 
 	var RuleRegistry = (function () {
@@ -635,7 +553,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 16 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Promise = __webpack_require__(4);
@@ -660,7 +578,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 17 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Promise = __webpack_require__(4);
@@ -685,7 +603,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 18 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Promise = __webpack_require__(4);
@@ -710,12 +628,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 19 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Promise = __webpack_require__(4);
-	var type_helper_1 = __webpack_require__(20);
-	var comparer_helper_1 = __webpack_require__(21);
+	var type_helper_1 = __webpack_require__(17);
+	var comparer_helper_1 = __webpack_require__(18);
 	var EqualValidationRule = (function () {
 	    function EqualValidationRule() {
 	        this.ruleName = "equal";
@@ -744,7 +662,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 20 */
+/* 17 */
 /***/ function(module, exports) {
 
 	var TypeHelper = (function () {
@@ -756,13 +674,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    TypeHelper.isSimpleType = function (value) {
 	        return (typeof value == "string" || typeof value == "number");
 	    };
+	    TypeHelper.isArrayType = function (value) {
+	        return Object.prototype.toString.call(value) === '[object Array]';
+	    };
 	    return TypeHelper;
 	})();
 	exports.TypeHelper = TypeHelper;
 
 
 /***/ },
-/* 21 */
+/* 18 */
 /***/ function(module, exports) {
 
 	var ComparerHelper = (function () {
@@ -781,7 +702,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 22 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Promise = __webpack_require__(4);
@@ -806,7 +727,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 23 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Promise = __webpack_require__(4);
@@ -832,7 +753,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 24 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Promise = __webpack_require__(4);
@@ -858,7 +779,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 25 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Promise = __webpack_require__(4);
@@ -884,7 +805,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 26 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Promise = __webpack_require__(4);
@@ -910,12 +831,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 27 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Promise = __webpack_require__(4);
-	var type_helper_1 = __webpack_require__(20);
-	var comparer_helper_1 = __webpack_require__(21);
+	var type_helper_1 = __webpack_require__(17);
+	var comparer_helper_1 = __webpack_require__(18);
 	var NotEqualValidationRule = (function () {
 	    function NotEqualValidationRule() {
 	        this.ruleName = "notEqual";
@@ -944,7 +865,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 28 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Promise = __webpack_require__(4);
@@ -969,7 +890,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 29 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Promise = __webpack_require__(4);
@@ -993,7 +914,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 30 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Promise = __webpack_require__(4);
@@ -1029,7 +950,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 31 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Promise = __webpack_require__(4);
@@ -1054,12 +975,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 32 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var ruleset_1 = __webpack_require__(33);
-	var rule_link_1 = __webpack_require__(34);
-	var for_each_rule_1 = __webpack_require__(35);
+	var ruleset_1 = __webpack_require__(30);
+	var rule_link_1 = __webpack_require__(31);
+	var for_each_rule_1 = __webpack_require__(32);
 	var RulesetBuilder = (function () {
 	    function RulesetBuilder() {
 	        var _this = this;
@@ -1111,7 +1032,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 33 */
+/* 30 */
 /***/ function(module, exports) {
 
 	var Ruleset = (function () {
@@ -1139,7 +1060,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 34 */
+/* 31 */
 /***/ function(module, exports) {
 
 	var RuleLink = (function () {
@@ -1153,7 +1074,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 35 */
+/* 32 */
 /***/ function(module, exports) {
 
 	var ForEachRule = (function () {
@@ -1167,14 +1088,160 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 36 */
-/***/ function(module, exports) {
+/* 33 */
+/***/ function(module, exports, __webpack_require__) {
 
-	
+	var property_resolver_1 = __webpack_require__(5);
+	var eventjs_1 = __webpack_require__(6);
+	var type_helper_1 = __webpack_require__(17);
+	var property_watcher_1 = __webpack_require__(34);
+	var property_changed_event_1 = __webpack_require__(35);
+	var ModelWatcher = (function () {
+	    function ModelWatcher(propertyResolver) {
+	        var _this = this;
+	        if (propertyResolver === void 0) { propertyResolver = new property_resolver_1.PropertyResolver(); }
+	        this.propertyResolver = propertyResolver;
+	        this.watchCache = [];
+	        this.watchCacheKeys = [];
+	        this.watcherInterval = null;
+	        this.setupWatcher = function (model, ruleset, scanInterval) {
+	            if (scanInterval === void 0) { scanInterval = 500; }
+	            _this.model = model;
+	            _this.ruleset = ruleset;
+	            _this.scanInterval = scanInterval;
+	            _this.refreshWatchTargets();
+	            _this.startWatching();
+	        };
+	        this.startWatching = function () {
+	            _this.stopWatching();
+	            _this.watcherInterval = setInterval(_this.scanProperties, _this.scanInterval);
+	        };
+	        this.stopWatching = function () {
+	            if (_this.watcherInterval) {
+	                clearInterval(_this.watcherInterval);
+	            }
+	        };
+	        this.refreshWatchTargets = function () {
+	            _this.watchCache = [];
+	            _this.watchCacheKeys = [];
+	            _this.cacheWatchTargets("", _this.ruleset);
+	            _this.scanProperties();
+	        };
+	        this.watchProperty = function (watchRoute, previousData) {
+	            if (_this.watchCacheKeys.indexOf(watchRoute) == -1) {
+	                var propertyWatcher = new property_watcher_1.PropertyWatcher(watchRoute, previousData);
+	                _this.watchCache.push(propertyWatcher);
+	                _this.watchCacheKeys.push(watchRoute);
+	            }
+	        };
+	        this.cacheWatchTargets = function (propertyStack, ruleset) {
+	            var paramRoute, parameterRules;
+	            for (var param in ruleset.rules) {
+	                paramRoute = propertyStack ? propertyStack + "." + param : param;
+	                parameterRules = ruleset.rules[param];
+	                parameterRules.forEach(function (rule) {
+	                    var currentValue = _this.propertyResolver.resolveProperty(_this.model, paramRoute);
+	                    var isArray = type_helper_1.TypeHelper.isArrayType(currentValue);
+	                    if (isArray) {
+	                        var cachedArrayInfo = { length: currentValue.length, isArray: true };
+	                        _this.watchProperty(paramRoute, cachedArrayInfo);
+	                    }
+	                    if (rule.isForEach) {
+	                        // ruleset
+	                        if (rule.internalRule.getRulesForProperty) {
+	                            _this.model[param].forEach(function (element, index) {
+	                                _this.cacheWatchTargets(paramRoute + "[" + index + "]", rule.internalRule);
+	                            });
+	                        }
+	                        else {
+	                            _this.model[param].forEach(function (element, index) {
+	                                _this.watchProperty(paramRoute + "[" + index + "]", _this.model[param][index]);
+	                            });
+	                        }
+	                    }
+	                    else {
+	                        // ruleset
+	                        if (rule.getRulesForProperty) {
+	                            _this.cacheWatchTargets(paramRoute, rule);
+	                        }
+	                        else {
+	                            if (!isArray) {
+	                                _this.watchProperty(paramRoute, currentValue);
+	                            }
+	                        }
+	                    }
+	                });
+	            }
+	        };
+	        this.scanProperties = function () {
+	            if (_this.onPropertyChanged.getSubscriptionCount() == 0) {
+	                return;
+	            }
+	            if (_this.watchCache.length == 0) {
+	                return;
+	            }
+	            var refreshOnNextCycle = false;
+	            _this.watchCache.forEach(function (propertyWatcher) {
+	                var currentValue = _this.propertyResolver.resolveProperty(_this.model, propertyWatcher.propertyPath);
+	                if (currentValue && propertyWatcher.previousValue.isArray) {
+	                    if (currentValue.length != propertyWatcher.previousValue.length) {
+	                        refreshOnNextCycle = true;
+	                    }
+	                    if (currentValue.length > propertyWatcher.previousValue.length) {
+	                        for (var i = propertyWatcher.previousValue.length; i < currentValue.length; i++) {
+	                            var propertyChangedArgs = new property_changed_event_1.PropertyChangedEvent(propertyWatcher.propertyPath + "[" + i + "]", currentValue[i], null);
+	                            setTimeout(function () { _this.onPropertyChanged.publish(propertyChangedArgs); }, 1);
+	                        }
+	                    }
+	                }
+	                else if (currentValue !== propertyWatcher.previousValue) {
+	                    var propertyChangedArgs = new property_changed_event_1.PropertyChangedEvent(propertyWatcher.propertyPath, currentValue, propertyWatcher.previousValue);
+	                    setTimeout(function () { _this.onPropertyChanged.publish(propertyChangedArgs); }, 1);
+	                    propertyWatcher.previousValue = currentValue;
+	                }
+	            });
+	            if (refreshOnNextCycle) {
+	                setTimeout(_this.refreshWatchTargets, 1);
+	            }
+	        };
+	        this.onPropertyChanged = new eventjs_1.EventHandler(this);
+	    }
+	    return ModelWatcher;
+	})();
+	exports.ModelWatcher = ModelWatcher;
 
 
 /***/ },
-/* 37 */
+/* 34 */
+/***/ function(module, exports) {
+
+	var PropertyWatcher = (function () {
+	    function PropertyWatcher(propertyPath, previousValue) {
+	        this.propertyPath = propertyPath;
+	        this.previousValue = previousValue;
+	    }
+	    return PropertyWatcher;
+	})();
+	exports.PropertyWatcher = PropertyWatcher;
+
+
+/***/ },
+/* 35 */
+/***/ function(module, exports) {
+
+	var PropertyChangedEvent = (function () {
+	    function PropertyChangedEvent(propertyPath, newValue, oldValue) {
+	        this.propertyPath = propertyPath;
+	        this.newValue = newValue;
+	        this.oldValue = oldValue;
+	    }
+	    return PropertyChangedEvent;
+	})();
+	exports.PropertyChangedEvent = PropertyChangedEvent;
+
+
+/***/ },
+/* 36 */
 /***/ function(module, exports) {
 
 	var ValidationError = (function () {
@@ -1185,6 +1252,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return ValidationError;
 	})();
 	exports.ValidationError = ValidationError;
+
+
+/***/ },
+/* 37 */
+/***/ function(module, exports) {
+
+	
+
+
+/***/ },
+/* 38 */
+/***/ function(module, exports) {
+
+	
 
 
 /***/ }

@@ -1,6 +1,5 @@
 import * as Promise from "bluebird";
 import {PropertyResolver} from "property-resolver";
-import {ModelWatcher} from "./watcher/model-watcher";
 import {PropertyChangedEvent} from "./watcher/property-changed-event";
 import {EventHandler} from "eventjs";
 import {FieldErrorProcessor} from "./processors/field-error-processor";
@@ -9,6 +8,7 @@ import {PropertyValidationChangedEvent} from "./events/property-validation-chang
 import {ValidationStateChangedEvent} from "./events/validation-state-changed-event";
 import {RuleLink} from "./rulesets/rule-link";
 import {RuleResolver} from "./rulesets/rule-resolver";
+import {IModelWatcher} from "./watcher/imodel-watcher";
 
 export class ValidationGroup
 {
@@ -16,20 +16,20 @@ export class ValidationGroup
     public propertyChangedEvent: EventHandler;
     public validationStateChangedEvent: EventHandler;
 
-    private modelWatcher: ModelWatcher;
     private propertyResolver = new PropertyResolver();
     private ruleResolver = new RuleResolver();
     private activePromiseChain: Promise<any>;
     private activeValidators = 0;
 
     constructor(private fieldErrorProcessor: FieldErrorProcessor,
+                private modelWatcher: IModelWatcher,
                 private ruleset: Ruleset, private model: any,
                 public refreshRate = 500)
     {
         this.propertyChangedEvent = new EventHandler(this);
         this.validationStateChangedEvent = new EventHandler(this);
 
-        this.modelWatcher = new ModelWatcher(model, ruleset, refreshRate);
+        this.modelWatcher.setupWatcher(model, ruleset, refreshRate);
         this.modelWatcher.onPropertyChanged.subscribe(this.onModelChanged);
 
         this.validateModel();
