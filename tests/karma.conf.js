@@ -8,7 +8,8 @@ module.exports = function(config) {
 
         files: [
             'dist/treacherous.all.js',
-            'tests/specs/**/*.js'
+            'tests/specs/**/*.js',
+            'node_modules/property-resolver/**/property-resolver.js'
         ],
 
         // test result reporter

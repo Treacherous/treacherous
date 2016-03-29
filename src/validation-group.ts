@@ -9,20 +9,20 @@ import {ValidationStateChangedEvent} from "./events/validation-state-changed-eve
 import {RuleLink} from "./rulesets/rule-link";
 import {RuleResolver} from "./rulesets/rule-resolver";
 import {IModelWatcher} from "./watcher/imodel-watcher";
+import {TypeHelper} from "./helpers/type-helper";
 
 export class ValidationGroup
 {
     public propertyErrors = {};
     public propertyChangedEvent: EventHandler;
     public validationStateChangedEvent: EventHandler;
-
-    private propertyResolver = new PropertyResolver();
-    private ruleResolver = new RuleResolver();
     private activePromiseChain: Promise<any>;
     private activeValidators = 0;
 
     constructor(private fieldErrorProcessor: FieldErrorProcessor,
                 private modelWatcher: IModelWatcher,
+                private propertyResolver = new PropertyResolver(),
+                private ruleResolver = new RuleResolver(),
                 private ruleset: Ruleset, private model: any,
                 public refreshRate = 500)
     {
@@ -116,11 +116,21 @@ export class ValidationGroup
         var routeEachRule = (ruleLinkOrSet) => {
             if(this.isForEach(ruleLinkOrSet))
             {
-                this.model[propertyName].forEach((element, index) => {
-                    var childPropertyName = `${propertyName}[${index}]`;
-                    var promise = this.validatePropertyWithRules(childPropertyName, [ruleLinkOrSet.internalRule]);
+                var currentPropertyValue = this.propertyResolver.resolveProperty(this.model, propertyName);
+                var isCurrentlyAnArray = TypeHelper.isArrayType(currentPropertyValue);
+
+                if(isCurrentlyAnArray) {
+                    currentPropertyValue.forEach((element, index) => {
+                        var childPropertyName = `${propertyName}[${index}]`;
+                        var promise = this.validatePropertyWithRules(childPropertyName, [ruleLinkOrSet.internalRule]);
+                        validationPromises.push(promise);
+                    });
+                }
+                else
+                {
+                    var promise = this.validatePropertyWithRules(propertyName, [ruleLinkOrSet.internalRule]);
                     validationPromises.push(promise);
-                });
+                }
             }
             else if(this.isRuleset(ruleLinkOrSet))
             { ruleSets.push(ruleLinkOrSet); }

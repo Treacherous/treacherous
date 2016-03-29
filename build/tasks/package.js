@@ -59,4 +59,26 @@ gulp.task('package:minimal', ["compile"], function () {
         .pipe(gulp.dest(paths.dist));
 });
 
-gulp.task('package', ["package:release", "package:all", "package:minimal"]);
+gulp.task('package:browser', ["compile"], function () {
+    var webpackConfig = {
+        output: {
+            entry: "index.js",
+            filename: "treacherous.browser.js",
+            library: "Treacherous",
+            libraryTarget: "umd"
+        },
+        externals: [
+            {
+                "bluebird": "var Promise",
+                "eventjs": "var EventJs",
+                "property-resolver": "var window"
+            }
+        ]
+    };
+
+    return gulp.src([paths.output + "/index.js"])
+        .pipe(webpack(webpackConfig))
+        .pipe(gulp.dest(paths.dist));
+});
+
+gulp.task('package', ["package:release", "package:all", "package:minimal", "package:browser"]);

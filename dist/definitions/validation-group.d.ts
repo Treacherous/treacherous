@@ -1,0 +1,35 @@
+import * as Promise from "bluebird";
+import { PropertyResolver } from "property-resolver";
+import { EventHandler } from "eventjs";
+import { FieldErrorProcessor } from "./processors/field-error-processor";
+import { Ruleset } from "./rulesets/ruleset";
+import { RuleResolver } from "./rulesets/rule-resolver";
+import { IModelWatcher } from "./watcher/imodel-watcher";
+export declare class ValidationGroup {
+    private fieldErrorProcessor;
+    private modelWatcher;
+    private propertyResolver;
+    private ruleResolver;
+    private ruleset;
+    private model;
+    refreshRate: number;
+    propertyErrors: {};
+    propertyChangedEvent: EventHandler;
+    validationStateChangedEvent: EventHandler;
+    private activePromiseChain;
+    private activeValidators;
+    constructor(fieldErrorProcessor: FieldErrorProcessor, modelWatcher: IModelWatcher, propertyResolver: PropertyResolver, ruleResolver: RuleResolver, ruleset: Ruleset, model: any, refreshRate?: number);
+    private isRuleset(possibleRuleset);
+    private isForEach(possibleForEach);
+    private onModelChanged;
+    private validatePropertyWithRuleLinks;
+    private validatePropertyWithRuleSet;
+    private validatePropertyWithRules;
+    private validateProperty;
+    private validateModel;
+    private hasErrors;
+    isValid: () => Promise<boolean>;
+    getErrors: () => Promise<any>;
+    release: () => void;
+    private waitForValidatorsToFinish;
+}

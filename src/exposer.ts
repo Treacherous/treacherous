@@ -20,6 +20,8 @@ import {StepValidationRule} from "./rules/step-validation-rule"
 import {RulesetBuilder} from "./rulesets/ruleset-builder";
 import {ValidationGroup} from "./validation-group";
 import {ModelWatcher} from "./watcher/model-watcher";
+import {PropertyResolver} from "property-resolver";
+import {RuleResolver} from "./rulesets/rule-resolver";
 
 export var ruleRegistry = new RuleRegistry();
 ruleRegistry.registerRule(new DateValidationRule());
@@ -39,7 +41,9 @@ ruleRegistry.registerRule(new StepValidationRule());
 
 var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry);
 var modelWatcher = new ModelWatcher();
-var validationGroupFactory = new ValidationGroupFactory(fieldErrorProcessor, modelWatcher);
+var propertyResolver = new PropertyResolver();
+var ruleResolver = new RuleResolver();
+var validationGroupFactory = new ValidationGroupFactory(fieldErrorProcessor, modelWatcher, propertyResolver, ruleResolver);
 
 export function createRuleset(): RulesetBuilder
 {

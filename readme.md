@@ -17,13 +17,14 @@ Just do an `npm install treacherous`
 
 ### In browser
 
-There are 3 flavours in the dist dir:
+There are 4 flavours in the dist dir:
 
 * `treacherous.all.js`      - Contains treacherous and all dependencies (including bluebird)
 * `treacherous.minimal.js`  - Contains only treacherous and no dependencies
 * `treacherous.js`          - Contains treacherous dependencies without bluebird
+* `treacherous.browser.js`  - Contains treacherous which works without modules for browser usage
 
-The reason there are 3 flavours is because some people will use this in a non-module aware
+The reason there are 4 flavours is because some people will use this in a non-module aware
 browser scenario, and `treacherous.all.js` will contain everything for it to just work, it is also
 used by the unit tests in the project.
 
@@ -37,6 +38,10 @@ this is where the last version comes from.
 ([event-js](https://github.com/grofit/eventjs), [property-resolver](https://github.com/grofit/property-resolver)), 
 without you needing to include them, as chances are if you are using this you already have bluebird
 or some other promise library included so dont want it bundled with this.
+
+`treacherous.browser.js` is same as `treacherous.minimal.js` but it does not know of modules, so it 
+requires you to include `bluebird` and the other 2 packages in the page somewhere.
+([event-js](https://github.com/grofit/eventjs), [property-resolver](https://github.com/grofit/property-resolver)), 
 
 ## How do I use it
 

@@ -1,12 +1,12 @@
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory(require("bluebird"), require("property-resolver"), require("eventjs"));
+		module.exports = factory(require("Promise"), require("window"), require("EventJs"));
 	else if(typeof define === 'function' && define.amd)
-		define(["bluebird", "property-resolver", "eventjs"], factory);
+		define(["Promise", "window", "EventJs"], factory);
 	else if(typeof exports === 'object')
-		exports["Treacherous"] = factory(require("bluebird"), require("property-resolver"), require("eventjs"));
+		exports["Treacherous"] = factory(require("Promise"), require("window"), require("EventJs"));
 	else
-		root["Treacherous"] = factory(root["bluebird"], root["property-resolver"], root["eventjs"]);
+		root["Treacherous"] = factory(root["Promise"], root["window"], root["EventJs"]);
 })(this, function(__WEBPACK_EXTERNAL_MODULE_4__, __WEBPACK_EXTERNAL_MODULE_5__, __WEBPACK_EXTERNAL_MODULE_6__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
@@ -351,19 +351,19 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 4 */
 /***/ function(module, exports) {
 
-	module.exports = __WEBPACK_EXTERNAL_MODULE_4__;
+	module.exports = Promise;
 
 /***/ },
 /* 5 */
 /***/ function(module, exports) {
 
-	module.exports = __WEBPACK_EXTERNAL_MODULE_5__;
+	module.exports = window;
 
 /***/ },
 /* 6 */
 /***/ function(module, exports) {
 
-	module.exports = __WEBPACK_EXTERNAL_MODULE_6__;
+	module.exports = EventJs;
 
 /***/ },
 /* 7 */

@@ -10,7 +10,7 @@ gulp.task('compile', ["clean", "generate-exports"], function() {
             module: "commonjs",
             target: "es5",
             moduleResolution: "node",
-            declarationFiles: false
+            declarationFiles: true
         }));
 
     return merge([

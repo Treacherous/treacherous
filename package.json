@@ -1,6 +1,6 @@
 {
   "name": "treacherous",
-  "version": "0.1.1",
+  "version": "0.2.1",
   "dependencies": {
     "bluebird": "^3.3.4",
     "property-resolver": "grofit/property-resolver",
@@ -10,6 +10,11 @@
   "bugs": {
     "url": "https://github.com/grofit/treacherous/issues"
   },
+  "files": [
+    "dist/**",
+    "index.d.ts",
+    "readme.md"
+  ],
   "keywords": [
     "validation",
     "validate"
