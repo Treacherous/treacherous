@@ -11,7 +11,7 @@
     "url": "https://github.com/grofit/treacherous/issues"
   },
   "files": [
-    "dist/**",
+    "dist/**/*",
     "index.d.ts",
     "readme.md"
   ],

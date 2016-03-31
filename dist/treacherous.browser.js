@@ -68,11 +68,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	__export(__webpack_require__(11));
 	__export(__webpack_require__(12));
 	__export(__webpack_require__(36));
-	__export(__webpack_require__(32));
-	__export(__webpack_require__(31));
-	__export(__webpack_require__(9));
-	__export(__webpack_require__(29));
-	__export(__webpack_require__(30));
 	__export(__webpack_require__(14));
 	__export(__webpack_require__(15));
 	__export(__webpack_require__(16));
@@ -89,6 +84,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	__export(__webpack_require__(27));
 	__export(__webpack_require__(13));
 	__export(__webpack_require__(28));
+	__export(__webpack_require__(32));
+	__export(__webpack_require__(31));
+	__export(__webpack_require__(9));
+	__export(__webpack_require__(29));
+	__export(__webpack_require__(30));
 	__export(__webpack_require__(38));
 	__export(__webpack_require__(33));
 	__export(__webpack_require__(35));
@@ -273,8 +273,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	                        });
 	                    }
 	                    else {
-	                        var promise = _this.validatePropertyWithRules(propertyName, [ruleLinkOrSet.internalRule]);
-	                        validationPromises.push(promise);
+	                        if (_this.isRuleset(ruleLinkOrSet.internalRule)) {
+	                            ruleSets.push(ruleLinkOrSet.internalRule);
+	                        }
+	                        else {
+	                            ruleLinks.push(ruleLinkOrSet.internalRule);
+	                        }
 	                    }
 	                }
 	                else if (_this.isRuleset(ruleLinkOrSet)) {

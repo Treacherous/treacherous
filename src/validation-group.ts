@@ -128,8 +128,10 @@ export class ValidationGroup
                 }
                 else
                 {
-                    var promise = this.validatePropertyWithRules(propertyName, [ruleLinkOrSet.internalRule]);
-                    validationPromises.push(promise);
+                    if(this.isRuleset(ruleLinkOrSet.internalRule))
+                    { ruleSets.push(ruleLinkOrSet.internalRule); }
+                    else
+                    { ruleLinks.push(ruleLinkOrSet.internalRule); }
                 }
             }
             else if(this.isRuleset(ruleLinkOrSet))
