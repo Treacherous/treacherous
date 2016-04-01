@@ -2,7 +2,6 @@ import * as Promise from "bluebird";
 import {PropertyResolver} from "property-resolver";
 import {PropertyChangedEvent} from "./watcher/property-changed-event";
 import {EventHandler} from "eventjs";
-import {FieldErrorProcessor} from "./processors/field-error-processor";
 import {Ruleset} from "./rulesets/ruleset";
 import {PropertyValidationChangedEvent} from "./events/property-validation-changed-event";
 import {ValidationStateChangedEvent} from "./events/validation-state-changed-event";
@@ -10,24 +9,29 @@ import {RuleLink} from "./rulesets/rule-link";
 import {RuleResolver} from "./rulesets/rule-resolver";
 import {IModelWatcher} from "./watcher/imodel-watcher";
 import {TypeHelper} from "./helpers/type-helper";
+import {IValidationGroup} from "./ivalidation-group";
+import {IFieldErrorProcessor} from "./processors/ifield-error-processor";
+import {IRuleResolver} from "./rulesets/irule-resolver";
 
-export class ValidationGroup
+// TODO: This class is WAY to long, needs refactoring
+export class ValidationGroup implements IValidationGroup
 {
-    public propertyErrors = {};
-    public propertyChangedEvent: EventHandler;
-    public validationStateChangedEvent: EventHandler;
+    private propertyErrors = {};
     private activePromiseChain: Promise<any>;
     private activeValidators = 0;
 
-    constructor(private fieldErrorProcessor: FieldErrorProcessor,
+    public propertyStateChangedEvent: EventHandler;
+    public modelStateChangedEvent: EventHandler;
+
+    constructor(private fieldErrorProcessor: IFieldErrorProcessor,
                 private modelWatcher: IModelWatcher,
                 private propertyResolver = new PropertyResolver(),
-                private ruleResolver = new RuleResolver(),
+                private ruleResolver: IRuleResolver = new RuleResolver(),
                 private ruleset: Ruleset, private model: any,
                 public refreshRate = 500)
     {
-        this.propertyChangedEvent = new EventHandler(this);
-        this.validationStateChangedEvent = new EventHandler(this);
+        this.propertyStateChangedEvent = new EventHandler(this);
+        this.modelStateChangedEvent = new EventHandler(this);
 
         this.modelWatcher.setupWatcher(model, ruleset, refreshRate);
         this.modelWatcher.onPropertyChanged.subscribe(this.onModelChanged);
@@ -55,9 +59,9 @@ export class ValidationGroup
                 if (this.propertyErrors[propertyName]) {
                     delete this.propertyErrors[propertyName];
                     var eventArgs = new PropertyValidationChangedEvent(propertyName, true);
-                    this.propertyChangedEvent.publish(eventArgs);
+                    this.propertyStateChangedEvent.publish(eventArgs);
                     if (hadErrors) {
-                        this.validationStateChangedEvent.publish(new ValidationStateChangedEvent(true));
+                        this.modelStateChangedEvent.publish(new ValidationStateChangedEvent(true));
                     }
                 }
                 return;
@@ -68,10 +72,10 @@ export class ValidationGroup
 
             if(possibleError != previousError){
                 var eventArgs = new PropertyValidationChangedEvent(propertyName, false, possibleError);
-                this.propertyChangedEvent.publish(eventArgs);
+                this.propertyStateChangedEvent.publish(eventArgs);
 
                 if (!hadErrors) {
-                    this.validationStateChangedEvent.publish(new ValidationStateChangedEvent(false));
+                    this.modelStateChangedEvent.publish(new ValidationStateChangedEvent(false));
                 }
             }
         };
@@ -177,10 +181,15 @@ export class ValidationGroup
             .then(() => { return !this.hasErrors() });
     }
 
-    public getErrors = (): Promise<any> =>
+    public getModelErrors = (): Promise<any> =>
     {
         return this.waitForValidatorsToFinish()
             .then(() => { return this.propertyErrors});
+    }
+    
+    public getPropertyError = (propertyRoute: string): Promise<any> => {
+        return this.waitForValidatorsToFinish()
+            .then(() => { return this.propertyErrors[propertyRoute]; })
     }
 
     public release = () => {

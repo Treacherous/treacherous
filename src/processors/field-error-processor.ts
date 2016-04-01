@@ -1,15 +1,14 @@
 import * as Promise from "bluebird";
-import {Ruleset} from "../rulesets/ruleset";
 import {RuleRegistry} from "../rules/rule-registry";
 import {RuleLink} from "../rulesets/rule-link";
-import {ValidationError} from "./validation-error";
 import {FieldHasError} from "./field-has-error";
+import {IFieldErrorProcessor} from "./ifield-error-processor";
 
-export class FieldErrorProcessor
+export class FieldErrorProcessor implements IFieldErrorProcessor
 {
     constructor(public ruleRegistry: RuleRegistry){}
 
-    public processRuleLink(fieldValue: any, ruleLink: RuleLink){
+    public processRuleLink(fieldValue: any, ruleLink: RuleLink): Promise<any>{
         var validator = this.ruleRegistry.getRuleNamed(ruleLink.ruleName);
 
         var checkIfValid = (isValid) => {

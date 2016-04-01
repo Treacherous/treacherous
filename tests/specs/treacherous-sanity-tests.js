@@ -10,13 +10,13 @@ describe('Treacherous Sanity Checks', function () {
 
         var validationGroup = Treacherous.create({}, new Treacherous.Ruleset());
         expect(validationGroup).is.not.null;
-        expect(validationGroup.getErrors).to.be.a("function");
+        expect(validationGroup.getModelErrors).to.be.a("function");
 
         var validationGroupExplicitRules = Treacherous.createWithRules({}, function(rulesetBuilder){
             return rulesetBuilder.create().build();
         });
         expect(validationGroupExplicitRules).is.not.null;
-        expect(validationGroupExplicitRules.getErrors).to.be.a("function");
+        expect(validationGroupExplicitRules.getModelErrors).to.be.a("function");
     });
 
     it('should correctly generate rules', function() {
@@ -48,7 +48,7 @@ describe('Treacherous Sanity Checks', function () {
 
         var validationGroup = Treacherous.create(dummyModel, ruleset);
 
-        validationGroup.getErrors()
+        validationGroup.getModelErrors()
             .then(function(errors){
                 console.log("errors", errors);
                 expect(errors).to.include.keys("foo[1]");

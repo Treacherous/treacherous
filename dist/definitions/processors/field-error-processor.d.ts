@@ -1,7 +1,8 @@
 import * as Promise from "bluebird";
 import { RuleRegistry } from "../rules/rule-registry";
 import { RuleLink } from "../rulesets/rule-link";
-export declare class FieldErrorProcessor {
+import { IFieldErrorProcessor } from "./ifield-error-processor";
+export declare class FieldErrorProcessor implements IFieldErrorProcessor {
     ruleRegistry: RuleRegistry;
     constructor(ruleRegistry: RuleRegistry);
     processRuleLink(fieldValue: any, ruleLink: RuleLink): Promise<any>;

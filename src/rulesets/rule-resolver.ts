@@ -1,7 +1,8 @@
+import {IRuleResolver} from "./irule-resolver";
 import {PropertyResolver} from "property-resolver";
 import {Ruleset} from "./ruleset";
 
-export class RuleResolver
+export class RuleResolver implements IRuleResolver
 {
     constructor(private propertyResolver = new PropertyResolver())
     {}

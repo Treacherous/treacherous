@@ -24,7 +24,7 @@ describe('Validation Group', function () {
         };
 
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.getErrors()
+        validationGroup.getModelErrors()
             .then(function(errors){
                 expect(errors).not.to.be.null;
                 expect(errors).to.include.keys("foo");
@@ -52,7 +52,7 @@ describe('Validation Group', function () {
         };
 
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.getErrors()
+        validationGroup.getModelErrors()
             .then(function(errors){
                 expect(errors).not.to.be.null;
                 expect(errors).to.include.keys("foo.bar");
@@ -86,7 +86,7 @@ describe('Validation Group', function () {
         };
 
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.getErrors()
+        validationGroup.getModelErrors()
             .then(function(errors){
                 expect(errors).not.to.be.null;
                 expect(errors).to.include.keys("foo[1].bar");
@@ -112,12 +112,153 @@ describe('Validation Group', function () {
         };
 
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.getErrors()
+        validationGroup.getModelErrors()
             .then(function(errors){
                 expect(errors).not.to.be.null;
                 expect(errors).to.include.keys("foo[2]");
                 expect(errors["foo[2]"]).to.contain("25");
                 expect(errors["foo[2]"]).to.contain("30");
+                validationGroup.release();
+                done();
+            });
+    });
+
+    it('should correctly get property error', function (done) {
+
+        var rulesetBuilder = new Treacherous.RulesetBuilder();
+        var ruleset = rulesetBuilder.create()
+            .forProperty("foo")
+            .addRule("maxLength", 2)
+            .build();
+
+        var dummyModel = {
+            foo: "hello"
+        };
+
+        var validationGroup = createValidationGroupFor(dummyModel, ruleset);
+        validationGroup.getPropertyError("foo")
+            .then(function(error){
+                expect(error).not.to.be.null;
+                expect(error).to.contain("2");
+                expect(error).to.contain("5");
+                validationGroup.release();
+                done();
+            });
+    });
+
+    it('should correctly get nested property error', function (done) {
+
+        var rulesetBuilder = new Treacherous.RulesetBuilder();
+        var elementRuleset = rulesetBuilder.create()
+            .forProperty("bar")
+            .addRule("required", true)
+            .addRule("maxLength", 5)
+            .build();
+
+        var ruleset = rulesetBuilder.create()
+            .forProperty("foo")
+            .addRuleset(elementRuleset)
+            .build();
+
+        var dummyModel = {
+            foo: { bar: "not valid" }
+        };
+
+        var validationGroup = createValidationGroupFor(dummyModel, ruleset);
+        validationGroup.getPropertyError("foo.bar")
+            .then(function(error){
+                expect(error).not.to.be.null;
+                expect(error).to.contain("9");
+                expect(error).to.contain("5");
+                validationGroup.release();
+                done();
+            });
+    });
+
+    it('should correctly get property error in complex arrays', function (done) {
+
+        var rulesetBuilder = new Treacherous.RulesetBuilder();
+        var elementRuleset = rulesetBuilder.create()
+            .forProperty("bar")
+            .addRule("required")
+            .addRule("maxLength", 5)
+            .build();
+
+        var ruleset = rulesetBuilder.create()
+            .forProperty("foo")
+            .addRulesetForEach(elementRuleset)
+            .build();
+
+        var dummyModel = {
+            foo: [
+                { bar: "hello" },
+                { bar: "" },
+                { bar: "too long" }
+            ]
+        };
+
+        var validationGroup = createValidationGroupFor(dummyModel, ruleset);
+        var checkOne = validationGroup.getPropertyError("foo[1].bar")
+            .then(function(error){
+                console.log(error);
+                expect(error).not.to.be.null;
+                expect(error).to.contain("required");
+            });
+
+        var checkTwo = validationGroup.getPropertyError("foo[2].bar")
+            .then(function(error){
+                console.log(error);
+                expect(error).not.to.be.null;
+                expect(error).to.contain("8");
+                expect(error).to.contain("5");
+            });
+
+        Promise.all([checkOne, checkTwo])
+            .then(function() {
+                validationGroup.release();
+                done();
+            });
+    });
+
+    it('should correctly get property error in simple array', function (done) {
+
+        var rulesetBuilder = new Treacherous.RulesetBuilder();
+        var ruleset = rulesetBuilder.create()
+            .forProperty("foo")
+            .addRuleForEach("maxValue", 25)
+            .build();
+
+        var dummyModel = {
+            foo: [ 10, 20, 30 ]
+        };
+
+        var validationGroup = createValidationGroupFor(dummyModel, ruleset);
+        validationGroup.getPropertyError("foo[2]")
+            .then(function(error){
+                expect(error).not.to.be.null;
+                expect(error).to.contain("25");
+                expect(error).to.contain("30");
+                validationGroup.release();
+                done();
+            });
+    });
+
+    it('should return undefined if no error exists for property', function (done) {
+
+        var rulesetBuilder = new Treacherous.RulesetBuilder();
+        var ruleset = rulesetBuilder.create()
+            .forProperty("foo")
+            .addRule("maxLength", 2)
+            .build();
+
+        var dummyModel = {
+            foo: "hello"
+        };
+
+        var validationGroup = createValidationGroupFor(dummyModel, ruleset);
+        validationGroup.getPropertyError("nothing")
+            .then(function(error){
+                expect(error).to.be.undefined;
                 validationGroup.release();
                 done();
             });
@@ -137,7 +278,7 @@ describe('Validation Group', function () {
         };
 
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.getErrors()
+        validationGroup.getModelErrors()
             .then(function(errors){
                 console.log(errors);
                 expect(errors).not.to.be.null;
@@ -176,7 +317,7 @@ describe('Validation Group', function () {
         dummyModel.foo.push({ bar: "too long" });
 
         setTimeout(function(){
-            validationGroup.getErrors()
+            validationGroup.getModelErrors()
                 .then(function(errors){
                     console.log(errors);
                     expect(errors).not.to.be.null;
@@ -204,7 +345,7 @@ describe('Validation Group', function () {
         };
 
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.propertyChangedEvent.subscribe(function(args){
+        validationGroup.propertyStateChangedEvent.subscribe(function(args){
             expect(args.isValid).to.be.false;
             expect(args.error).contains("15");
             expect(args.property).to.equal("foo");
@@ -243,7 +384,7 @@ describe('Validation Group', function () {
         };
 
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.propertyChangedEvent.subscribe(function(args){
+        validationGroup.propertyStateChangedEvent.subscribe(function(args){
             expect(args.isValid).to.be.false;
             expect(args.error).contains("27");
             expect(args.property).to.equal("foo.bar");
@@ -273,7 +414,7 @@ describe('Validation Group', function () {
         };
 
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.propertyChangedEvent.subscribe(function(args){
+        validationGroup.propertyStateChangedEvent.subscribe(function(args){
             expect(args.isValid).to.be.false;
             expect(args.error).contains("15");
             expect(args.error).contains("20");
@@ -306,7 +447,7 @@ describe('Validation Group', function () {
         };
 
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.propertyChangedEvent.subscribe(function(args){
+        validationGroup.propertyStateChangedEvent.subscribe(function(args){
             console.log("triggered", args);
             expect(args.isValid).to.be.false;
             expect(args.error).contains("3");
@@ -332,7 +473,7 @@ describe('Validation Group', function () {
         };
 
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.validationStateChangedEvent.subscribe(function(args){
+        validationGroup.modelStateChangedEvent.subscribe(function(args){
             expect(args.isValid).to.be.false;
             validationGroup.release();
             done();
@@ -360,7 +501,7 @@ describe('Validation Group', function () {
         };
 
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.getErrors().then(function(errors){
+        validationGroup.getModelErrors().then(function(errors){
             expect(errors).not.to.be.null;
             expect(errors).to.include.keys("foo");
             expect(errors.foo).to.contain("32");
@@ -383,7 +524,7 @@ describe('Validation Group', function () {
         };
 
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.getErrors().then(function(errors){
+        validationGroup.getModelErrors().then(function(errors){
             expect(errors).not.to.be.null;
             expect(errors).to.include.keys("foo");
             expect(errors.foo).to.contain("32");
@@ -419,7 +560,7 @@ describe('Validation Group', function () {
         };
 
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.getErrors()
+        validationGroup.getModelErrors()
             .then(function(errors){
                 expect(errors).to.be.empty;
                 validationGroup.release();
@@ -493,14 +634,14 @@ describe('Validation Group', function () {
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
 
         // This starts the initial validation chain so delays it
-        var promise1 = validationGroup.getErrors()
+        var promise1 = validationGroup.getModelErrors()
             .then(function(errors){
                 expect(errors).to.be.empty;
             });
 
         dummyModel.foo = 10;
 
-        var promise2 = validationGroup.getErrors()
+        var promise2 = validationGroup.getModelErrors()
             .then(function(errors){
                 expect(errors).to.be.empty;
             });

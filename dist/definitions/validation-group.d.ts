@@ -1,11 +1,12 @@
 import * as Promise from "bluebird";
 import { PropertyResolver } from "property-resolver";
 import { EventHandler } from "eventjs";
-import { FieldErrorProcessor } from "./processors/field-error-processor";
 import { Ruleset } from "./rulesets/ruleset";
-import { RuleResolver } from "./rulesets/rule-resolver";
 import { IModelWatcher } from "./watcher/imodel-watcher";
-export declare class ValidationGroup {
+import { IValidationGroup } from "./ivalidation-group";
+import { IFieldErrorProcessor } from "./processors/ifield-error-processor";
+import { IRuleResolver } from "./rulesets/irule-resolver";
+export declare class ValidationGroup implements IValidationGroup {
     private fieldErrorProcessor;
     private modelWatcher;
     private propertyResolver;
@@ -13,12 +14,12 @@ export declare class ValidationGroup {
     private ruleset;
     private model;
     refreshRate: number;
-    propertyErrors: {};
-    propertyChangedEvent: EventHandler;
-    validationStateChangedEvent: EventHandler;
+    private propertyErrors;
     private activePromiseChain;
     private activeValidators;
-    constructor(fieldErrorProcessor: FieldErrorProcessor, modelWatcher: IModelWatcher, propertyResolver: PropertyResolver, ruleResolver: RuleResolver, ruleset: Ruleset, model: any, refreshRate?: number);
+    propertyStateChangedEvent: EventHandler;
+    modelStateChangedEvent: EventHandler;
+    constructor(fieldErrorProcessor: IFieldErrorProcessor, modelWatcher: IModelWatcher, propertyResolver: PropertyResolver, ruleResolver: IRuleResolver, ruleset: Ruleset, model: any, refreshRate?: number);
     private isRuleset(possibleRuleset);
     private isForEach(possibleForEach);
     private onModelChanged;
@@ -29,7 +30,8 @@ export declare class ValidationGroup {
     private validateModel;
     private hasErrors;
     isValid: () => Promise<boolean>;
-    getErrors: () => Promise<any>;
+    getModelErrors: () => Promise<any>;
+    getPropertyError: (propertyRoute: string) => Promise<any>;
     release: () => void;
     private waitForValidatorsToFinish;
 }
