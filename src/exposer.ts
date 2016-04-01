@@ -22,6 +22,8 @@ import {ValidationGroup} from "./validation-group";
 import {ModelWatcher} from "./watcher/model-watcher";
 import {PropertyResolver} from "property-resolver";
 import {RuleResolver} from "./rulesets/rule-resolver";
+//import {RuleResolver2} from "./rulesets/rule-resolver2";
+//export {RuleResolver2 as RuleResolver} from "./rulesets/rule-resolver2";
 
 export var ruleRegistry = new RuleRegistry();
 ruleRegistry.registerRule(new DateValidationRule());

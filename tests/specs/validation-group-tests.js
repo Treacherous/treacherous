@@ -262,13 +262,6 @@ describe('Validation Group', function () {
 
     it('should correctly notify on array property validation change', function (done) {
 
-        var ruleRegistry = new Treacherous.RuleRegistry();
-        ruleRegistry.registerRule(new Treacherous.MaxValueValidationRule());
-
-        var fieldErrorProcessor = new Treacherous.FieldErrorProcessor(ruleRegistry);
-        var propertyResolver = new PropertyResolver();
-        var ruleResolver = new Treacherous.RuleResolver();
-
         var rulesetBuilder = new Treacherous.RulesetBuilder();
         var ruleset = rulesetBuilder.create()
             .forProperty("foo")
@@ -279,8 +272,7 @@ describe('Validation Group', function () {
             foo: [10, 15, 10]
         };
 
-        var modelWatcher = new Treacherous.ModelWatcher();
-        var validationGroup = new Treacherous.ValidationGroup(fieldErrorProcessor, modelWatcher, propertyResolver, ruleResolver, ruleset, dummyModel);
+        var validationGroup = createValidationGroupFor(dummyModel, ruleset);
         validationGroup.propertyChangedEvent.subscribe(function(args){
             expect(args.isValid).to.be.false;
             expect(args.error).contains("15");

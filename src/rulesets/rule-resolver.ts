@@ -18,13 +18,14 @@ export class RuleResolver
         var propertyRouteSections = this.propertyResolver.decomposePropertyRoute(propertyRoute);
         var finalProperty = propertyRouteSections[propertyRouteSections.length-1];
 
-        if (propertyRouteSections.length == 1) { return ruleset.getRulesForProperty(propertyRoute); }
-
         var matchingRules = this.traverseRulesForRoutes(propertyRouteSections, ruleset);
         if(!matchingRules) { return null; }
 
         if(matchingRules.getRulesForProperty)
-        { return matchingRules.getRulesForProperty(finalProperty); }
+        {
+            var outputRules = matchingRules.getRulesForProperty(finalProperty);
+            return outputRules;
+        }
 
         return matchingRules;
     }
@@ -44,7 +45,10 @@ export class RuleResolver
 
     private traverseRulesForRoutes = (propertyRouteSections: Array<string>, ruleset: any): any => {
         var currentProperty = propertyRouteSections.shift();
-        var childRules = ruleset.rules[currentProperty];
+
+        var childRules = ruleset;
+        if(ruleset.rules)
+        { childRules = childRules.rules[currentProperty]; }
 
         if (!childRules)
         { return null; }
@@ -53,11 +57,32 @@ export class RuleResolver
         { return childRules; }
 
         var nextProperty = propertyRouteSections[0];
-        if(!nextProperty) { return ruleset; }
+        if(!nextProperty)
+        { return ruleset; }
 
         if (this.isIndexRoute(nextProperty)) {
             propertyRouteSections.shift();
-            nextProperty = propertyRouteSections[0];
+
+            var applicableRules = [];
+            childRules.forEach((internalRules) => {
+               if(internalRules.isForEach) {
+                   applicableRules.push(internalRules.internalRule);
+               }
+            });
+
+            if(propertyRouteSections.length > 0)
+            {
+                var totalRules = [];
+                applicableRules.forEach((applicableRule) => {
+                    var currentRouteSection = propertyRouteSections.slice();
+                    var outputRules = this.traverseRulesForRoutes(currentRouteSection, applicableRule);
+                    outputRules.forEach((outputRule) => {
+                        totalRules.push(outputRule);
+                    });
+                });
+                return totalRules;
+            }
+            return applicableRules;
         }
 
         if(propertyRouteSections.length == 0)

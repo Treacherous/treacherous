@@ -68,6 +68,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	__export(__webpack_require__(11));
 	__export(__webpack_require__(12));
 	__export(__webpack_require__(36));
+	__export(__webpack_require__(32));
+	__export(__webpack_require__(31));
+	__export(__webpack_require__(9));
+	__export(__webpack_require__(29));
+	__export(__webpack_require__(30));
 	__export(__webpack_require__(14));
 	__export(__webpack_require__(15));
 	__export(__webpack_require__(16));
@@ -84,11 +89,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	__export(__webpack_require__(27));
 	__export(__webpack_require__(13));
 	__export(__webpack_require__(28));
-	__export(__webpack_require__(32));
-	__export(__webpack_require__(31));
-	__export(__webpack_require__(9));
-	__export(__webpack_require__(29));
-	__export(__webpack_require__(30));
 	__export(__webpack_require__(38));
 	__export(__webpack_require__(33));
 	__export(__webpack_require__(35));
@@ -120,6 +120,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	var model_watcher_1 = __webpack_require__(33);
 	var property_resolver_1 = __webpack_require__(5);
 	var rule_resolver_1 = __webpack_require__(9);
+	//import {RuleResolver2} from "./rulesets/rule-resolver2";
+	//export {RuleResolver2 as RuleResolver} from "./rulesets/rule-resolver2";
 	exports.ruleRegistry = new rule_registry_1.RuleRegistry();
 	exports.ruleRegistry.registerRule(new date_validation_rule_1.DateValidationRule());
 	exports.ruleRegistry.registerRule(new decimal_validation_rule_1.DecimalValidationRule());
@@ -416,15 +418,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.resolvePropertyRules = function (propertyRoute, ruleset) {
 	            var propertyRouteSections = _this.propertyResolver.decomposePropertyRoute(propertyRoute);
 	            var finalProperty = propertyRouteSections[propertyRouteSections.length - 1];
-	            if (propertyRouteSections.length == 1) {
-	                return ruleset.getRulesForProperty(propertyRoute);
-	            }
 	            var matchingRules = _this.traverseRulesForRoutes(propertyRouteSections, ruleset);
 	            if (!matchingRules) {
 	                return null;
 	            }
 	            if (matchingRules.getRulesForProperty) {
-	                return matchingRules.getRulesForProperty(finalProperty);
+	                var outputRules = matchingRules.getRulesForProperty(finalProperty);
+	                return outputRules;
 	            }
 	            return matchingRules;
 	        };
@@ -445,7 +445,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        };
 	        this.traverseRulesForRoutes = function (propertyRouteSections, ruleset) {
 	            var currentProperty = propertyRouteSections.shift();
-	            var childRules = ruleset.rules[currentProperty];
+	            var childRules = ruleset;
+	            if (ruleset.rules) {
+	                childRules = childRules.rules[currentProperty];
+	            }
 	            if (!childRules) {
 	                return null;
 	            }
@@ -458,7 +461,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	            if (_this.isIndexRoute(nextProperty)) {
 	                propertyRouteSections.shift();
-	                nextProperty = propertyRouteSections[0];
+	                var applicableRules = [];
+	                childRules.forEach(function (internalRules) {
+	                    if (internalRules.isForEach) {
+	                        applicableRules.push(internalRules.internalRule);
+	                    }
+	                });
+	                if (propertyRouteSections.length > 0) {
+	                    var totalRules = [];
+	                    applicableRules.forEach(function (applicableRule) {
+	                        var currentRouteSection = propertyRouteSections.slice();
+	                        var outputRules = _this.traverseRulesForRoutes(currentRouteSection, applicableRule);
+	                        outputRules.forEach(function (outputRule) {
+	                            totalRules.push(outputRule);
+	                        });
+	                    });
+	                    return totalRules;
+	                }
+	                return applicableRules;
 	            }
 	            if (propertyRouteSections.length == 0) {
 	                return childRules;

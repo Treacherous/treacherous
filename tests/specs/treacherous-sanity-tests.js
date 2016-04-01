@@ -50,6 +50,7 @@ describe('Treacherous Sanity Checks', function () {
 
         validationGroup.getErrors()
             .then(function(errors){
+                console.log("errors", errors);
                 expect(errors).to.include.keys("foo[1]");
                 expect(errors).to.include.keys("foo[2]");
                 expect(errors["foo[1]"]).to.contain("20");

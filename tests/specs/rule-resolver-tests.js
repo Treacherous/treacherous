@@ -69,9 +69,28 @@ describe('Rule resolver', function () {
 
         expect(locatedRules).not.to.be.null;
         expect(locatedRules.length).to.equal(1);
-        expect(locatedRules[0].isForEach).to.be.true;
-        expect(locatedRules[0].internalRule.ruleName).to.equal("maxLength");
-        expect(locatedRules[0].internalRule.ruleOptions).to.equal(10);
+        expect(locatedRules[0].ruleName).to.equal("maxLength");
+        expect(locatedRules[0].ruleOptions).to.equal(10);
+    });
+
+    it('should only resolve array child property rules and not array container rules', function () {
+        var rulesetBuilder = new Treacherous.RulesetBuilder();
+
+        var ruleset = rulesetBuilder.create()
+            .forProperty("foo")
+            .addRule("maxLength", 2)
+            .addRuleForEach("maxValue", 10)
+            .build();
+
+        var propertyRoute = "foo[0]";
+
+        var ruleResolver = new Treacherous.RuleResolver();
+        var locatedRules = ruleResolver.resolvePropertyRules(propertyRoute, ruleset);
+
+        expect(locatedRules).not.to.be.null;
+        expect(locatedRules.length).to.equal(1);
+        expect(locatedRules[0].ruleName).to.equal("maxValue");
+        expect(locatedRules[0].ruleOptions).to.equal(10);
     });
 
     it('should correctly resolve a property route with foreach ruleset', function () {
