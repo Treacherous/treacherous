@@ -4,7 +4,7 @@ import {TypeHelper} from "../helpers/type-helper";
 
 import {Ruleset} from "../rulesets/ruleset";
 import {PropertyWatcher} from "./property-watcher";
-import {PropertyChangedEvent} from "./property-changed-event";
+import {PropertyChangedEvent} from "../events/property-changed-event";
 import {IModelWatcher} from "./imodel-watcher";
 
 export class ModelWatcher implements IModelWatcher

@@ -87,7 +87,7 @@ var ruleset = Treacherous.createRuleset()
     
 var validationGroup = Treacherous.create(simpleModel, ruleset);
 
-validationGroup.getErrors()
+validationGroup.getModelErrors()
     .then(function(errors){
         console.log(errors); // should contain { "foo[2]": "<some error about max value>" }
     });
@@ -114,7 +114,7 @@ validationGroup.isValid()
 ```js
 var validationGroup = Treacherous.create(simpleModel, ruleset);
 
-validationGroup.getErrors()
+validationGroup.getModelErrors()
     .then(function(propertyErrors){
         /*
             propertyErrors is a json object with the name of the property per error.
@@ -145,11 +145,23 @@ validationGroup.getErrors()
     ));
 ```
 
+### Get current validation errors for a property
+```js
+var validationGroup = Treacherous.create(simpleModel, ruleset);
+
+validationGroup.getPropertyError("somePropertyName")
+    .then(function(propertyError){
+        /*
+            propertyError is a either a string containing the error or undefined
+        */
+    ));
+```
+
 ### Subscribe to per property validation changes
 ```js
 var validationGroup = Treacherous.create(simpleModel, ruleset);
 
-validationGroup.propertyChangedEvent.subscribe(function(propertyValidationChangedEvent){
+validationGroup.propertyStateChangedEvent.subscribe(function(propertyValidationChangedEvent){
     /*
         The propertyValidationChangedEvent is of type PropertyValidationChangedEvent
         and contains the following fields:
@@ -171,7 +183,7 @@ validationGroup.propertyChangedEvent.subscribe(function(propertyValidationChange
 ```js
 var validationGroup = Treacherous.create(simpleModel, ruleset);
 
-validationGroup.validationStateChangedEvent.subscribe(function(validationStateChangedEvent){
+validationGroup.modelStateChangedEvent.subscribe(function(validationStateChangedEvent){
     /*
         The validationStateChangedEvent is of type ValidationStateChangedEvent
         and contains the following fields:

@@ -1,4 +1,4 @@
-export class ValidationStateChangedEvent
+export class ModelStateChangedEvent
 {
     constructor(public isValid: boolean){}
 }

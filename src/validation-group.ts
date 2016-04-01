@@ -1,10 +1,10 @@
 import * as Promise from "bluebird";
 import {PropertyResolver} from "property-resolver";
-import {PropertyChangedEvent} from "./watcher/property-changed-event";
+import {PropertyChangedEvent} from "./events/property-changed-event";
 import {EventHandler} from "eventjs";
 import {Ruleset} from "./rulesets/ruleset";
-import {PropertyValidationChangedEvent} from "./events/property-validation-changed-event";
-import {ValidationStateChangedEvent} from "./events/validation-state-changed-event";
+import {PropertyStateChangedEvent} from "./events/property-state-changed-event";
+import {ModelStateChangedEvent} from "./events/model-state-changed-event";
 import {RuleLink} from "./rulesets/rule-link";
 import {RuleResolver} from "./rulesets/rule-resolver";
 import {IModelWatcher} from "./watcher/imodel-watcher";
@@ -58,10 +58,10 @@ export class ValidationGroup implements IValidationGroup
             if (!possibleError) {
                 if (this.propertyErrors[propertyName]) {
                     delete this.propertyErrors[propertyName];
-                    var eventArgs = new PropertyValidationChangedEvent(propertyName, true);
+                    var eventArgs = new PropertyStateChangedEvent(propertyName, true);
                     this.propertyStateChangedEvent.publish(eventArgs);
                     if (hadErrors) {
-                        this.modelStateChangedEvent.publish(new ValidationStateChangedEvent(true));
+                        this.modelStateChangedEvent.publish(new ModelStateChangedEvent(true));
                     }
                 }
                 return;
@@ -71,11 +71,11 @@ export class ValidationGroup implements IValidationGroup
             this.propertyErrors[propertyName] = possibleError;
 
             if(possibleError != previousError){
-                var eventArgs = new PropertyValidationChangedEvent(propertyName, false, possibleError);
+                var eventArgs = new PropertyStateChangedEvent(propertyName, false, possibleError);
                 this.propertyStateChangedEvent.publish(eventArgs);
 
                 if (!hadErrors) {
-                    this.modelStateChangedEvent.publish(new ValidationStateChangedEvent(false));
+                    this.modelStateChangedEvent.publish(new ModelStateChangedEvent(false));
                 }
             }
         };

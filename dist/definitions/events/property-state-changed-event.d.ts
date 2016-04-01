@@ -1,4 +1,4 @@
-export declare class PropertyValidationChangedEvent {
+export declare class PropertyStateChangedEvent {
     property: string;
     isValid: boolean;
     error: string;
