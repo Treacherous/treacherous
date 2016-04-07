@@ -6,6 +6,6 @@ module.exports = {
     typings: "typings/**/*.ts",
     dist: "dist",
     reports: "reports",
-    tests: "tests/**/*.js",
+    tests: "tests",
     output: "_output"
 };

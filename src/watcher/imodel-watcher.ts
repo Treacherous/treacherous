@@ -1,4 +1,4 @@
-import {EventHandler} from "eventjs";
+import {EventHandler} from "event-js";
 import {Ruleset} from "../rulesets/ruleset";
 
 export interface IModelWatcher

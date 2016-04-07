@@ -54,7 +54,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* This is an auto-generated file by gulp-es6-exporter */
 	function __export(m) {
 	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 	}
@@ -71,18 +70,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	__export(__webpack_require__(16));
 	__export(__webpack_require__(41));
 	__export(__webpack_require__(42));
-	__export(__webpack_require__(36));
-	__export(__webpack_require__(43));
-	__export(__webpack_require__(35));
-	__export(__webpack_require__(13));
-	__export(__webpack_require__(33));
-	__export(__webpack_require__(34));
 	__export(__webpack_require__(18));
 	__export(__webpack_require__(19));
 	__export(__webpack_require__(20));
 	__export(__webpack_require__(21));
 	__export(__webpack_require__(23));
-	__export(__webpack_require__(44));
+	__export(__webpack_require__(43));
 	__export(__webpack_require__(24));
 	__export(__webpack_require__(25));
 	__export(__webpack_require__(26));
@@ -93,9 +86,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	__export(__webpack_require__(31));
 	__export(__webpack_require__(17));
 	__export(__webpack_require__(32));
-	__export(__webpack_require__(45));
+	__export(__webpack_require__(44));
 	__export(__webpack_require__(37));
 	__export(__webpack_require__(38));
+	__export(__webpack_require__(36));
+	__export(__webpack_require__(45));
+	__export(__webpack_require__(35));
+	__export(__webpack_require__(13));
+	__export(__webpack_require__(33));
+	__export(__webpack_require__(34));
 
 
 /***/ },
@@ -187,7 +186,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var Promise = __webpack_require__(4);
 	var property_resolver_1 = __webpack_require__(7);
-	var eventjs_1 = __webpack_require__(8);
+	var event_js_1 = __webpack_require__(8);
 	var property_state_changed_event_1 = __webpack_require__(11);
 	var model_state_changed_event_1 = __webpack_require__(12);
 	var rule_resolver_1 = __webpack_require__(13);
@@ -344,8 +343,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	                }, 50);
 	            });
 	        };
-	        this.propertyStateChangedEvent = new eventjs_1.EventHandler(this);
-	        this.modelStateChangedEvent = new eventjs_1.EventHandler(this);
+	        this.propertyStateChangedEvent = new event_js_1.EventHandler(this);
+	        this.modelStateChangedEvent = new event_js_1.EventHandler(this);
 	        this.modelWatcher.setupWatcher(model, ruleset, refreshRate);
 	        this.modelWatcher.onPropertyChanged.subscribe(this.onModelChanged);
 	        this.validateModel();
@@ -6959,7 +6958,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var property_resolver_1 = __webpack_require__(7);
-	var eventjs_1 = __webpack_require__(8);
+	var event_js_1 = __webpack_require__(8);
 	var type_helper_1 = __webpack_require__(14);
 	var property_watcher_1 = __webpack_require__(38);
 	var property_changed_event_1 = __webpack_require__(39);
@@ -7075,7 +7074,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                setTimeout(_this.updateAndNotifyDifferences, 1);
 	            }
 	        };
-	        this.onPropertyChanged = new eventjs_1.EventHandler(this);
+	        this.onPropertyChanged = new event_js_1.EventHandler(this);
 	    }
 	    return ModelWatcher;
 	})();

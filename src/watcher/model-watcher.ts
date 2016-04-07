@@ -1,5 +1,5 @@
 import {PropertyResolver} from "property-resolver";
-import {EventHandler} from "eventjs";
+import {EventHandler} from "event-js";
 import {TypeHelper} from "../helpers/type-helper";
 
 import {Ruleset} from "../rulesets/ruleset";

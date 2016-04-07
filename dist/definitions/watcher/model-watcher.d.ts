@@ -1,5 +1,5 @@
 import { PropertyResolver } from "property-resolver";
-import { EventHandler } from "eventjs";
+import { EventHandler } from "event-js";
 import { Ruleset } from "../rulesets/ruleset";
 import { IModelWatcher } from "./imodel-watcher";
 export declare class ModelWatcher implements IModelWatcher {

@@ -1,4 +1,4 @@
-import { EventHandler } from "eventjs";
+import { EventHandler } from "event-js";
 export interface IValidationGroup {
     propertyStateChangedEvent: EventHandler;
     modelStateChangedEvent: EventHandler;

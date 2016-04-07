@@ -48,7 +48,7 @@ gulp.task('package:minimal', ["compile"], function () {
         externals: [
             {
                 "bluebird": true,
-                "eventjs": true,
+                "event-js": true,
                 "property-resolver": true
             }
         ]
@@ -70,7 +70,7 @@ gulp.task('package:browser', ["compile"], function () {
         externals: [
             {
                 "bluebird": "var Promise",
-                "eventjs": "var EventJs",
+                "event-js": "var EventJs",
                 "property-resolver": "var window"
             }
         ]

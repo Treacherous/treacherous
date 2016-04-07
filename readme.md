@@ -260,6 +260,8 @@ If you want to develop it further just clone the repo, `npm install` and `gulp` 
 a working version to play with. If you want to minify it you can do `gulp minify` which will minify the
 output files, we don't minify by default.
 
+You can also run `gulp run-tests` which will run the tests to make sure everythign works as expected.
+
 ## Why should I use it?
 
 If you share code between multiple worlds (i.e nodejs, browser, mobile) then you may have had

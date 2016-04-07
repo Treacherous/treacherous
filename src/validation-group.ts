@@ -1,7 +1,7 @@
 import * as Promise from "bluebird";
 import {PropertyResolver} from "property-resolver";
 import {PropertyChangedEvent} from "./events/property-changed-event";
-import {EventHandler} from "eventjs";
+import {EventHandler} from "event-js";
 import {Ruleset} from "./rulesets/ruleset";
 import {PropertyStateChangedEvent} from "./events/property-state-changed-event";
 import {ModelStateChangedEvent} from "./events/model-state-changed-event";
