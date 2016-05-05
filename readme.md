@@ -20,7 +20,7 @@ being able to expose MVVM style subscriptions for other frameworks to hook into.
 
 `*` = Currently has a hard dependency on bluebird (looking to refactor out going forward), and incorrect validation does not reject promises (this was a design decision but is open to discussion.)
 
-`**` = Existing plugins for [knockout](https://github.com/grofit/treacherous-knockout), [aurelia] (https://github.com/grofit/treacherous-aurelia) one coming soon)
+`**` = Existing plugins for [knockout](https://github.com/grofit/treacherous-knockout), and [aurelia] (https://github.com/grofit/treacherous-aurelia) one coming soon.
 
 ## Installing
 
