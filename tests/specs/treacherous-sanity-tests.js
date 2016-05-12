@@ -8,11 +8,11 @@ describe('Treacherous Sanity Checks', function () {
         expect(ruleBuilder).is.not.null;
         expect(ruleBuilder.create).to.be.a("function");
 
-        var validationGroup = Treacherous.create({}, new Treacherous.Ruleset());
+        var validationGroup = Treacherous.createGroup({}, new Treacherous.Ruleset());
         expect(validationGroup).is.not.null;
         expect(validationGroup.getModelErrors).to.be.a("function");
 
-        var validationGroupExplicitRules = Treacherous.createWithRules({}, function(rulesetBuilder){
+        var validationGroupExplicitRules = Treacherous.createGroupWithRules({}, function(rulesetBuilder){
             return rulesetBuilder.create().build();
         });
         expect(validationGroupExplicitRules).is.not.null;
@@ -46,7 +46,7 @@ describe('Treacherous Sanity Checks', function () {
             .addRuleForEach("maxValue", 19)
             .build();
 
-        var validationGroup = Treacherous.create(dummyModel, ruleset);
+        var validationGroup = Treacherous.createGroup(dummyModel, ruleset);
 
         validationGroup.getModelErrors()
             .then(function(errors){

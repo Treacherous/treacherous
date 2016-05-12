@@ -1,13 +1,13 @@
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory(require("bluebird"));
+		module.exports = factory(require("bluebird"), require("property-resolver"), require("event-js"));
 	else if(typeof define === 'function' && define.amd)
-		define(["bluebird"], factory);
+		define(["bluebird", "property-resolver", "event-js"], factory);
 	else if(typeof exports === 'object')
-		exports["Treacherous"] = factory(require("bluebird"));
+		exports["Treacherous"] = factory(require("bluebird"), require("property-resolver"), require("event-js"));
 	else
-		root["Treacherous"] = factory(root["bluebird"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_4__) {
+		root["Treacherous"] = factory(root["bluebird"], root["property-resolver"], root["event-js"]);
+})(this, function(__WEBPACK_EXTERNAL_MODULE_4__, __WEBPACK_EXTERNAL_MODULE_5__, __WEBPACK_EXTERNAL_MODULE_6__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -58,43 +58,43 @@ return /******/ (function(modules) { // webpackBootstrap
 	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 	}
 	__export(__webpack_require__(1));
-	__export(__webpack_require__(38));
+	__export(__webpack_require__(36));
 	__export(__webpack_require__(3));
-	__export(__webpack_require__(10));
-	__export(__webpack_require__(37));
-	__export(__webpack_require__(9));
-	__export(__webpack_require__(20));
-	__export(__webpack_require__(12));
+	__export(__webpack_require__(8));
+	__export(__webpack_require__(35));
+	__export(__webpack_require__(7));
 	__export(__webpack_require__(2));
+	__export(__webpack_require__(18));
+	__export(__webpack_require__(10));
+	__export(__webpack_require__(14));
+	__export(__webpack_require__(15));
 	__export(__webpack_require__(16));
 	__export(__webpack_require__(17));
-	__export(__webpack_require__(18));
 	__export(__webpack_require__(19));
+	__export(__webpack_require__(37));
+	__export(__webpack_require__(20));
 	__export(__webpack_require__(21));
-	__export(__webpack_require__(39));
 	__export(__webpack_require__(22));
 	__export(__webpack_require__(23));
 	__export(__webpack_require__(24));
 	__export(__webpack_require__(25));
 	__export(__webpack_require__(26));
 	__export(__webpack_require__(27));
-	__export(__webpack_require__(28));
-	__export(__webpack_require__(29));
-	__export(__webpack_require__(15));
-	__export(__webpack_require__(30));
 	__export(__webpack_require__(13));
-	__export(__webpack_require__(14));
-	__export(__webpack_require__(40));
-	__export(__webpack_require__(41));
-	__export(__webpack_require__(34));
-	__export(__webpack_require__(42));
-	__export(__webpack_require__(33));
+	__export(__webpack_require__(28));
 	__export(__webpack_require__(11));
-	__export(__webpack_require__(31));
+	__export(__webpack_require__(12));
+	__export(__webpack_require__(38));
+	__export(__webpack_require__(39));
 	__export(__webpack_require__(32));
-	__export(__webpack_require__(43));
-	__export(__webpack_require__(35));
-	__export(__webpack_require__(36));
+	__export(__webpack_require__(40));
+	__export(__webpack_require__(31));
+	__export(__webpack_require__(9));
+	__export(__webpack_require__(29));
+	__export(__webpack_require__(30));
+	__export(__webpack_require__(41));
+	__export(__webpack_require__(33));
+	__export(__webpack_require__(34));
 
 
 /***/ },
@@ -102,28 +102,26 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var validation_group_factory_1 = __webpack_require__(2);
-	var field_error_processor_1 = __webpack_require__(13);
-	var rule_registry_1 = __webpack_require__(15);
-	var date_validation_rule_1 = __webpack_require__(16);
-	var decimal_validation_rule_1 = __webpack_require__(17);
-	var email_validation_rule_1 = __webpack_require__(18);
-	var equal_validation_rule_1 = __webpack_require__(19);
-	var iso_date_validation_rule_1 = __webpack_require__(21);
-	var max_length_validation_rule_1 = __webpack_require__(22);
-	var max_value_validation_rule_1 = __webpack_require__(23);
-	var min_length_validation_rule_1 = __webpack_require__(24);
-	var min_value_validation_rule_1 = __webpack_require__(25);
-	var not_equal_validation_rule_1 = __webpack_require__(26);
-	var number_validation_rule_1 = __webpack_require__(27);
-	var regex_validation_rule_1 = __webpack_require__(28);
-	var required_validation_rule_1 = __webpack_require__(29);
-	var step_validation_rule_1 = __webpack_require__(30);
-	var ruleset_builder_1 = __webpack_require__(31);
-	var model_watcher_1 = __webpack_require__(35);
+	var field_error_processor_1 = __webpack_require__(11);
+	var rule_registry_1 = __webpack_require__(13);
+	var date_validation_rule_1 = __webpack_require__(14);
+	var decimal_validation_rule_1 = __webpack_require__(15);
+	var email_validation_rule_1 = __webpack_require__(16);
+	var equal_validation_rule_1 = __webpack_require__(17);
+	var iso_date_validation_rule_1 = __webpack_require__(19);
+	var max_length_validation_rule_1 = __webpack_require__(20);
+	var max_value_validation_rule_1 = __webpack_require__(21);
+	var min_length_validation_rule_1 = __webpack_require__(22);
+	var min_value_validation_rule_1 = __webpack_require__(23);
+	var not_equal_validation_rule_1 = __webpack_require__(24);
+	var number_validation_rule_1 = __webpack_require__(25);
+	var regex_validation_rule_1 = __webpack_require__(26);
+	var required_validation_rule_1 = __webpack_require__(27);
+	var step_validation_rule_1 = __webpack_require__(28);
+	var ruleset_builder_1 = __webpack_require__(29);
+	var model_watcher_1 = __webpack_require__(33);
 	var property_resolver_1 = __webpack_require__(5);
-	var rule_resolver_1 = __webpack_require__(11);
-	//import {RuleResolver2} from "./rulesets/rule-resolver2";
-	//export {RuleResolver2 as RuleResolver} from "./rulesets/rule-resolver2";
+	var rule_resolver_1 = __webpack_require__(9);
 	exports.ruleRegistry = new rule_registry_1.RuleRegistry();
 	exports.ruleRegistry.registerRule(new date_validation_rule_1.DateValidationRule());
 	exports.ruleRegistry.registerRule(new decimal_validation_rule_1.DecimalValidationRule());
@@ -148,15 +146,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return new ruleset_builder_1.RulesetBuilder().create();
 	}
 	exports.createRuleset = createRuleset;
-	function createWithRules(model, rulesCreator) {
+	function createGroupWithRules(model, rulesCreator) {
 	    var ruleset = rulesCreator(new ruleset_builder_1.RulesetBuilder());
 	    return validationGroupFactory.createValidationGroup(model, ruleset);
 	}
-	exports.createWithRules = createWithRules;
-	function create(model, ruleset) {
+	exports.createGroupWithRules = createGroupWithRules;
+	function createGroup(model, ruleset) {
 	    return validationGroupFactory.createValidationGroup(model, ruleset);
 	}
-	exports.create = create;
+	exports.createGroup = createGroup;
 
 
 /***/ },
@@ -187,10 +185,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	var Promise = __webpack_require__(4);
 	var property_resolver_1 = __webpack_require__(5);
 	var event_js_1 = __webpack_require__(6);
-	var property_state_changed_event_1 = __webpack_require__(9);
-	var model_state_changed_event_1 = __webpack_require__(10);
-	var rule_resolver_1 = __webpack_require__(11);
-	var type_helper_1 = __webpack_require__(12);
+	var property_state_changed_event_1 = __webpack_require__(7);
+	var model_state_changed_event_1 = __webpack_require__(8);
+	var rule_resolver_1 = __webpack_require__(9);
+	var type_helper_1 = __webpack_require__(10);
 	// TODO: This class is WAY to long, needs refactoring
 	var ValidationGroup = (function () {
 	    function ValidationGroup(fieldErrorProcessor, modelWatcher, propertyResolver, ruleResolver, ruleset, model, refreshRate) {
@@ -364,259 +362,18 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 5 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
-	(function webpackUniversalModuleDefinition(root, factory) {
-		if(true)
-			module.exports = factory();
-		else if(typeof define === 'function' && define.amd)
-			define([], factory);
-		else {
-			var a = factory();
-			for(var i in a) (typeof exports === 'object' ? exports : root)[i] = a[i];
-		}
-	})(this, function() {
-	return /******/ (function(modules) { // webpackBootstrap
-	/******/ 	// The module cache
-	/******/ 	var installedModules = {};
-
-	/******/ 	// The require function
-	/******/ 	function __webpack_require__(moduleId) {
-
-	/******/ 		// Check if module is in cache
-	/******/ 		if(installedModules[moduleId])
-	/******/ 			return installedModules[moduleId].exports;
-
-	/******/ 		// Create a new module (and put it into the cache)
-	/******/ 		var module = installedModules[moduleId] = {
-	/******/ 			exports: {},
-	/******/ 			id: moduleId,
-	/******/ 			loaded: false
-	/******/ 		};
-
-	/******/ 		// Execute the module function
-	/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-
-	/******/ 		// Flag the module as loaded
-	/******/ 		module.loaded = true;
-
-	/******/ 		// Return the exports of the module
-	/******/ 		return module.exports;
-	/******/ 	}
-
-
-	/******/ 	// expose the modules object (__webpack_modules__)
-	/******/ 	__webpack_require__.m = modules;
-
-	/******/ 	// expose the module cache
-	/******/ 	__webpack_require__.c = installedModules;
-
-	/******/ 	// __webpack_public_path__
-	/******/ 	__webpack_require__.p = "";
-
-	/******/ 	// Load entry module and return exports
-	/******/ 	return __webpack_require__(0);
-	/******/ })
-	/************************************************************************/
-	/******/ ([
-	/* 0 */
-	/***/ function(module, exports) {
-
-		var PropertyResolver = (function () {
-		    function PropertyResolver() {
-		        var _this = this;
-		        this.indexRegex = /\[(\d)]/;
-		        this.splitRegex = /\./;
-		        this.resolveProperty = function (model, propertyChain) {
-		            var check = null, chain = [], lastkey = '';
-		            if (typeof propertyChain !== 'string') {
-		                throw new TypeError("propertyChain is not a string");
-		            }
-		            var processChain = function (key) {
-		                var arrayIndex = -1;
-		                if (_this.indexRegex.test(key)) {
-		                    arrayIndex = _this.indexRegex.exec(key)[1];
-		                    key = key.replace(_this.indexRegex, "");
-		                }
-		                if (check) {
-		                    if (typeof check === 'object') {
-		                        if (arrayIndex >= 0) {
-		                            if (arrayIndex < check[key].length) {
-		                                chain.push(check = check[key][arrayIndex]);
-		                                lastkey = key[arrayIndex];
-		                            }
-		                            else {
-		                                throw new TypeError('cannot find index "' + arrayIndex + '" in ' + lastkey);
-		                            }
-		                        }
-		                        else {
-		                            if (key in check) {
-		                                chain.push(check = check[key]);
-		                                lastkey = key;
-		                            }
-		                            else {
-		                                throw new TypeError('cannot resolve "' + key + '" in ' + lastkey);
-		                            }
-		                        }
-		                    }
-		                    else {
-		                        throw new TypeError('"' + check + '" ' + ' does not seem to be an object');
-		                    }
-		                }
-		                else {
-		                    if (arrayIndex >= 0) {
-		                        if (key.length == 0) {
-		                            chain.push(check = model[arrayIndex]);
-		                            lastkey = arrayIndex;
-		                        }
-		                        else {
-		                            chain.push(check = model[key][arrayIndex]);
-		                            lastkey = key[arrayIndex];
-		                        }
-		                    }
-		                    else {
-		                        lastkey = key;
-		                        chain.push(check = model[key]);
-		                    }
-		                }
-		            };
-		            var propertyRouteSections = propertyChain.split(_this.splitRegex);
-		            propertyRouteSections.forEach(processChain);
-		            return chain[chain.length - 1];
-		        };
-		    }
-		    PropertyResolver.prototype.decomposePropertyRoute = function (propertyRoute) {
-		        var routeComponents = [];
-		        var arrayIndex;
-		        var splitRoutes = propertyRoute.split(this.splitRegex);
-		        for (var i = 0; i < splitRoutes.length; i++) {
-		            if (this.indexRegex.test(splitRoutes[i])) {
-		                arrayIndex = this.indexRegex.exec(splitRoutes[i])[1];
-		                routeComponents.push(splitRoutes[i].replace(this.indexRegex, ""));
-		                routeComponents.push("[" + arrayIndex + "]");
-		            }
-		            else {
-		                routeComponents.push(splitRoutes[i]);
-		            }
-		        }
-		        return routeComponents;
-		    };
-		    PropertyResolver.prototype.getPropertyRouteSection = function (propertyRoute, sectionIndex) {
-		        if (sectionIndex === void 0) { sectionIndex = 0; }
-		        var routeComponents = this.decomposePropertyRoute(propertyRoute);
-		        return routeComponents[sectionIndex];
-		    };
-		    PropertyResolver.prototype.buildPropertyRoute = function (propertySections) {
-		        var propertyRoute = "";
-		        for (var i = 0; i < propertySections.length; i++) {
-		            if (propertyRoute.length == 0) {
-		                propertyRoute += propertySections[i];
-		                continue;
-		            }
-		            if (propertySections[i].indexOf("[") >= 0) {
-		                propertyRoute += "" + propertySections[i];
-		                continue;
-		            }
-		            propertyRoute += "." + propertySections[i];
-		        }
-		        return propertyRoute;
-		    };
-		    return PropertyResolver;
-		})();
-		exports.PropertyResolver = PropertyResolver;
-
-
-	/***/ }
-	/******/ ])
-	});
-	;
+	module.exports = __WEBPACK_EXTERNAL_MODULE_5__;
 
 /***/ },
 /* 6 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
-	/* This is an auto-generated file by gulp-es6-exporter */
-	function __export(m) {
-	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-	}
-	__export(__webpack_require__(7));
-	__export(__webpack_require__(8));
-
+	module.exports = __WEBPACK_EXTERNAL_MODULE_6__;
 
 /***/ },
 /* 7 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var event_listener_1 = __webpack_require__(8);
-	var EventHandler = (function () {
-	    function EventHandler(sender) {
-	        var _this = this;
-	        this.sender = sender;
-	        this.listeners = [];
-	        this.subscribe = function (callback, predicate) {
-	            _this.listeners.push(new event_listener_1.EventListener(callback, predicate));
-	            return function () { _this.unsubscribe(callback); };
-	        };
-	        this.unsubscribe = function (callback) {
-	            for (var i = 0; i < _this.listeners.length; i++) {
-	                if (_this.listeners[i].callback == callback) {
-	                    _this.listeners.splice(i, 1);
-	                    return;
-	                }
-	            }
-	        };
-	        this.unsubscribeAll = function () {
-	            _this.listeners = [];
-	        };
-	        this.publish = function (args) {
-	            _this.listeners.forEach(function (eventListener) {
-	                if (eventListener.predicate) {
-	                    if (eventListener.predicate(args)) {
-	                        setTimeout(function () { eventListener.callback(args, _this.sender); }, 1);
-	                    }
-	                }
-	                else {
-	                    setTimeout(function () { eventListener.callback(args, _this.sender); }, 1);
-	                }
-	            });
-	        };
-	        this.publishSync = function (args) {
-	            _this.listeners.forEach(function (eventListener) {
-	                if (eventListener.predicate) {
-	                    if (eventListener.predicate(args)) {
-	                        eventListener.callback(args, _this.sender);
-	                    }
-	                }
-	                else {
-	                    eventListener.callback(args, _this.sender);
-	                }
-	            });
-	        };
-	        this.getSubscriptionCount = function () {
-	            return _this.listeners.length;
-	        };
-	    }
-	    return EventHandler;
-	})();
-	exports.EventHandler = EventHandler;
-
-
-/***/ },
-/* 8 */
-/***/ function(module, exports) {
-
-	var EventListener = (function () {
-	    function EventListener(callback, predicate) {
-	        this.callback = callback;
-	        this.predicate = predicate;
-	    }
-	    return EventListener;
-	})();
-	exports.EventListener = EventListener;
-
-
-/***/ },
-/* 9 */
 /***/ function(module, exports) {
 
 	var PropertyStateChangedEvent = (function () {
@@ -631,7 +388,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 10 */
+/* 8 */
 /***/ function(module, exports) {
 
 	var ModelStateChangedEvent = (function () {
@@ -644,7 +401,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 11 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var property_resolver_1 = __webpack_require__(5);
@@ -740,7 +497,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 12 */
+/* 10 */
 /***/ function(module, exports) {
 
 	var TypeHelper = (function () {
@@ -761,11 +518,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 13 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Promise = __webpack_require__(4);
-	var field_has_error_1 = __webpack_require__(14);
+	var field_has_error_1 = __webpack_require__(12);
 	var FieldErrorProcessor = (function () {
 	    function FieldErrorProcessor(ruleRegistry) {
 	        this.ruleRegistry = ruleRegistry;
@@ -801,7 +558,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 14 */
+/* 12 */
 /***/ function(module, exports) {
 
 	var __extends = (this && this.__extends) || function (d, b) {
@@ -821,7 +578,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 15 */
+/* 13 */
 /***/ function(module, exports) {
 
 	var RuleRegistry = (function () {
@@ -844,7 +601,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 16 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Promise = __webpack_require__(4);
@@ -869,7 +626,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 17 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Promise = __webpack_require__(4);
@@ -894,7 +651,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 18 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Promise = __webpack_require__(4);
@@ -919,12 +676,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 19 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Promise = __webpack_require__(4);
-	var type_helper_1 = __webpack_require__(12);
-	var comparer_helper_1 = __webpack_require__(20);
+	var type_helper_1 = __webpack_require__(10);
+	var comparer_helper_1 = __webpack_require__(18);
 	var EqualValidationRule = (function () {
 	    function EqualValidationRule() {
 	        this.ruleName = "equal";
@@ -953,7 +710,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 20 */
+/* 18 */
 /***/ function(module, exports) {
 
 	var ComparerHelper = (function () {
@@ -972,7 +729,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 21 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Promise = __webpack_require__(4);
@@ -997,7 +754,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 22 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Promise = __webpack_require__(4);
@@ -1023,7 +780,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 23 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Promise = __webpack_require__(4);
@@ -1049,7 +806,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 24 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Promise = __webpack_require__(4);
@@ -1075,7 +832,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 25 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Promise = __webpack_require__(4);
@@ -1101,12 +858,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 26 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Promise = __webpack_require__(4);
-	var type_helper_1 = __webpack_require__(12);
-	var comparer_helper_1 = __webpack_require__(20);
+	var type_helper_1 = __webpack_require__(10);
+	var comparer_helper_1 = __webpack_require__(18);
 	var NotEqualValidationRule = (function () {
 	    function NotEqualValidationRule() {
 	        this.ruleName = "notEqual";
@@ -1135,7 +892,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 27 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Promise = __webpack_require__(4);
@@ -1160,7 +917,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 28 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Promise = __webpack_require__(4);
@@ -1184,7 +941,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 29 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Promise = __webpack_require__(4);
@@ -1220,7 +977,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 30 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Promise = __webpack_require__(4);
@@ -1245,12 +1002,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 31 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var ruleset_1 = __webpack_require__(32);
-	var rule_link_1 = __webpack_require__(33);
-	var for_each_rule_1 = __webpack_require__(34);
+	var ruleset_1 = __webpack_require__(30);
+	var rule_link_1 = __webpack_require__(31);
+	var for_each_rule_1 = __webpack_require__(32);
 	var RulesetBuilder = (function () {
 	    function RulesetBuilder() {
 	        var _this = this;
@@ -1302,7 +1059,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 32 */
+/* 30 */
 /***/ function(module, exports) {
 
 	var Ruleset = (function () {
@@ -1330,7 +1087,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 33 */
+/* 31 */
 /***/ function(module, exports) {
 
 	var RuleLink = (function () {
@@ -1344,7 +1101,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 34 */
+/* 32 */
 /***/ function(module, exports) {
 
 	var ForEachRule = (function () {
@@ -1358,14 +1115,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 35 */
+/* 33 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var property_resolver_1 = __webpack_require__(5);
 	var event_js_1 = __webpack_require__(6);
-	var type_helper_1 = __webpack_require__(12);
-	var property_watcher_1 = __webpack_require__(36);
-	var property_changed_event_1 = __webpack_require__(37);
+	var type_helper_1 = __webpack_require__(10);
+	var property_watcher_1 = __webpack_require__(34);
+	var property_changed_event_1 = __webpack_require__(35);
 	var ModelWatcher = (function () {
 	    function ModelWatcher(propertyResolver) {
 	        var _this = this;
@@ -1486,7 +1243,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 36 */
+/* 34 */
 /***/ function(module, exports) {
 
 	var PropertyWatcher = (function () {
@@ -1500,7 +1257,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 37 */
+/* 35 */
 /***/ function(module, exports) {
 
 	var PropertyChangedEvent = (function () {
@@ -1515,6 +1272,20 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
+/* 36 */
+/***/ function(module, exports) {
+
+	
+
+
+/***/ },
+/* 37 */
+/***/ function(module, exports) {
+
+	
+
+
+/***/ },
 /* 38 */
 /***/ function(module, exports) {
 
@@ -1523,20 +1294,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 39 */
-/***/ function(module, exports) {
-
-	
-
-
-/***/ },
-/* 40 */
-/***/ function(module, exports) {
-
-	
-
-
-/***/ },
-/* 41 */
 /***/ function(module, exports) {
 
 	var ValidationError = (function () {
@@ -1550,14 +1307,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 42 */
+/* 40 */
 /***/ function(module, exports) {
 
 	
 
 
 /***/ },
-/* 43 */
+/* 41 */
 /***/ function(module, exports) {
 
 	

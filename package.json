@@ -1,13 +1,13 @@
 {
   "name": "treacherous",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "license": "MIT",
   "dependencies": {
     "bluebird": "^3.3.4",
     "property-resolver": "^0.0.6",
     "event-js": "^0.1.0"
   },
-  "main": "dist/treacherous.minimal.js",
+  "main": "dist/treacherous.js",
   "bugs": {
     "url": "https://github.com/grofit/treacherous/issues"
   },
@@ -30,8 +30,10 @@
     "gulp-es6-exporter": "^0.0.5",
     "gulp-uglify": "latest",
     "gulp-rename": "latest",
+    "gulp-typedoc": "^2.0.0",
     "webpack-stream": "^3.1.0",
     "gulp-bump": "latest",
+    "typedoc": "^0.3.12",
     "rimraf": "latest",
     "mkdirp": "latest",
     "require-dir": "^0.1.0",

@@ -63,9 +63,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	__export(__webpack_require__(12));
 	__export(__webpack_require__(39));
 	__export(__webpack_require__(11));
+	__export(__webpack_require__(2));
 	__export(__webpack_require__(22));
 	__export(__webpack_require__(14));
-	__export(__webpack_require__(2));
 	__export(__webpack_require__(18));
 	__export(__webpack_require__(19));
 	__export(__webpack_require__(20));
@@ -122,8 +122,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	var model_watcher_1 = __webpack_require__(37);
 	var property_resolver_1 = __webpack_require__(7);
 	var rule_resolver_1 = __webpack_require__(13);
-	//import {RuleResolver2} from "./rulesets/rule-resolver2";
-	//export {RuleResolver2 as RuleResolver} from "./rulesets/rule-resolver2";
 	exports.ruleRegistry = new rule_registry_1.RuleRegistry();
 	exports.ruleRegistry.registerRule(new date_validation_rule_1.DateValidationRule());
 	exports.ruleRegistry.registerRule(new decimal_validation_rule_1.DecimalValidationRule());
@@ -148,15 +146,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return new ruleset_builder_1.RulesetBuilder().create();
 	}
 	exports.createRuleset = createRuleset;
-	function createWithRules(model, rulesCreator) {
+	function createGroupWithRules(model, rulesCreator) {
 	    var ruleset = rulesCreator(new ruleset_builder_1.RulesetBuilder());
 	    return validationGroupFactory.createValidationGroup(model, ruleset);
 	}
-	exports.createWithRules = createWithRules;
-	function create(model, ruleset) {
+	exports.createGroupWithRules = createGroupWithRules;
+	function createGroup(model, ruleset) {
 	    return validationGroupFactory.createValidationGroup(model, ruleset);
 	}
-	exports.create = create;
+	exports.createGroup = createGroup;
 
 
 /***/ },
