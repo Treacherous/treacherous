@@ -9,6 +9,19 @@ agnostic of frameworks/platforms but can be plugged into them. This was the idea
 a simple validation framework which could be shared between browser and server as well as 
 being able to expose MVVM style subscriptions for other frameworks to hook into.
 
+## Features / Benefits
+
+- Fully async validation`*`
+- Rule based validation for reusable validation concerns
+- Supports nested complex objects/arrays
+- Outside in validation, does not augment your models in any way
+- Can be integrated with any front end framework`**`
+- Works in browser or server
+
+`*` = Currently has a hard dependency on bluebird (looking to refactor out going forward), and incorrect validation does not reject promises (this was a design decision but is open to discussion.)
+
+`**` = Existing plugins for [knockout](https://github.com/grofit/treacherous-knockout), and [aurelia] (https://github.com/grofit/treacherous-aurelia) one coming soon.
+
 ## Installing
 
 ### Via NPM
