@@ -18,7 +18,6 @@ export class ValidationGroup implements IValidationGroup
 {
     private propertyErrors = {};
     private activePromiseChain: Promise<any>;
-    private activeValidators = 0;
 
     public propertyStateChangedEvent: EventHandler;
     public modelStateChangedEvent: EventHandler;
@@ -80,7 +79,6 @@ export class ValidationGroup implements IValidationGroup
             }
         };
 
-        this.activeValidators++;
         if(this.activePromiseChain)
         {
             this.activePromiseChain = Promise.resolve(this.activePromiseChain)
@@ -88,17 +86,15 @@ export class ValidationGroup implements IValidationGroup
                     var fieldValue = this.propertyResolver.resolveProperty(this.model, propertyName);
                     return this.fieldErrorProcessor
                         .checkFieldForErrors(fieldValue, propertyRules)
-                        .then(handlePossibleError)
+                        .then(handlePossibleError);
                 })
-                .tap(() => { this.activeValidators--;});
         }
         else
         {
             var fieldValue = this.propertyResolver.resolveProperty(this.model, propertyName);
             this.activePromiseChain = this.fieldErrorProcessor
                 .checkFieldForErrors(fieldValue, propertyRules)
-                .then(handlePossibleError)
-                .tap(() => { this.activeValidators--;});
+                .then(handlePossibleError);
         }
     };
 
@@ -199,7 +195,7 @@ export class ValidationGroup implements IValidationGroup
     private waitForValidatorsToFinish = () : Promise<void> => {
         return new Promise<void>((resolve: Function, reject: Function) => {
             var interval = setInterval(() => {
-                if (this.activeValidators == 0) {
+                if (this.activePromiseChain.isFulfilled()) {
                     clearInterval(interval);
                     resolve();
                 }

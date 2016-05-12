@@ -63,19 +63,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	__export(__webpack_require__(10));
 	__export(__webpack_require__(37));
 	__export(__webpack_require__(9));
-	__export(__webpack_require__(2));
 	__export(__webpack_require__(20));
 	__export(__webpack_require__(12));
-	__export(__webpack_require__(13));
-	__export(__webpack_require__(14));
-	__export(__webpack_require__(39));
-	__export(__webpack_require__(40));
+	__export(__webpack_require__(2));
 	__export(__webpack_require__(16));
 	__export(__webpack_require__(17));
 	__export(__webpack_require__(18));
 	__export(__webpack_require__(19));
 	__export(__webpack_require__(21));
-	__export(__webpack_require__(41));
+	__export(__webpack_require__(39));
 	__export(__webpack_require__(22));
 	__export(__webpack_require__(23));
 	__export(__webpack_require__(24));
@@ -86,15 +82,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	__export(__webpack_require__(29));
 	__export(__webpack_require__(15));
 	__export(__webpack_require__(30));
-	__export(__webpack_require__(42));
-	__export(__webpack_require__(35));
-	__export(__webpack_require__(36));
+	__export(__webpack_require__(13));
+	__export(__webpack_require__(14));
+	__export(__webpack_require__(40));
+	__export(__webpack_require__(41));
 	__export(__webpack_require__(34));
-	__export(__webpack_require__(43));
+	__export(__webpack_require__(42));
 	__export(__webpack_require__(33));
 	__export(__webpack_require__(11));
 	__export(__webpack_require__(31));
 	__export(__webpack_require__(32));
+	__export(__webpack_require__(43));
+	__export(__webpack_require__(35));
+	__export(__webpack_require__(36));
 
 
 /***/ },
@@ -206,7 +206,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.model = model;
 	        this.refreshRate = refreshRate;
 	        this.propertyErrors = {};
-	        this.activeValidators = 0;
 	        this.onModelChanged = function (eventArgs) {
 	            _this.validateProperty(eventArgs.propertyPath);
 	        };
@@ -234,7 +233,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    }
 	                }
 	            };
-	            _this.activeValidators++;
 	            if (_this.activePromiseChain) {
 	                _this.activePromiseChain = Promise.resolve(_this.activePromiseChain)
 	                    .then(function () {
@@ -242,15 +240,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    return _this.fieldErrorProcessor
 	                        .checkFieldForErrors(fieldValue, propertyRules)
 	                        .then(handlePossibleError);
-	                })
-	                    .tap(function () { _this.activeValidators--; });
+	                });
 	            }
 	            else {
 	                var fieldValue = _this.propertyResolver.resolveProperty(_this.model, propertyName);
 	                _this.activePromiseChain = _this.fieldErrorProcessor
 	                    .checkFieldForErrors(fieldValue, propertyRules)
-	                    .then(handlePossibleError)
-	                    .tap(function () { _this.activeValidators--; });
+	                    .then(handlePossibleError);
 	            }
 	        };
 	        this.validatePropertyWithRuleSet = function (propertyName, ruleset) {
@@ -336,7 +332,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.waitForValidatorsToFinish = function () {
 	            return new Promise(function (resolve, reject) {
 	                var interval = setInterval(function () {
-	                    if (_this.activeValidators == 0) {
+	                    if (_this.activePromiseChain.isFulfilled()) {
 	                        clearInterval(interval);
 	                        resolve();
 	                    }
@@ -1536,6 +1532,13 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 40 */
 /***/ function(module, exports) {
 
+	
+
+
+/***/ },
+/* 41 */
+/***/ function(module, exports) {
+
 	var ValidationError = (function () {
 	    function ValidationError(propertyName, message) {
 	        this.propertyName = propertyName;
@@ -1544,13 +1547,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return ValidationError;
 	})();
 	exports.ValidationError = ValidationError;
-
-
-/***/ },
-/* 41 */
-/***/ function(module, exports) {
-
-	
 
 
 /***/ },

@@ -52,13 +52,13 @@ export function createRuleset(): RulesetBuilder
     return new RulesetBuilder().create();
 }
 
-export function createWithRules(model: any, rulesCreator: (rulesetBuilder: RulesetBuilder) => Ruleset): ValidationGroup
+export function createGroupWithRules(model: any, rulesCreator: (rulesetBuilder: RulesetBuilder) => Ruleset): ValidationGroup
 {
     var ruleset = rulesCreator(new RulesetBuilder());
     return validationGroupFactory.createValidationGroup(model, ruleset);
 }
 
-export function create(model: any, ruleset: Ruleset): ValidationGroup
+export function createGroup(model: any, ruleset: Ruleset): ValidationGroup
 {
     return validationGroupFactory.createValidationGroup(model, ruleset);
 }
