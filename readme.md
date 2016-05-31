@@ -1,5 +1,7 @@
 # Treacherous
 
+[![Join the chat at https://gitter.im/grofit/treacherous](https://badges.gitter.im/grofit/treacherous.svg)](https://gitter.im/grofit/treacherous?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 A modern async validation system to be used on the server or in the browser as well as with or without 
 view frameworks.
 
