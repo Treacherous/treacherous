@@ -63,15 +63,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	__export(__webpack_require__(8));
 	__export(__webpack_require__(35));
 	__export(__webpack_require__(7));
-	__export(__webpack_require__(2));
 	__export(__webpack_require__(18));
 	__export(__webpack_require__(10));
+	__export(__webpack_require__(2));
+	__export(__webpack_require__(11));
+	__export(__webpack_require__(12));
+	__export(__webpack_require__(37));
+	__export(__webpack_require__(38));
 	__export(__webpack_require__(14));
 	__export(__webpack_require__(15));
 	__export(__webpack_require__(16));
 	__export(__webpack_require__(17));
 	__export(__webpack_require__(19));
-	__export(__webpack_require__(37));
+	__export(__webpack_require__(39));
 	__export(__webpack_require__(20));
 	__export(__webpack_require__(21));
 	__export(__webpack_require__(22));
@@ -82,10 +86,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	__export(__webpack_require__(27));
 	__export(__webpack_require__(13));
 	__export(__webpack_require__(28));
-	__export(__webpack_require__(11));
-	__export(__webpack_require__(12));
-	__export(__webpack_require__(38));
-	__export(__webpack_require__(39));
 	__export(__webpack_require__(32));
 	__export(__webpack_require__(40));
 	__export(__webpack_require__(31));
@@ -311,6 +311,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        };
 	        this.hasErrors = function () {
 	            return Object.keys(_this.propertyErrors).length > 0;
+	        };
+	        this.changeValidationTarget = function (model) {
+	            _this.model = model;
+	            _this.modelWatcher.changeWatcherTarget(_this.model);
 	        };
 	        this.isValid = function () {
 	            return _this.waitForValidatorsToFinish()
@@ -1142,6 +1146,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	            _this.scanProperties();
 	            _this.startWatching();
 	        };
+	        this.changeWatcherTarget = function (model) {
+	            _this.model = model;
+	            _this.scanProperties();
+	        };
 	        this.startWatching = function () {
 	            _this.stopWatching();
 	            _this.watcherInterval = setInterval(_this.scanProperties, _this.scanInterval);
@@ -1289,13 +1297,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 38 */
 /***/ function(module, exports) {
 
-	
-
-
-/***/ },
-/* 39 */
-/***/ function(module, exports) {
-
 	var ValidationError = (function () {
 	    function ValidationError(propertyName, message) {
 	        this.propertyName = propertyName;
@@ -1304,6 +1305,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return ValidationError;
 	})();
 	exports.ValidationError = ValidationError;
+
+
+/***/ },
+/* 39 */
+/***/ function(module, exports) {
+
+	
 
 
 /***/ },

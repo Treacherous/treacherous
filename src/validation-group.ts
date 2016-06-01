@@ -171,6 +171,11 @@ export class ValidationGroup implements IValidationGroup
         return Object.keys(this.propertyErrors).length > 0;
     }
 
+    public changeValidationTarget = (model: any) => {
+        this.model = model;
+        this.modelWatcher.changeWatcherTarget(this.model);
+    }
+
     public isValid = (): Promise<boolean> =>
     {
         return this.waitForValidatorsToFinish()

@@ -157,3 +157,21 @@ validationGroup.modelStateChangedEvent.subscribe(function(validationStateChanged
     */
 ));
 ```
+
+### Hot swapping model
+
+So if you need to for some reason entirely replace the model you are observing with another instance but 
+of the same type (i.e push notifications of new data to replace existing, API callbacks etc) you can
+make use of the `changeValidationTarget` method on the validation group.
+
+This will let you put in a new model for validating without having to do any additional setup, so the
+same rules, watchers etc will all be used under the hood, and as the scheme matches it is really just
+changing from looking at one object to another and should work seamlessly.
+
+```
+var validationGroup = createGroup({ someProperty: 10}, rulesetForObject);
+validationGroup.changeValidationTarget({ someProperty: 100 });
+```
+
+One thing to be aware of is that it will be treated like any data change in the model, so when you 
+hot swap the current model it will re-validate and check for changes automatically.

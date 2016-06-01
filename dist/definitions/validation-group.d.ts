@@ -28,6 +28,7 @@ export declare class ValidationGroup implements IValidationGroup {
     private validateProperty;
     private validateModel;
     private hasErrors;
+    changeValidationTarget: (model: any) => void;
     isValid: () => Promise<boolean>;
     getModelErrors: () => Promise<any>;
     getPropertyError: (propertyRoute: string) => Promise<any>;

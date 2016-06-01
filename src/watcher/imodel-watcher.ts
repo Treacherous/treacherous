@@ -7,6 +7,7 @@ export interface IModelWatcher
     onPropertyChanged: EventHandler;
 
     setupWatcher: (model: any, ruleset: Ruleset, scanInterval) => void;
+    changeWatcherTarget: (model: any) => void;
     startWatching: () => void;
     stopWatching: () => void;
 }

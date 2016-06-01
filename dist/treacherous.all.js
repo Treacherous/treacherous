@@ -63,15 +63,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	__export(__webpack_require__(12));
 	__export(__webpack_require__(39));
 	__export(__webpack_require__(11));
-	__export(__webpack_require__(2));
 	__export(__webpack_require__(22));
 	__export(__webpack_require__(14));
+	__export(__webpack_require__(2));
+	__export(__webpack_require__(15));
+	__export(__webpack_require__(16));
+	__export(__webpack_require__(41));
+	__export(__webpack_require__(42));
 	__export(__webpack_require__(18));
 	__export(__webpack_require__(19));
 	__export(__webpack_require__(20));
 	__export(__webpack_require__(21));
 	__export(__webpack_require__(23));
-	__export(__webpack_require__(41));
+	__export(__webpack_require__(43));
 	__export(__webpack_require__(24));
 	__export(__webpack_require__(25));
 	__export(__webpack_require__(26));
@@ -82,10 +86,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	__export(__webpack_require__(31));
 	__export(__webpack_require__(17));
 	__export(__webpack_require__(32));
-	__export(__webpack_require__(15));
-	__export(__webpack_require__(16));
-	__export(__webpack_require__(42));
-	__export(__webpack_require__(43));
 	__export(__webpack_require__(36));
 	__export(__webpack_require__(44));
 	__export(__webpack_require__(35));
@@ -312,6 +312,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.hasErrors = function () {
 	            return Object.keys(_this.propertyErrors).length > 0;
 	        };
+	        this.changeValidationTarget = function (model) {
+	            _this.model = model;
+	            _this.modelWatcher.changeWatcherTarget(_this.model);
+	        };
 	        this.isValid = function () {
 	            return _this.waitForValidatorsToFinish()
 	                .then(function () { return !_this.hasErrors(); });
@@ -383,7 +387,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * 
 	 */
 	/**
-	 * bluebird build version 3.3.4
+	 * bluebird build version 3.4.0
 	 * Features enabled: core, race, call_get, generators, map, nodeify, promisify, props, reduce, settle, some, using, timers, filter, any, each
 	*/
 	!function(e){if(true)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.Promise=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof _dereq_=="function"&&_dereq_;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof _dereq_=="function"&&_dereq_;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
@@ -418,6 +422,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var util = _dereq_("./util");
 
 	function Async() {
+	    this._customScheduler = false;
 	    this._isTickUsed = false;
 	    this._lateQueue = new Queue(16);
 	    this._normalQueue = new Queue(16);
@@ -429,6 +434,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	    this._schedule = schedule;
 	}
+
+	Async.prototype.setScheduler = function(fn) {
+	    var prev = this._schedule;
+	    this._schedule = fn;
+	    this._customScheduler = true;
+	    return prev;
+	};
+
+	Async.prototype.hasCustomScheduler = function() {
+	    return this._customScheduler;
+	};
 
 	Async.prototype.enableTrampoline = function() {
 	    this._trampolineEnabled = true;
@@ -1408,8 +1424,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (returnValue === undefined && promiseCreated !== null &&
 	        wForgottenReturn) {
 	        if (parent !== undefined && parent._returnedNonUndefined()) return;
-	        var bitField = promise._bitField;
-	        if ((bitField & 65535) === 0) return;
+	        if ((promise._bitField & 65535) === 0) return;
 
 	        if (name) name = name + " ";
 	        var msg = "a promise was created in a " + name +
@@ -2311,9 +2326,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 	function PromiseSpawn(generatorFunction, receiver, yieldHandler, stack) {
-	    var promise = this._promise = new Promise(INTERNAL);
-	    promise._captureStackTrace();
-	    promise._setOnCancel(this);
+	    if (debug.cancellation()) {
+	        var internal = new Promise(INTERNAL);
+	        var _finallyPromise = this._finallyPromise = new Promise(INTERNAL);
+	        this._promise = internal.lastly(function() {
+	            return _finallyPromise;
+	        });
+	        internal._captureStackTrace();
+	        internal._setOnCancel(this);
+	    } else {
+	        var promise = this._promise = new Promise(INTERNAL);
+	        promise._captureStackTrace();
+	    }
 	    this._stack = stack;
 	    this._generatorFunction = generatorFunction;
 	    this._receiver = receiver;
@@ -2322,6 +2346,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        ? [yieldHandler].concat(yieldHandlers)
 	        : yieldHandlers;
 	    this._yieldedPromise = null;
+	    this._cancellationPhase = false;
 	}
 	util.inherits(PromiseSpawn, Proxyable);
 
@@ -2331,6 +2356,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	PromiseSpawn.prototype._cleanup = function() {
 	    this._promise = this._generator = null;
+	    if (debug.cancellation() && this._finallyPromise !== null) {
+	        this._finallyPromise._fulfill();
+	        this._finallyPromise = null;
+	    }
 	};
 
 	PromiseSpawn.prototype._promiseCancelled = function() {
@@ -2347,22 +2376,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	        result = tryCatch(this._generator["throw"]).call(this._generator,
 	                                                         reason);
 	        this._promise._popContext();
-	        if (result === errorObj && result.e === reason) {
-	            result = null;
-	        }
 	    } else {
 	        this._promise._pushContext();
 	        result = tryCatch(this._generator["return"]).call(this._generator,
 	                                                          undefined);
 	        this._promise._popContext();
 	    }
-	    var promise = this._promise;
-	    this._cleanup();
-	    if (result === errorObj) {
-	        promise._rejectCallback(result.e, false);
-	    } else {
-	        promise.cancel();
-	    }
+	    this._cancellationPhase = true;
+	    this._yieldedPromise = null;
+	    this._continue(result);
 	};
 
 	PromiseSpawn.prototype._promiseFulfilled = function(value) {
@@ -2387,7 +2409,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (this._yieldedPromise instanceof Promise) {
 	        var promise = this._yieldedPromise;
 	        this._yieldedPromise = null;
-	        this._promiseCancelled();
 	        promise.cancel();
 	    }
 	};
@@ -2407,13 +2428,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var promise = this._promise;
 	    if (result === errorObj) {
 	        this._cleanup();
-	        return promise._rejectCallback(result.e, false);
+	        if (this._cancellationPhase) {
+	            return promise.cancel();
+	        } else {
+	            return promise._rejectCallback(result.e, false);
+	        }
 	    }
 
 	    var value = result.value;
 	    if (result.done === true) {
 	        this._cleanup();
-	        return promise._resolveCallback(value);
+	        if (this._cancellationPhase) {
+	            return promise.cancel();
+	        } else {
+	            return promise._resolveCallback(value);
+	        }
 	    } else {
 	        var maybePromise = tryConvertToPromise(value, this._promise);
 	        if (!(maybePromise instanceof Promise)) {
@@ -2770,9 +2799,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (typeof fn !== "function") {
 	        return apiRejection("expecting a function but got " + util.classString(fn));
 	    }
-	    var limit = typeof options === "object" && options !== null
-	        ? options.concurrency
-	        : 0;
+
+	    var limit = 0;
+	    if (options !== undefined) {
+	        if (typeof options === "object" && options !== null) {
+	            if (typeof options.concurrency !== "number") {
+	                return Promise.reject(
+	                    new TypeError("'concurrency' must be a number but it is " +
+	                                    util.classString(options.concurrency)));
+	            }
+	            limit = options.concurrency;
+	        } else {
+	            return Promise.reject(new TypeError(
+	                            "options argument must be an object but it is " +
+	                             util.classString(options)));
+	        }
+	    }
 	    limit = typeof limit === "number" &&
 	        isFinite(limit) && limit >= 1 ? limit : 0;
 	    return new MappingPromiseArray(promises, fn, limit, _filter).promise();
@@ -3171,9 +3213,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (typeof fn !== "function") {
 	        throw new TypeError("expecting a function but got " + util.classString(fn));
 	    }
-	    var prev = async._schedule;
-	    async._schedule = fn;
-	    return prev;
+	    return async.setScheduler(fn);
 	};
 
 	Promise.prototype._then = function (
@@ -3282,6 +3322,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 	Promise.prototype._setAsyncGuaranteed = function() {
+	    if (async.hasCustomScheduler()) return;
 	    this._bitField = this._bitField | 134217728;
 	};
 
@@ -3686,21 +3727,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	_dereq_("./join")(
 	    Promise, PromiseArray, tryConvertToPromise, INTERNAL, debug);
 	Promise.Promise = Promise;
+	Promise.version = "3.4.0";
 	_dereq_('./map.js')(Promise, PromiseArray, apiRejection, tryConvertToPromise, INTERNAL, debug);
+	_dereq_('./call_get.js')(Promise);
 	_dereq_('./using.js')(Promise, apiRejection, tryConvertToPromise, createContext, INTERNAL, debug);
 	_dereq_('./timers.js')(Promise, INTERNAL, debug);
 	_dereq_('./generators.js')(Promise, apiRejection, INTERNAL, tryConvertToPromise, Proxyable, debug);
 	_dereq_('./nodeify.js')(Promise);
-	_dereq_('./call_get.js')(Promise);
+	_dereq_('./promisify.js')(Promise, INTERNAL);
 	_dereq_('./props.js')(Promise, PromiseArray, tryConvertToPromise, apiRejection);
 	_dereq_('./race.js')(Promise, INTERNAL, tryConvertToPromise, apiRejection);
 	_dereq_('./reduce.js')(Promise, PromiseArray, apiRejection, tryConvertToPromise, INTERNAL, debug);
 	_dereq_('./settle.js')(Promise, PromiseArray, debug);
 	_dereq_('./some.js')(Promise, PromiseArray, apiRejection);
-	_dereq_('./promisify.js')(Promise, INTERNAL);
-	_dereq_('./any.js')(Promise);
-	_dereq_('./each.js')(Promise, INTERNAL);
 	_dereq_('./filter.js')(Promise, INTERNAL);
+	_dereq_('./each.js')(Promise, INTERNAL);
+	_dereq_('./any.js')(Promise);
 	                                                         
 	    util.toFastProperties(Promise);                                          
 	    util.toFastProperties(Promise.prototype);                                
@@ -4662,12 +4704,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	var noAsyncScheduler = function() {
 	    throw new Error("No async scheduler available\u000a\u000a    See http://goo.gl/MqrFmX\u000a");
 	};
+	var NativePromise = util.getNativePromise();
 	if (util.isNode && typeof MutationObserver === "undefined") {
 	    var GlobalSetImmediate = global.setImmediate;
 	    var ProcessNextTick = process.nextTick;
 	    schedule = util.isRecentNode
 	                ? function(fn) { GlobalSetImmediate.call(global, fn); }
 	                : function(fn) { ProcessNextTick.call(process, fn); };
+	} else if (typeof NativePromise === "function") {
+	    var nativePromise = NativePromise.resolve();
+	    schedule = function(fn) {
+	        nativePromise.then(fn);
+	    };
 	} else if ((typeof MutationObserver !== "undefined") &&
 	          !(typeof window !== "undefined" &&
 	            window.navigator &&
@@ -4679,23 +4727,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var div2 = document.createElement("div");
 	        var o2 = new MutationObserver(function() {
 	            div.classList.toggle("foo");
-	          toggleScheduled = false;
+	            toggleScheduled = false;
 	        });
 	        o2.observe(div2, opts);
 
 	        var scheduleToggle = function() {
 	            if (toggleScheduled) return;
-	          toggleScheduled = true;
-	          div2.classList.toggle("foo");
-	        };
+	                toggleScheduled = true;
+	                div2.classList.toggle("foo");
+	            };
 
-	        return function schedule(fn) {
-	          var o = new MutationObserver(function() {
-	            o.disconnect();
-	            fn();
-	          });
-	          o.observe(div, opts);
-	          scheduleToggle();
+	            return function schedule(fn) {
+	            var o = new MutationObserver(function() {
+	                o.disconnect();
+	                fn();
+	            });
+	            o.observe(div, opts);
+	            scheduleToggle();
 	        };
 	    })();
 	} else if (typeof setImmediate !== "undefined") {
@@ -5053,7 +5101,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var hasProp = {}.hasOwnProperty;
 	function isAnyBluebirdPromise(obj) {
-	    return hasProp.call(obj, "_promise0");
+	    try {
+	        return hasProp.call(obj, "_promise0");
+	    } catch (e) {
+	        return false;
+	    }
 	}
 
 	function doThenable(x, then, context) {
@@ -5191,6 +5243,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var inherits = _dereq_("./util").inherits;
 	    var errorObj = util.errorObj;
 	    var tryCatch = util.tryCatch;
+	    var NULL = {};
 
 	    function thrower(e) {
 	        setTimeout(function(){throw e;}, 0);
@@ -5251,14 +5304,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (this.promise().isFulfilled()) {
 	            return this.promise().value();
 	        }
-	        return null;
+	        return NULL;
 	    };
 
 	    Disposer.prototype.tryDispose = function(inspection) {
 	        var resource = this.resource();
 	        var context = this._context;
 	        if (context !== undefined) context._pushContext();
-	        var ret = resource !== null
+	        var ret = resource !== NULL
 	            ? this.doDispose(resource, inspection) : null;
 	        if (context !== undefined) context._popContext();
 	        this._promise._unsetDisposable();
@@ -5726,6 +5779,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return isNode ? process.env[key] : def;
 	}
 
+	function getNativePromise() {
+	    if (typeof Promise === "function") {
+	        try {
+	            var promise = new Promise(function(){});
+	            if ({}.toString.call(promise) === "[object Promise]") {
+	                return Promise;
+	            }
+	        } catch (e) {}
+	    }
+	}
+
 	var ret = {
 	    isClass: isClass,
 	    isIdentifier: isIdentifier,
@@ -5757,7 +5821,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	                 typeof chrome.loadTimes === "function",
 	    isNode: isNode,
 	    env: env,
-	    global: globalObject
+	    global: globalObject,
+	    getNativePromise: getNativePromise
 	};
 	ret.isRecentNode = ret.isNode && (function() {
 	    var version = process.versions.node.split(".").map(Number);
@@ -5786,6 +5851,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	var queueIndex = -1;
 
 	function cleanUpNextTick() {
+	    if (!draining || !currentQueue) {
+	        return;
+	    }
 	    draining = false;
 	    if (currentQueue.length) {
 	        queue = currentQueue.concat(queue);
@@ -6975,6 +7043,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	            _this.scanProperties();
 	            _this.startWatching();
 	        };
+	        this.changeWatcherTarget = function (model) {
+	            _this.model = model;
+	            _this.scanProperties();
+	        };
 	        this.startWatching = function () {
 	            _this.stopWatching();
 	            _this.watcherInterval = setInterval(_this.scanProperties, _this.scanInterval);
@@ -7122,13 +7194,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 42 */
 /***/ function(module, exports) {
 
-	
-
-
-/***/ },
-/* 43 */
-/***/ function(module, exports) {
-
 	var ValidationError = (function () {
 	    function ValidationError(propertyName, message) {
 	        this.propertyName = propertyName;
@@ -7137,6 +7202,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return ValidationError;
 	})();
 	exports.ValidationError = ValidationError;
+
+
+/***/ },
+/* 43 */
+/***/ function(module, exports) {
+
+	
 
 
 /***/ },

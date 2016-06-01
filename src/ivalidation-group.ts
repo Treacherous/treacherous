@@ -8,5 +8,6 @@ export interface IValidationGroup
     getModelErrors(): Promise<any>;
     getPropertyError(propertyRoute: string): Promise<any>;
 
+    changeValidationTarget(model: any);
     release(): void;
 }

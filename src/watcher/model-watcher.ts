@@ -33,6 +33,11 @@ export class ModelWatcher implements IModelWatcher
         this.startWatching();
     }
 
+    public changeWatcherTarget = (model: any) => {
+        this.model = model;
+        this.scanProperties();
+    }
+
     public startWatching = () => {
         this.stopWatching();
         this.watcherInterval = setInterval(this.scanProperties, this.scanInterval);

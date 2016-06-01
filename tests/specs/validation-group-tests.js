@@ -657,4 +657,21 @@ describe('Validation Group', function () {
             })
     });
 
+    it('should correctly update errors when model changed', function (done) {
+
+        var rulesetBuilder = new Treacherous.RulesetBuilder();
+        var ruleset = rulesetBuilder.create()
+            .forProperty("foo")
+            .addRule("maxLength", 2)
+            .build();
+
+        var validationGroup = createValidationGroupFor({ foo: "invalid" }, ruleset);
+        validationGroup.changeValidationTarget({ foo: "ok" });
+        validationGroup.getModelErrors()
+            .then(function(errors){
+                expect(errors).to.be.empty;
+                done();
+            });
+    });
+
 });

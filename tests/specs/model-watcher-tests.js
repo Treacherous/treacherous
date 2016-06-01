@@ -145,4 +145,28 @@ describe('Model Watcher', function () {
         modelWatcher.stopWatching();
     });
 
+
+    it('should correctly update when model is changed', function (done) {
+        var dummyModel = { foo: 0 };
+
+        var rulesetBuilder = new Treacherous.RulesetBuilder();
+        var ruleset = rulesetBuilder.create()
+            .forProperty("foo")
+            .addRule("maxValue", 10)
+            .build();
+
+        var modelWatcher = new Treacherous.ModelWatcher();
+        modelWatcher.setupWatcher(dummyModel, ruleset, 50);
+
+        modelWatcher.onPropertyChanged.subscribe(function(data){
+            expect(data.propertyPath).to.equal("foo");
+            expect(data.newValue).to.equal(10);
+            expect(data.oldValue).to.equal(0);
+            done();
+        });
+
+        var newModel = { foo: 10 };
+        modelWatcher.changeWatcherTarget(newModel);
+        modelWatcher.stopWatching();
+    });
 });

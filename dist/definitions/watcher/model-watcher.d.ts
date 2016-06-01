@@ -13,6 +13,7 @@ export declare class ModelWatcher implements IModelWatcher {
     onPropertyChanged: EventHandler;
     constructor(propertyResolver?: PropertyResolver);
     setupWatcher: (model: any, ruleset: Ruleset, scanInterval?: number) => void;
+    changeWatcherTarget: (model: any) => void;
     startWatching: () => void;
     stopWatching: () => void;
     private updateAndNotifyDifferences;
