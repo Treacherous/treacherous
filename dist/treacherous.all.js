@@ -63,19 +63,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	__export(__webpack_require__(12));
 	__export(__webpack_require__(39));
 	__export(__webpack_require__(11));
+	__export(__webpack_require__(2));
 	__export(__webpack_require__(22));
 	__export(__webpack_require__(14));
-	__export(__webpack_require__(2));
 	__export(__webpack_require__(15));
 	__export(__webpack_require__(16));
 	__export(__webpack_require__(41));
 	__export(__webpack_require__(42));
+	__export(__webpack_require__(36));
+	__export(__webpack_require__(43));
+	__export(__webpack_require__(35));
+	__export(__webpack_require__(13));
+	__export(__webpack_require__(33));
+	__export(__webpack_require__(34));
 	__export(__webpack_require__(18));
 	__export(__webpack_require__(19));
 	__export(__webpack_require__(20));
 	__export(__webpack_require__(21));
 	__export(__webpack_require__(23));
-	__export(__webpack_require__(43));
+	__export(__webpack_require__(44));
 	__export(__webpack_require__(24));
 	__export(__webpack_require__(25));
 	__export(__webpack_require__(26));
@@ -86,12 +92,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	__export(__webpack_require__(31));
 	__export(__webpack_require__(17));
 	__export(__webpack_require__(32));
-	__export(__webpack_require__(36));
-	__export(__webpack_require__(44));
-	__export(__webpack_require__(35));
-	__export(__webpack_require__(13));
-	__export(__webpack_require__(33));
-	__export(__webpack_require__(34));
 	__export(__webpack_require__(45));
 	__export(__webpack_require__(37));
 	__export(__webpack_require__(38));
@@ -6432,7 +6432,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var validator = this.ruleRegistry.getRuleNamed(ruleLink.ruleName);
 	        var checkIfValid = function (isValid) {
 	            if (!isValid) {
-	                var error = validator.getMessage(fieldValue, ruleLink.ruleOptions);
+	                var error;
+	                if (ruleLink.messageOverride) {
+	                    if (typeof (ruleLink.messageOverride) == "function") {
+	                        error = ruleLink.messageOverride(fieldValue, ruleLink.ruleOptions);
+	                    }
+	                    else {
+	                        error = ruleLink.messageOverride;
+	                    }
+	                }
+	                else {
+	                    error = validator.getMessage(fieldValue, ruleLink.ruleOptions);
+	                }
 	                throw new field_has_error_1.FieldHasError(error);
 	            }
 	            return null;
@@ -6992,9 +7003,10 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports) {
 
 	var RuleLink = (function () {
-	    function RuleLink(ruleName, ruleOptions) {
+	    function RuleLink(ruleName, ruleOptions, messageOverride) {
 	        this.ruleName = ruleName;
 	        this.ruleOptions = ruleOptions;
+	        this.messageOverride = messageOverride;
 	    }
 	    return RuleLink;
 	})();

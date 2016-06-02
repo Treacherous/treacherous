@@ -25,6 +25,48 @@ describe('Field Error Processor', function () {
             });
     });
 
+    it('should correctly return a custom error message function for the field', function (done) {
+        var ruleRegistry = new Treacherous.RuleRegistry();
+        ruleRegistry.registerRule(new Treacherous.RequiredValidaitonRule());
+
+        var fieldErrorProcessor = new Treacherous.FieldErrorProcessor(ruleRegistry);
+
+        var expectedMessage = "you should have put in some text";
+        var dummyField = "";
+        var dummyRules = [
+            new Treacherous.RuleLink("required", true, function() { return expectedMessage; })
+        ];
+
+        fieldErrorProcessor
+            .checkFieldForErrors(dummyField, dummyRules)
+            .then(function(error){
+                expect(error).not.to.be.null;
+                expect(error).to.equal(expectedMessage);
+                done();
+            });
+    });
+
+    it('should correctly return a custom error message for the field', function (done) {
+        var ruleRegistry = new Treacherous.RuleRegistry();
+        ruleRegistry.registerRule(new Treacherous.RequiredValidaitonRule());
+
+        var fieldErrorProcessor = new Treacherous.FieldErrorProcessor(ruleRegistry);
+
+        var expectedMessage = "you should have put in some text";
+        var dummyField = "";
+        var dummyRules = [
+            new Treacherous.RuleLink("required", true, expectedMessage)
+        ];
+
+        fieldErrorProcessor
+            .checkFieldForErrors(dummyField, dummyRules)
+            .then(function(error){
+                expect(error).not.to.be.null;
+                expect(error).to.equal(expectedMessage);
+                done();
+            });
+    });
+
     it('should correctly return no error for the field', function (done) {
         var ruleRegistry = new Treacherous.RuleRegistry();
         ruleRegistry.registerRule(new Treacherous.RequiredValidaitonRule());
