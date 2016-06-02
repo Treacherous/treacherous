@@ -1,4 +1,4 @@
-import * as Promise from "bluebird";
+;
 import {Ruleset} from "../rulesets/ruleset";
 import {RuleRegistry} from "../rules/rule-registry";
 import {RuleLink} from "../rulesets/rule-link";

@@ -1,4 +1,3 @@
-import * as Promise from "bluebird";
 import { IValidationRule } from "./ivalidation-rule";
 export declare class MaxValueValidationRule implements IValidationRule {
     ruleName: string;

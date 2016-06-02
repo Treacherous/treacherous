@@ -1,4 +1,3 @@
-import * as Promise from "bluebird";
 import {RuleRegistry} from "../rules/rule-registry";
 import {RuleLink} from "../rulesets/rule-link";
 import {FieldHasError} from "./field-has-error";
@@ -30,10 +29,18 @@ export class FieldErrorProcessor implements IFieldErrorProcessor
             return this.processRuleLink(fieldValue, ruleLinkOrSet);
         };
 
+        var checkEachRule = (rules: any) => {
+            var promises = [];
+            rules.forEach((rule) => {
+                promises.push(ruleCheck(rule));
+            })
+            return Promise.all(promises);
+        }
+
         return Promise.resolve(rules)
-            .each(ruleCheck)
+            .then(checkEachRule)
             .then(function(){ return null; })
-            .catch(FieldHasError, (validationError) => {
+            .catch((validationError) => {
                 return validationError.message;
             });
     }

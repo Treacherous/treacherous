@@ -1,4 +1,3 @@
-import * as Promise from "bluebird";
 import { RuleRegistry } from "../rules/rule-registry";
 import { RuleLink } from "../rulesets/rule-link";
 import { IFieldErrorProcessor } from "./ifield-error-processor";

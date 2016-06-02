@@ -1,4 +1,3 @@
-import * as Promise from "bluebird";
 import { IValidationRule } from "./ivalidation-rule";
 export declare class MinLengthValidationRule implements IValidationRule {
     ruleName: string;

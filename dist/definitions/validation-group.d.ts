@@ -1,4 +1,3 @@
-import * as Promise from "bluebird";
 import { PropertyResolver } from "property-resolver";
 import { EventHandler } from "event-js";
 import { Ruleset } from "./rulesets/ruleset";

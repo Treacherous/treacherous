@@ -1,4 +1,3 @@
-import * as Promise from "bluebird";
 import {IValidationRule} from "./ivalidation-rule";
 
 export class RequiredValidaitonRule implements IValidationRule

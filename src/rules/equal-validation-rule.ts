@@ -1,4 +1,4 @@
-import * as Promise from "bluebird";
+;
 import {IValidationRule} from "./ivalidation-rule";
 import {TypeHelper} from "../helpers/type-helper";
 import {ComparerHelper} from "../helpers/comparer-helper";

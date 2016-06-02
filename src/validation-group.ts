@@ -1,4 +1,3 @@
-import * as Promise from "bluebird";
 import {PropertyResolver} from "property-resolver";
 import {PropertyChangedEvent} from "./events/property-changed-event";
 import {EventHandler} from "event-js";
@@ -155,9 +154,6 @@ export class ValidationGroup implements IValidationGroup
         var rulesForProperty = this.ruleResolver.resolvePropertyRules(propertyName, this.ruleset);
         if(!rulesForProperty) { return; }
 
-        if(this.activePromiseChain && this.activePromiseChain.isFulfilled())
-        { this.activePromiseChain = null; }
-
         return this.validatePropertyWithRules(propertyName, rulesForProperty);
     };
 
@@ -198,13 +194,9 @@ export class ValidationGroup implements IValidationGroup
     }
 
     private waitForValidatorsToFinish = () : Promise<void> => {
-        return new Promise<void>((resolve: Function, reject: Function) => {
-            var interval = setInterval(() => {
-                if (this.activePromiseChain.isFulfilled()) {
-                    clearInterval(interval);
-                    resolve();
-                }
-            }, 50);
-    });
-};
+        if(this.activePromiseChain)
+        { return this.activePromiseChain; }
+
+        return Promise.resolve(null);
+    };
 }
