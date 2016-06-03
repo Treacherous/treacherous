@@ -169,4 +169,35 @@ describe('Model Watcher', function () {
         modelWatcher.changeWatcherTarget(newModel);
         modelWatcher.stopWatching();
     });
+
+    it('should correctly cope with null model setup and replacement', function (done) {
+        var dummyModel = null;
+
+        var rulesetBuilder = new Treacherous.RulesetBuilder();
+        var ruleset = rulesetBuilder.create()
+            .forProperty("foo")
+                .addRule("maxValue", 10)
+            .forProperty("bar")
+                .addRuleForEach("maxValue", 10)
+            .build();
+
+        var modelWatcher = new Treacherous.ModelWatcher();
+        modelWatcher.setupWatcher(dummyModel, ruleset, 50);
+
+        var newModel = {
+            foo: 11,
+            bar: [11, 12]
+        };
+
+        var spySubscription = chai.spy(function(eventArgs){});
+        modelWatcher.onPropertyChanged.subscribe(spySubscription);
+        modelWatcher.changeWatcherTarget(newModel);
+
+        setTimeout(function(){
+            // once for foo, once for bar, once for bar[0] and then bar[1]
+            expect(spySubscription).to.have.been.called.four;
+            modelWatcher.stopWatching();
+            done();
+        }, 250);
+    });
 });
