@@ -4,8 +4,8 @@ export declare class RulesetBuilder {
     currentProperty: string;
     create: () => RulesetBuilder;
     forProperty: (propertyName: string) => RulesetBuilder;
-    addRule: (rule: string, ruleOptions: any) => RulesetBuilder;
-    addRuleForEach: (rule: string, ruleOptions: any) => RulesetBuilder;
+    addRule: (rule: string, ruleOptions: any, messageOverride?: (value: any, ruleOptions?: any) => string) => RulesetBuilder;
+    addRuleForEach: (rule: string, ruleOptions: any, messageOverride?: (value: any, ruleOptions?: any) => string) => RulesetBuilder;
     addRuleset: (ruleset: Ruleset) => RulesetBuilder;
     addRulesetForEach: (ruleset: Ruleset) => RulesetBuilder;
     build: () => Ruleset;
