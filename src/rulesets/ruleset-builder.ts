@@ -21,21 +21,21 @@ export class RulesetBuilder
         return this;
     }
 
-    public addRule = (rule: string, ruleOptions: any): RulesetBuilder =>
+    public addRule = (rule: string, ruleOptions: any, messageOverride?: (value: any, ruleOptions?: any) => string | string): RulesetBuilder =>
     {
         if(!this.currentProperty)
         { throw new Error("A property must precede any rule calls in the chain"); }
 
-        this.internalRuleset.addRule(this.currentProperty, new RuleLink(rule, ruleOptions));
+        this.internalRuleset.addRule(this.currentProperty, new RuleLink(rule, ruleOptions, messageOverride));
         return this;
     }
 
-    public addRuleForEach = (rule: string, ruleOptions: any): RulesetBuilder =>
+    public addRuleForEach = (rule: string, ruleOptions: any, messageOverride?: (value: any, ruleOptions?: any) => string | string): RulesetBuilder =>
     {
         if(!this.currentProperty)
         { throw new Error("A property must precede any rule calls in the chain"); }
 
-        var ruleLink = new RuleLink(rule, ruleOptions);
+        var ruleLink = new RuleLink(rule, ruleOptions, messageOverride);
         this.internalRuleset.addRule(this.currentProperty, new ForEachRule<RuleLink>(ruleLink));
 
         return this;

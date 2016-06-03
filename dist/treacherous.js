@@ -1035,18 +1035,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	            _this.currentProperty = propertyName;
 	            return _this;
 	        };
-	        this.addRule = function (rule, ruleOptions) {
+	        this.addRule = function (rule, ruleOptions, messageOverride) {
 	            if (!_this.currentProperty) {
 	                throw new Error("A property must precede any rule calls in the chain");
 	            }
-	            _this.internalRuleset.addRule(_this.currentProperty, new rule_link_1.RuleLink(rule, ruleOptions));
+	            _this.internalRuleset.addRule(_this.currentProperty, new rule_link_1.RuleLink(rule, ruleOptions, messageOverride));
 	            return _this;
 	        };
-	        this.addRuleForEach = function (rule, ruleOptions) {
+	        this.addRuleForEach = function (rule, ruleOptions, messageOverride) {
 	            if (!_this.currentProperty) {
 	                throw new Error("A property must precede any rule calls in the chain");
 	            }
-	            var ruleLink = new rule_link_1.RuleLink(rule, ruleOptions);
+	            var ruleLink = new rule_link_1.RuleLink(rule, ruleOptions, messageOverride);
 	            _this.internalRuleset.addRule(_this.currentProperty, new for_each_rule_1.ForEachRule(ruleLink));
 	            return _this;
 	        };
