@@ -33,9 +33,9 @@ describe('Field Error Processor', function () {
 
         var expectedMessage = "you should have put in some text";
         var dummyField = "";
-        var dummyRules = [
-            new Treacherous.RuleLink("required", true, function() { return expectedMessage; })
-        ];
+        var rule = new Treacherous.RuleLink("required", true);
+        rule.messageOverride = function() { return expectedMessage; };
+        var dummyRules = [rule];
 
         fieldErrorProcessor
             .checkFieldForErrors(dummyField, dummyRules)
@@ -54,8 +54,10 @@ describe('Field Error Processor', function () {
 
         var expectedMessage = "you should have put in some text";
         var dummyField = "";
+        var rule = new Treacherous.RuleLink("required", true);
+        rule.messageOverride = expectedMessage;
         var dummyRules = [
-            new Treacherous.RuleLink("required", true, expectedMessage)
+            rule
         ];
 
         fieldErrorProcessor

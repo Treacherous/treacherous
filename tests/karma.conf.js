@@ -9,7 +9,8 @@ module.exports = function(config) {
         files: [
             'dist/treacherous.all.js',
             'tests/specs/**/*.js',
-            'node_modules/property-resolver/**/property-resolver.js'
+            'node_modules/property-resolver/**/property-resolver.js',
+            'node_modules/bluebird/**/browser/bluebird.js'
         ],
 
         // test result reporter
@@ -28,9 +29,9 @@ module.exports = function(config) {
         autoWatch: false,
 
         // start these browsers
-        browsers: ['Firefox'],
+        browsers: ['PhantomJS'],
 
         // Continuous Integration mode
-        singleRun: false
+        singleRun: true
     });
 };
