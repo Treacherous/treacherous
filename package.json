@@ -1,6 +1,6 @@
 {
   "name": "treacherous",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "license": "MIT",
   "dependencies": {
     "bluebird": "^3.3.4",
