@@ -49,6 +49,7 @@ export class ModelWatcher implements IModelWatcher
 
     private updateAndNotifyDifferences = () => {
         var previousKeyCache = this.watchCacheKeys;
+        var previousWatchCache = this.watchCache;
 
         this.watchCache = [];
         this.watchCacheKeys = [];
@@ -59,6 +60,16 @@ export class ModelWatcher implements IModelWatcher
                 var previousValue = this.watchCache[index].previousValue;
                 var propertyChangedArgs = new PropertyChangedEvent(key, previousValue, null);
                 setTimeout(() => { this.onPropertyChanged.publish(propertyChangedArgs); }, 1);
+            }
+            else if(previousWatchCache[index].previousValue && previousWatchCache[index].previousValue.isArray)
+            {
+                if(previousWatchCache[index].previousValue.length != this.watchCache[index].previousValue.length)
+                {
+                    var newValue = this.watchCache[index].previousValue;
+                    var previousValue = previousWatchCache[index].previousValue;
+                    var propertyChangedArgs = new PropertyChangedEvent(key, newValue, previousValue);
+                    setTimeout(() => { this.onPropertyChanged.publish(propertyChangedArgs); }, 1);
+                }
             }
         })
     }
@@ -74,32 +85,41 @@ export class ModelWatcher implements IModelWatcher
     }
 
     private cacheWatchTargets = (propertyStack, ruleset) => {
-        var paramRoute, parameterRules;
+        var paramRoute: any, parameterRules: any;
+        var anyRulesAreForEach: any, anyRulesAreSets: any;
+        var hasValue: any, currentValue: any;
+
         for(var param in ruleset.rules)
         {
             paramRoute = propertyStack ? propertyStack + "." + param : param;
             parameterRules = ruleset.rules[param];
 
-            parameterRules.forEach((rule) => {
+            anyRulesAreForEach = false;
+            anyRulesAreSets = false;
+            parameterRules.forEach(function(rule){
+                if(rule.isForEach) { anyRulesAreForEach = true; }
+                if(rule.getRulesForProperty) { anyRulesAreSets = true; }
+            });
 
-                var isEmptyArray = false;
-                var currentValue;
-                try
-                {
-                    currentValue = this.propertyResolver.resolveProperty(this.model, paramRoute);
-                }
-                catch(ex)
-                {
-                    if(rule.isForEach)
-                    {
-                        currentValue = [];
-                        isEmptyArray = true;
-                    }
-                    else if (rule.getRulesForProperty)
-                    { currentValue = {}; }
-                    else
-                    { currentValue = null; }
-                }
+            hasValue = false;
+            currentValue = null;
+
+            try
+            {
+                currentValue = this.propertyResolver.resolveProperty(this.model, paramRoute);
+                hasValue = true;
+            }
+            catch (ex) {
+                currentValue = null;
+            }
+
+            if(currentValue == null && (anyRulesAreForEach || anyRulesAreSets))
+            {
+                if (anyRulesAreForEach) { currentValue = []; }
+                else if (anyRulesAreSets) { currentValue = {}; }
+            }
+
+            parameterRules.forEach((rule) => {
 
                 var isArray = TypeHelper.isArrayType(currentValue);
                 if(isArray)
@@ -108,7 +128,7 @@ export class ModelWatcher implements IModelWatcher
                     this.watchProperty(paramRoute, cachedArrayInfo);
                 }
 
-                if(rule.isForEach && !isEmptyArray)
+                if(rule.isForEach && hasValue)
                 {
                     // ruleset
                     if(rule.internalRule.getRulesForProperty)
@@ -150,6 +170,7 @@ export class ModelWatcher implements IModelWatcher
         if(this.watchCache.length == 0) { return; }
 
         var refreshOnNextCycle = false;
+        console.log("watcher cache", this.watchCache);
         this.watchCache.forEach((propertyWatcher: PropertyWatcher) => {
             var currentValue;
             try
@@ -161,9 +182,12 @@ export class ModelWatcher implements IModelWatcher
                 currentValue = propertyWatcher.previousValue;
             }
 
-            if(currentValue && propertyWatcher.previousValue && propertyWatcher.previousValue.isArray)
+            if(propertyWatcher.previousValue && propertyWatcher.previousValue.isArray)
             {
-                if(currentValue.length != propertyWatcher.previousValue.length)
+                var currentLength = currentValue.length || 0;
+
+                console.log("has changed?", currentLength != propertyWatcher.previousValue.length);
+                if(currentLength != propertyWatcher.previousValue.length)
                 { refreshOnNextCycle = true; }
             }
             else if (currentValue !== propertyWatcher.previousValue) {
