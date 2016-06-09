@@ -6,7 +6,7 @@ export declare class RulesetBuilder {
     private internalRuleset;
     currentProperty: string;
     currentRule: RuleLink;
-    constructor(ruleRegistry: RuleRegistry);
+    constructor(ruleRegistry?: RuleRegistry);
     create: () => RulesetBuilder;
     forProperty: (propertyName: string) => RulesetBuilder;
     addRule: (rule: string, ruleOptions?: any) => RulesetBuilder;

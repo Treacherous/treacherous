@@ -36,8 +36,7 @@ describe('Validation Group', function () {
 
     it('should correctly get errors in nested objects', function (done) {
 
-        var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
-        var rulesetBuilder = new Treacherous.RulesetBuilder(dummyRuleRegistry);
+        var rulesetBuilder = new Treacherous.RulesetBuilder();
         var elementRuleset = rulesetBuilder.create()
             .forProperty("bar")
             .addRule("required", true)
@@ -67,8 +66,7 @@ describe('Validation Group', function () {
 
     it('should correctly get errors in complex arrays', function (done) {
 
-        var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
-        var rulesetBuilder = new Treacherous.RulesetBuilder(dummyRuleRegistry);
+        var rulesetBuilder = new Treacherous.RulesetBuilder();
         var elementRuleset = rulesetBuilder.create()
             .forProperty("bar")
             .addRule("required")
@@ -104,8 +102,7 @@ describe('Validation Group', function () {
 
     it('should correctly get errors in simple arrays', function (done) {
 
-        var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
-        var rulesetBuilder = new Treacherous.RulesetBuilder(dummyRuleRegistry);
+        var rulesetBuilder = new Treacherous.RulesetBuilder();
         var ruleset = rulesetBuilder.create()
             .forProperty("foo")
             .addRuleForEach("maxValue", 25)
@@ -129,8 +126,7 @@ describe('Validation Group', function () {
 
     it('should correctly get property error', function (done) {
 
-        var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
-        var rulesetBuilder = new Treacherous.RulesetBuilder(dummyRuleRegistry);
+        var rulesetBuilder = new Treacherous.RulesetBuilder();
         var ruleset = rulesetBuilder.create()
             .forProperty("foo")
             .addRule("maxLength", 2)
@@ -153,8 +149,7 @@ describe('Validation Group', function () {
 
     it('should correctly get nested property error', function (done) {
 
-        var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
-        var rulesetBuilder = new Treacherous.RulesetBuilder(dummyRuleRegistry);
+        var rulesetBuilder = new Treacherous.RulesetBuilder();
         var elementRuleset = rulesetBuilder.create()
             .forProperty("bar")
             .addRule("required", true)
@@ -183,8 +178,7 @@ describe('Validation Group', function () {
 
     it('should correctly get property error in complex arrays', function (done) {
 
-        var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
-        var rulesetBuilder = new Treacherous.RulesetBuilder(dummyRuleRegistry);
+        var rulesetBuilder = new Treacherous.RulesetBuilder();
         var elementRuleset = rulesetBuilder.create()
             .forProperty("bar")
             .addRule("required")
@@ -229,8 +223,7 @@ describe('Validation Group', function () {
 
     it('should correctly get property error in simple array', function (done) {
 
-        var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
-        var rulesetBuilder = new Treacherous.RulesetBuilder(dummyRuleRegistry);
+        var rulesetBuilder = new Treacherous.RulesetBuilder();
         var ruleset = rulesetBuilder.create()
             .forProperty("foo")
             .addRuleForEach("maxValue", 25)
@@ -253,8 +246,7 @@ describe('Validation Group', function () {
 
     it('should return undefined if no error exists for property', function (done) {
 
-        var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
-        var rulesetBuilder = new Treacherous.RulesetBuilder(dummyRuleRegistry);
+        var rulesetBuilder = new Treacherous.RulesetBuilder();
         var ruleset = rulesetBuilder.create()
             .forProperty("foo")
             .addRule("maxLength", 2)
@@ -275,8 +267,7 @@ describe('Validation Group', function () {
 
     it('should not apply array errors to child indexes', function (done) {
 
-        var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
-        var rulesetBuilder = new Treacherous.RulesetBuilder(dummyRuleRegistry);
+        var rulesetBuilder = new Treacherous.RulesetBuilder();
         var ruleset = rulesetBuilder.create()
             .forProperty("foo")
             .addRule("maxLength", 2)
@@ -303,8 +294,7 @@ describe('Validation Group', function () {
 
     it('should correctly get errors when invalid elements added to arrays', function (done) {
 
-        var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
-        var rulesetBuilder = new Treacherous.RulesetBuilder(dummyRuleRegistry);
+        var rulesetBuilder = new Treacherous.RulesetBuilder();
         var elementRuleset = rulesetBuilder.create()
             .forProperty("bar")
             .addRule("required")
@@ -345,8 +335,7 @@ describe('Validation Group', function () {
 
     it('should correctly notify on property validation change', function (done) {
 
-        var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
-        var rulesetBuilder = new Treacherous.RulesetBuilder(dummyRuleRegistry);
+        var rulesetBuilder = new Treacherous.RulesetBuilder();
         var ruleset = rulesetBuilder.create()
             .forProperty("foo")
             .addRule("maxLength", 15)
@@ -378,8 +367,7 @@ describe('Validation Group', function () {
 
     it('should correctly notify on property in nested object validation change', function (done) {
 
-        var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
-        var rulesetBuilder = new Treacherous.RulesetBuilder(dummyRuleRegistry);
+        var rulesetBuilder = new Treacherous.RulesetBuilder();
         var childRuleset = rulesetBuilder.create()
             .forProperty("bar")
                 .addRule("maxLength", 5)
@@ -416,8 +404,7 @@ describe('Validation Group', function () {
 
     it('should correctly notify on array property validation change', function (done) {
 
-        var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
-        var rulesetBuilder = new Treacherous.RulesetBuilder(dummyRuleRegistry);
+        var rulesetBuilder = new Treacherous.RulesetBuilder();
         var ruleset = rulesetBuilder.create()
             .forProperty("foo")
             .addRuleForEach("maxValue", 15)
@@ -450,8 +437,7 @@ describe('Validation Group', function () {
 
     it('should only notify array and not properties with validation change', function (done) {
 
-        var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
-        var rulesetBuilder = new Treacherous.RulesetBuilder(dummyRuleRegistry);
+        var rulesetBuilder = new Treacherous.RulesetBuilder();
         var ruleset = rulesetBuilder.create()
             .forProperty("foo")
             .addRule("maxLength", 2)
@@ -477,8 +463,7 @@ describe('Validation Group', function () {
 
     it('should correctly notify on validation change', function (done) {
 
-        var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
-        var rulesetBuilder = new Treacherous.RulesetBuilder(dummyRuleRegistry);
+        var rulesetBuilder = new Treacherous.RulesetBuilder();
         var ruleset = rulesetBuilder.create()
             .forProperty("foo")
             .addRule("maxLength", 15)
@@ -506,8 +491,7 @@ describe('Validation Group', function () {
 
     it('should correctly provide errors', function (done) {
 
-        var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
-        var rulesetBuilder = new Treacherous.RulesetBuilder(dummyRuleRegistry);
+        var rulesetBuilder = new Treacherous.RulesetBuilder();
         var ruleset = rulesetBuilder.create()
             .forProperty("foo")
             .addRule("maxLength", 15)
@@ -530,8 +514,7 @@ describe('Validation Group', function () {
 
     it('should correctly return promise indicating validity', function (done) {
 
-        var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
-        var rulesetBuilder = new Treacherous.RulesetBuilder(dummyRuleRegistry);
+        var rulesetBuilder = new Treacherous.RulesetBuilder();
         var ruleset = rulesetBuilder.create()
             .forProperty("foo")
             .addRule("maxLength", 15)
@@ -567,8 +550,7 @@ describe('Validation Group', function () {
 
         Treacherous.ruleRegistry.registerRule(delayedRequiresValid);
 
-        var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
-        var rulesetBuilder = new Treacherous.RulesetBuilder(dummyRuleRegistry);
+        var rulesetBuilder = new Treacherous.RulesetBuilder();
         var ruleset = rulesetBuilder.create()
             .forProperty("foo")
             .addRule("delayed")
@@ -604,8 +586,7 @@ describe('Validation Group', function () {
 
         Treacherous.ruleRegistry.registerRule(delayedRequiresValid);
 
-        var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
-        var rulesetBuilder = new Treacherous.RulesetBuilder(dummyRuleRegistry);
+        var rulesetBuilder = new Treacherous.RulesetBuilder();
         var ruleset = rulesetBuilder.create()
             .forProperty("foo")
             .addRule("delayed")
@@ -641,8 +622,7 @@ describe('Validation Group', function () {
 
         Treacherous.ruleRegistry.registerRule(delayedRequires10Rule);
 
-        var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
-        var rulesetBuilder = new Treacherous.RulesetBuilder(dummyRuleRegistry);
+        var rulesetBuilder = new Treacherous.RulesetBuilder();
         var ruleset = rulesetBuilder.create()
             .forProperty("foo")
             .addRule("delayed")
@@ -680,8 +660,7 @@ describe('Validation Group', function () {
 
     it('should correctly update errors when model changed', function (done) {
 
-        var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
-        var rulesetBuilder = new Treacherous.RulesetBuilder(dummyRuleRegistry);
+        var rulesetBuilder = new Treacherous.RulesetBuilder();
         var ruleset = rulesetBuilder.create()
             .forProperty("foo")
             .addRule("maxLength", 2)
@@ -699,8 +678,7 @@ describe('Validation Group', function () {
 
     it('should correctly allow empty model then update errors when model changed', function (done) {
 
-        var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
-        var rulesetBuilder = new Treacherous.RulesetBuilder(dummyRuleRegistry);
+        var rulesetBuilder = new Treacherous.RulesetBuilder();
         var ruleset = rulesetBuilder.create()
             .forProperty("foo")
                 .addRule("maxLength", 2)
@@ -726,8 +704,7 @@ describe('Validation Group', function () {
 
     it('should correctly report errors with empty models that later on get a schema', function (done) {
 
-        var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
-        var rulesetBuilder = new Treacherous.RulesetBuilder(dummyRuleRegistry);
+        var rulesetBuilder = new Treacherous.RulesetBuilder();
         var ruleset = rulesetBuilder.create()
             .forProperty("foo")
             .addRule("maxLength", 2)

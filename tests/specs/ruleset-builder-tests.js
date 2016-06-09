@@ -85,4 +85,78 @@ describe('Ruleset Builder', function () {
         expect(ruleset.rules.foo[0].isForEach).to.be.true;
     });
 
+    it('should not allow empty rule names with ruleRegistry', function () {
+        var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
+        var rulesetBuilder = new Treacherous.RulesetBuilder(dummyRuleRegistry);
+        var hasFailed = false;
+
+        try
+        {
+            rulesetBuilder.create()
+                .forProperty("foo")
+                .addRule("");
+        }
+        catch(ex)
+        {
+            hasFailed = true;
+        }
+
+        expect(hasFailed).to.be.true;
+     });
+
+    it('should not allow empty rule names without ruleRegistry', function () {
+        var rulesetBuilder = new Treacherous.RulesetBuilder();
+        var hasFailed = false;
+
+        try
+        {
+            rulesetBuilder.create()
+                .forProperty("foo")
+                .addRule("");
+        }
+        catch(ex)
+        {
+            hasFailed = true;
+        }
+
+        expect(hasFailed).to.be.true;
+    });
+
+    it('should not allow unregistered rule names with ruleRegistry', function () {
+        var ruleRegistry = new Treacherous.RuleRegistry();
+        var rulesetBuilder = new Treacherous.RulesetBuilder(ruleRegistry);
+        var hasFailed = false;
+
+        try
+        {
+            rulesetBuilder.create()
+                .forProperty("foo")
+                .addRule("not-real-rule");
+        }
+        catch(ex)
+        {
+            hasFailed = true;
+        }
+
+        expect(hasFailed).to.be.true;
+    });
+
+    it('should not allow unregistered rule names with ruleRegistry', function () {
+        var rulesetBuilder = new Treacherous.RulesetBuilder();
+        var hasFailed = false;
+
+        try
+        {
+            rulesetBuilder.create()
+                .forProperty("foo")
+                .addRule("not-real-rule");
+        }
+        catch(ex)
+        {
+            hasFailed = true;
+        }
+
+        expect(hasFailed).to.be.false;
+    });
+
 });

@@ -12,8 +12,7 @@ describe('Model Watcher', function () {
             }
         };
 
-        var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
-        var rulesetBuilder = new Treacherous.RulesetBuilder(dummyRuleRegistry);
+        var rulesetBuilder = new Treacherous.RulesetBuilder();
         var ruleset = rulesetBuilder.create()
             .forProperty("foo")
                 .addRule("required", true)
@@ -32,8 +31,8 @@ describe('Model Watcher', function () {
         dummyModel.bar[2] = 10;
 
         setTimeout(function(){
-            // once for foo, once for bar, once for bar[2]
-            expect(spySubscription).to.have.been.called.three;
+            // once for foo, once for bar[2]
+            expect(spySubscription).to.have.been.called.exactly(2);
             modelWatcher.stopWatching();
             done();
         }, 250);
@@ -49,8 +48,7 @@ describe('Model Watcher', function () {
             ]
         };
 
-        var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
-        var rulesetBuilder = new Treacherous.RulesetBuilder(dummyRuleRegistry);
+        var rulesetBuilder = new Treacherous.RulesetBuilder();
         var nestedRuleset = rulesetBuilder.create()
             .forProperty("val")
             .addRule("maxValue", 30)
@@ -82,8 +80,7 @@ describe('Model Watcher', function () {
             bar: [ 10, 20 ]
         };
 
-        var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
-        var rulesetBuilder = new Treacherous.RulesetBuilder(dummyRuleRegistry);
+        var rulesetBuilder = new Treacherous.RulesetBuilder();
         var ruleset = rulesetBuilder.create()
             .forProperty("foo")
             .addRule("required", true)
@@ -123,8 +120,7 @@ describe('Model Watcher', function () {
             }
         };
 
-        var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
-        var rulesetBuilder = new Treacherous.RulesetBuilder(dummyRuleRegistry);
+        var rulesetBuilder = new Treacherous.RulesetBuilder();
         var woopRuleset = rulesetBuilder.create()
             .forProperty("woop")
             .addRule("maxValue", 10)
@@ -153,8 +149,7 @@ describe('Model Watcher', function () {
     it('should correctly update when model is changed', function (done) {
         var dummyModel = { foo: 0 };
 
-        var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
-        var rulesetBuilder = new Treacherous.RulesetBuilder(dummyRuleRegistry);
+        var rulesetBuilder = new Treacherous.RulesetBuilder();
         var ruleset = rulesetBuilder.create()
             .forProperty("foo")
             .addRule("maxValue", 10)
@@ -178,8 +173,7 @@ describe('Model Watcher', function () {
     it('should correctly cope with null model setup and replacement', function (done) {
         var dummyModel = null;
 
-        var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
-        var rulesetBuilder = new Treacherous.RulesetBuilder(dummyRuleRegistry);
+        var rulesetBuilder = new Treacherous.RulesetBuilder();
         var ruleset = rulesetBuilder.create()
             .forProperty("foo")
                 .addRule("maxValue", 10)
@@ -211,8 +205,7 @@ describe('Model Watcher', function () {
     it('should correctly cope with empty model which is updated', function (done) {
         var dummyModel = {};
 
-        var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
-        var rulesetBuilder = new Treacherous.RulesetBuilder(dummyRuleRegistry);
+        var rulesetBuilder = new Treacherous.RulesetBuilder();
         var ruleset = rulesetBuilder.create()
             .forProperty("foo")
             .addRule("maxValue", 10)

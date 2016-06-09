@@ -9,7 +9,7 @@ export class RulesetBuilder
     public currentProperty: string;
     public currentRule:RuleLink;
 
-    constructor(private ruleRegistry: RuleRegistry) {}
+    constructor(private ruleRegistry?: RuleRegistry) {}
 
     public create = (): RulesetBuilder =>
     {
@@ -27,10 +27,10 @@ export class RulesetBuilder
 
     public addRule = (rule: string, ruleOptions?: any): RulesetBuilder =>
     {
-        if(!rule || rule.length == 0)
+        if(rule == null || typeof(rule) == "undefined" || rule.length == 0)
         { throw new Error("A rule name is required"); }
         
-        if(!this.ruleRegistry.hasRuleNamed(rule))
+        if(this.ruleRegistry && !this.ruleRegistry.hasRuleNamed(rule))
         { throw new Error(`The rule [${rule}] has not been registered`); }
 
         if(!this.currentProperty)
@@ -51,10 +51,10 @@ export class RulesetBuilder
 
     public addRuleForEach = (rule: string, ruleOptions?: any): RulesetBuilder =>
     {
-        if(!rule || rule.length == 0)
+        if(rule == null || typeof(rule) == "undefined" || rule.length == 0)
         { throw new Error("A rule name is required"); }
 
-        if(!this.ruleRegistry.hasRuleNamed(rule))
+        if(this.ruleRegistry && !this.ruleRegistry.hasRuleNamed(rule))
         { throw new Error(`The rule [${rule}] has not been registered`); }
 
         if(!this.currentProperty)

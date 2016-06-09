@@ -47,12 +47,12 @@ var validationGroupFactory = new ValidationGroupFactory(fieldErrorProcessor, mod
 
 export function createRuleset(): RulesetBuilder
 {
-    return new RulesetBuilder(ruleRegistry).create();
+    return new RulesetBuilder().create();
 }
 
 export function createGroupWithRules(model: any, rulesCreator: (rulesetBuilder: RulesetBuilder) => Ruleset): ValidationGroup
 {
-    var ruleset = rulesCreator(new RulesetBuilder(ruleRegistry));
+    var ruleset = rulesCreator(new RulesetBuilder());
     return validationGroupFactory.createValidationGroup(model, ruleset);
 }
 
