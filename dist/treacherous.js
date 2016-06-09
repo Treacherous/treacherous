@@ -1232,20 +1232,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    }
 	                });
 	                hasValue = false;
-	                currentValue = null;
 	                try {
 	                    currentValue = _this.propertyResolver.resolveProperty(_this.model, paramRoute);
 	                    hasValue = true;
 	                }
-	                catch (ex) {
-	                    currentValue = null;
-	                }
+	                catch (ex) { }
 	                if (currentValue == null && (anyRulesAreForEach || anyRulesAreSets)) {
 	                    if (anyRulesAreForEach) {
 	                        currentValue = [];
 	                    }
 	                    else if (anyRulesAreSets) {
 	                        currentValue = {};
+	                    }
+	                    else {
+	                        currentValue = null;
 	                    }
 	                }
 	                parameterRules.forEach(function (rule) {
@@ -1293,26 +1293,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	                return;
 	            }
 	            var refreshOnNextCycle = false;
-	            console.log("watcher cache", _this.watchCache);
 	            _this.watchCache.forEach(function (propertyWatcher) {
 	                var currentValue;
+	                var hasChanged = false;
 	                try {
 	                    currentValue = _this.propertyResolver.resolveProperty(_this.model, propertyWatcher.propertyPath);
 	                }
-	                catch (ex) {
+	                catch (ex) { }
+	                if (typeof (currentValue) == "undefined") {
 	                    currentValue = propertyWatcher.previousValue;
 	                }
 	                if (propertyWatcher.previousValue && propertyWatcher.previousValue.isArray) {
 	                    var currentLength = currentValue.length || 0;
-	                    console.log("has changed?", currentLength != propertyWatcher.previousValue.length);
 	                    if (currentLength != propertyWatcher.previousValue.length) {
-	                        refreshOnNextCycle = true;
+	                        hasChanged = true;
 	                    }
 	                }
 	                else if (currentValue !== propertyWatcher.previousValue) {
 	                    var propertyChangedArgs = new property_changed_event_1.PropertyChangedEvent(propertyWatcher.propertyPath, currentValue, propertyWatcher.previousValue);
 	                    setTimeout(function () { _this.onPropertyChanged.publish(propertyChangedArgs); }, 1);
 	                    propertyWatcher.previousValue = currentValue;
+	                }
+	                if (hasChanged) {
+	                    refreshOnNextCycle = true;
 	                }
 	            });
 	            if (refreshOnNextCycle) {

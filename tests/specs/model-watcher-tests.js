@@ -219,15 +219,12 @@ describe('Model Watcher', function () {
         var spySubscription = chai.spy(function(eventArgs){ console.log("event", eventArgs); });
         modelWatcher.onPropertyChanged.subscribe(spySubscription);
 
-        dummyModel = {
-            foo: 11,
-            bar: [11, 12]
-        };
+        dummyModel.foo = 11;
+        dummyModel.bar = [11, 12];
 
         setTimeout(function(){
             // once for foo, once for bar, once for bar[0] and then bar[1]
             expect(spySubscription).to.have.been.called.exactly(4);
-            expect(true).to.equal(false);
             modelWatcher.stopWatching();
             done();
         }, 250);

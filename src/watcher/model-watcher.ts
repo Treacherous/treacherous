@@ -102,21 +102,18 @@ export class ModelWatcher implements IModelWatcher
             });
 
             hasValue = false;
-            currentValue = null;
-
             try
             {
                 currentValue = this.propertyResolver.resolveProperty(this.model, paramRoute);
                 hasValue = true;
             }
-            catch (ex) {
-                currentValue = null;
-            }
+            catch (ex) {}
 
             if(currentValue == null && (anyRulesAreForEach || anyRulesAreSets))
             {
                 if (anyRulesAreForEach) { currentValue = []; }
                 else if (anyRulesAreSets) { currentValue = {}; }
+                else { currentValue = null; }
             }
 
             parameterRules.forEach((rule) => {
@@ -170,31 +167,31 @@ export class ModelWatcher implements IModelWatcher
         if(this.watchCache.length == 0) { return; }
 
         var refreshOnNextCycle = false;
-        console.log("watcher cache", this.watchCache);
         this.watchCache.forEach((propertyWatcher: PropertyWatcher) => {
             var currentValue;
+            var hasChanged = false;
+
             try
-            {
-                currentValue = this.propertyResolver.resolveProperty(this.model, propertyWatcher.propertyPath);
-            }
-            catch(ex)
-            {
-                currentValue = propertyWatcher.previousValue;
-            }
+            { currentValue = this.propertyResolver.resolveProperty(this.model, propertyWatcher.propertyPath); }
+            catch(ex) { }
+
+            if(typeof(currentValue) == "undefined")
+            { currentValue = propertyWatcher.previousValue; }
 
             if(propertyWatcher.previousValue && propertyWatcher.previousValue.isArray)
             {
                 var currentLength = currentValue.length || 0;
-
-                console.log("has changed?", currentLength != propertyWatcher.previousValue.length);
                 if(currentLength != propertyWatcher.previousValue.length)
-                { refreshOnNextCycle = true; }
+                { hasChanged = true; }
             }
             else if (currentValue !== propertyWatcher.previousValue) {
                 var propertyChangedArgs = new PropertyChangedEvent(propertyWatcher.propertyPath, currentValue, propertyWatcher.previousValue);
                 setTimeout(() => { this.onPropertyChanged.publish(propertyChangedArgs); }, 1);
                 propertyWatcher.previousValue = currentValue;
             }
+
+            if(hasChanged)
+            { refreshOnNextCycle = true; }
         });
 
         if(refreshOnNextCycle)
