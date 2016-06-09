@@ -66,16 +66,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	__export(__webpack_require__(2));
 	__export(__webpack_require__(18));
 	__export(__webpack_require__(10));
-	__export(__webpack_require__(11));
-	__export(__webpack_require__(12));
-	__export(__webpack_require__(37));
-	__export(__webpack_require__(38));
 	__export(__webpack_require__(14));
 	__export(__webpack_require__(15));
 	__export(__webpack_require__(16));
 	__export(__webpack_require__(17));
 	__export(__webpack_require__(19));
-	__export(__webpack_require__(39));
+	__export(__webpack_require__(37));
 	__export(__webpack_require__(20));
 	__export(__webpack_require__(21));
 	__export(__webpack_require__(22));
@@ -86,6 +82,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	__export(__webpack_require__(27));
 	__export(__webpack_require__(13));
 	__export(__webpack_require__(28));
+	__export(__webpack_require__(11));
+	__export(__webpack_require__(12));
+	__export(__webpack_require__(38));
+	__export(__webpack_require__(39));
 	__export(__webpack_require__(32));
 	__export(__webpack_require__(40));
 	__export(__webpack_require__(31));
@@ -143,11 +143,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	var ruleResolver = new rule_resolver_1.RuleResolver();
 	var validationGroupFactory = new validation_group_factory_1.ValidationGroupFactory(fieldErrorProcessor, modelWatcher, propertyResolver, ruleResolver);
 	function createRuleset() {
-	    return new ruleset_builder_1.RulesetBuilder().create();
+	    return new ruleset_builder_1.RulesetBuilder(exports.ruleRegistry).create();
 	}
 	exports.createRuleset = createRuleset;
 	function createGroupWithRules(model, rulesCreator) {
-	    var ruleset = rulesCreator(new ruleset_builder_1.RulesetBuilder());
+	    var ruleset = rulesCreator(new ruleset_builder_1.RulesetBuilder(exports.ruleRegistry));
 	    return validationGroupFactory.createValidationGroup(model, ruleset);
 	}
 	exports.createGroupWithRules = createGroupWithRules;
@@ -613,7 +613,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	            delete _this.rules[validationRule.ruleName];
 	        };
 	        this.getRuleNamed = function (ruleName) {
-	            return _this.rules[ruleName];
+	            return _this.rules[ruleName] || null;
+	        };
+	        this.hasRuleNamed = function (ruleName) {
+	            return _this.getRuleNamed(ruleName) != null;
 	        };
 	    }
 	    return RuleRegistry;
@@ -1030,8 +1033,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	var rule_link_1 = __webpack_require__(31);
 	var for_each_rule_1 = __webpack_require__(32);
 	var RulesetBuilder = (function () {
-	    function RulesetBuilder() {
+	    function RulesetBuilder(ruleRegistry) {
 	        var _this = this;
+	        this.ruleRegistry = ruleRegistry;
 	        this.create = function () {
 	            _this.internalRuleset = new ruleset_1.Ruleset();
 	            _this.currentProperty = null;
@@ -1043,6 +1047,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	            return _this;
 	        };
 	        this.addRule = function (rule, ruleOptions) {
+	            if (!rule || rule.length == 0) {
+	                throw new Error("A rule name is required");
+	            }
+	            if (!_this.ruleRegistry.hasRuleNamed(rule)) {
+	                throw new Error("The rule [" + rule + "] has not been registered");
+	            }
 	            if (!_this.currentProperty) {
 	                throw new Error("A property must precede any rule calls in the chain");
 	            }
@@ -1057,6 +1067,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	            return _this;
 	        };
 	        this.addRuleForEach = function (rule, ruleOptions) {
+	            if (!rule || rule.length == 0) {
+	                throw new Error("A rule name is required");
+	            }
+	            if (!_this.ruleRegistry.hasRuleNamed(rule)) {
+	                throw new Error("The rule [" + rule + "] has not been registered");
+	            }
 	            if (!_this.currentProperty) {
 	                throw new Error("A property must precede any rule calls in the chain");
 	            }
@@ -1376,6 +1392,13 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 38 */
 /***/ function(module, exports) {
 
+	
+
+
+/***/ },
+/* 39 */
+/***/ function(module, exports) {
+
 	var ValidationError = (function () {
 	    function ValidationError(propertyName, message) {
 	        this.propertyName = propertyName;
@@ -1384,13 +1407,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return ValidationError;
 	})();
 	exports.ValidationError = ValidationError;
-
-
-/***/ },
-/* 39 */
-/***/ function(module, exports) {
-
-	
 
 
 /***/ },

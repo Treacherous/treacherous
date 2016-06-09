@@ -4,7 +4,8 @@ var expect = chai.expect;
 describe('Rule resolver', function () {
 
     it('should correctly resolve a property name to a rule', function () {
-        var rulesetBuilder = new Treacherous.RulesetBuilder();
+        var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
+        var rulesetBuilder = new Treacherous.RulesetBuilder(dummyRuleRegistry);
 
         var ruleset = rulesetBuilder.create()
             .forProperty("foo")
@@ -23,7 +24,8 @@ describe('Rule resolver', function () {
     });
 
     it('should correctly resolve a property route to a rule', function () {
-        var rulesetBuilder = new Treacherous.RulesetBuilder();
+        var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
+        var rulesetBuilder = new Treacherous.RulesetBuilder(dummyRuleRegistry);
 
         var nestedRuleset = rulesetBuilder.create()
             .forProperty("bar")
@@ -50,7 +52,8 @@ describe('Rule resolver', function () {
     });
 
     it('should correctly resolve a property route ending in an array to a rule', function () {
-        var rulesetBuilder = new Treacherous.RulesetBuilder();
+        var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
+        var rulesetBuilder = new Treacherous.RulesetBuilder(dummyRuleRegistry);
 
         var nestedRuleset = rulesetBuilder.create()
             .forProperty("bar")
@@ -74,7 +77,8 @@ describe('Rule resolver', function () {
     });
 
     it('should only resolve array child property rules and not array container rules', function () {
-        var rulesetBuilder = new Treacherous.RulesetBuilder();
+        var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
+        var rulesetBuilder = new Treacherous.RulesetBuilder(dummyRuleRegistry);
 
         var ruleset = rulesetBuilder.create()
             .forProperty("foo")
@@ -94,7 +98,8 @@ describe('Rule resolver', function () {
     });
 
     it('should correctly resolve a property route with foreach ruleset', function () {
-        var rulesetBuilder = new Treacherous.RulesetBuilder();
+        var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
+        var rulesetBuilder = new Treacherous.RulesetBuilder(dummyRuleRegistry);
         var elementRuleset = rulesetBuilder.create()
             .forProperty("bar")
             .addRule("required")
@@ -119,7 +124,8 @@ describe('Rule resolver', function () {
     });
 
     it('should correctly resolve a property route with a foreach to a rule', function () {
-        var rulesetBuilder = new Treacherous.RulesetBuilder();
+        var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
+        var rulesetBuilder = new Treacherous.RulesetBuilder(dummyRuleRegistry);
 
         var nestedRuleset = rulesetBuilder.create()
             .forProperty("woo")

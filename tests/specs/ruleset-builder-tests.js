@@ -4,7 +4,8 @@ var expect = chai.expect;
 describe('Ruleset Builder', function () {
 
     it('should correctly add rules to the ruleset', function () {
-        var rulesetBuilder = new Treacherous.RulesetBuilder();
+        var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
+        var rulesetBuilder = new Treacherous.RulesetBuilder(dummyRuleRegistry);
 
         var ruleset = rulesetBuilder.create()
             .forProperty("foo")
@@ -20,7 +21,8 @@ describe('Ruleset Builder', function () {
     });
 
     it('should support custom message strings on rules added to the ruleset', function () {
-        var rulesetBuilder = new Treacherous.RulesetBuilder();
+        var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
+        var rulesetBuilder = new Treacherous.RulesetBuilder(dummyRuleRegistry);
 
         var ruleset = rulesetBuilder.create()
             .forProperty("foo")
@@ -35,7 +37,8 @@ describe('Ruleset Builder', function () {
     });
 
     it('should support custom message functions on rules added to the ruleset', function () {
-        var rulesetBuilder = new Treacherous.RulesetBuilder();
+        var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
+        var rulesetBuilder = new Treacherous.RulesetBuilder(dummyRuleRegistry);
 
         var ruleset = rulesetBuilder.create()
             .forProperty("foo")
@@ -50,7 +53,8 @@ describe('Ruleset Builder', function () {
     });
 
     it('should correctly add rulesets to properties in the generated ruleset', function () {
-        var rulesetBuilder = new Treacherous.RulesetBuilder();
+        var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
+        var rulesetBuilder = new Treacherous.RulesetBuilder(dummyRuleRegistry);
 
         var dummyRuleset = new Treacherous.Ruleset();
         dummyRuleset.rules.bar = [ new Treacherous.RuleLink("required", true) ];
@@ -67,7 +71,8 @@ describe('Ruleset Builder', function () {
     });
 
     it('should correctly add foreach rules to the ruleset', function () {
-        var rulesetBuilder = new Treacherous.RulesetBuilder();
+        var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
+        var rulesetBuilder = new Treacherous.RulesetBuilder(dummyRuleRegistry);
 
         var ruleset = rulesetBuilder.create()
             .forProperty("foo")

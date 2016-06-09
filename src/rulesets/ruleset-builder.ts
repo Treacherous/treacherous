@@ -1,13 +1,15 @@
-import {IValidationRule} from "../rules/ivalidation-rule";
 import {Ruleset} from "./ruleset";
 import {RuleLink} from "./rule-link";
 import {ForEachRule} from "./for-each-rule";
+import {RuleRegistry} from "../rules/rule-registry";
 
 export class RulesetBuilder
 {
     private internalRuleset: Ruleset;
     public currentProperty: string;
-    public currentRule:RuleLink ;
+    public currentRule:RuleLink;
+
+    constructor(private ruleRegistry: RuleRegistry) {}
 
     public create = (): RulesetBuilder =>
     {
@@ -25,6 +27,12 @@ export class RulesetBuilder
 
     public addRule = (rule: string, ruleOptions?: any): RulesetBuilder =>
     {
+        if(!rule || rule.length == 0)
+        { throw new Error("A rule name is required"); }
+        
+        if(!this.ruleRegistry.hasRuleNamed(rule))
+        { throw new Error(`The rule [${rule}] has not been registered`); }
+
         if(!this.currentProperty)
         { throw new Error("A property must precede any rule calls in the chain"); }
 
@@ -43,6 +51,12 @@ export class RulesetBuilder
 
     public addRuleForEach = (rule: string, ruleOptions?: any): RulesetBuilder =>
     {
+        if(!rule || rule.length == 0)
+        { throw new Error("A rule name is required"); }
+
+        if(!this.ruleRegistry.hasRuleNamed(rule))
+        { throw new Error(`The rule [${rule}] has not been registered`); }
+
         if(!this.currentProperty)
         { throw new Error("A property must precede any rule calls in the chain"); }
 
