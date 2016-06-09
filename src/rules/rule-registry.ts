@@ -16,6 +16,11 @@ export class RuleRegistry
 
     public getRuleNamed = (ruleName: string): IValidationRule =>
     {
-        return this.rules[ruleName];
+        return this.rules[ruleName] || null;
+    }
+
+    public hasRuleNamed = (ruleName: string): boolean =>
+    {
+        return this.getRuleNamed(ruleName) != null;
     }
 }

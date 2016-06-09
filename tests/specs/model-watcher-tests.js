@@ -31,8 +31,8 @@ describe('Model Watcher', function () {
         dummyModel.bar[2] = 10;
 
         setTimeout(function(){
-            // once for foo, once for bar, once for bar[2]
-            expect(spySubscription).to.have.been.called.three;
+            // once for foo, once for bar[2]
+            expect(spySubscription).to.have.been.called.exactly(2);
             modelWatcher.stopWatching();
             done();
         }, 250);
@@ -102,7 +102,7 @@ describe('Model Watcher', function () {
         console.log("watcher after", modelWatcher.watchCache);
 
         setTimeout(function(){
-            expect(spySubscription).to.have.been.called.once;
+            expect(spySubscription).to.have.been.called.exactly(2);
             modelWatcher.stopWatching();
             done();
         }, 250);
@@ -168,5 +168,65 @@ describe('Model Watcher', function () {
         var newModel = { foo: 10 };
         modelWatcher.changeWatcherTarget(newModel);
         modelWatcher.stopWatching();
+    });
+
+    it('should correctly cope with null model setup and replacement', function (done) {
+        var dummyModel = null;
+
+        var rulesetBuilder = new Treacherous.RulesetBuilder();
+        var ruleset = rulesetBuilder.create()
+            .forProperty("foo")
+                .addRule("maxValue", 10)
+            .forProperty("bar")
+                .addRule("maxLength", 5)
+                .addRuleForEach("maxValue", 10)
+            .build();
+
+        var modelWatcher = new Treacherous.ModelWatcher();
+        modelWatcher.setupWatcher(dummyModel, ruleset, 50);
+
+        var newModel = {
+            foo: 11,
+            bar: [11, 12]
+        };
+
+        var spySubscription = chai.spy(function(eventArgs){console.log("event", eventArgs);});
+        modelWatcher.onPropertyChanged.subscribe(spySubscription);
+        modelWatcher.changeWatcherTarget(newModel);
+
+        setTimeout(function(){
+            // once for foo, once for bar, once for bar[0] and then bar[1]
+            expect(spySubscription).to.have.been.called.exactly(4);
+            modelWatcher.stopWatching();
+            done();
+        }, 250);
+    });
+
+    it('should correctly cope with empty model which is updated', function (done) {
+        var dummyModel = {};
+
+        var rulesetBuilder = new Treacherous.RulesetBuilder();
+        var ruleset = rulesetBuilder.create()
+            .forProperty("foo")
+            .addRule("maxValue", 10)
+            .forProperty("bar")
+            .addRuleForEach("maxValue", 10)
+            .build();
+
+        var modelWatcher = new Treacherous.ModelWatcher();
+        modelWatcher.setupWatcher(dummyModel, ruleset, 50);
+
+        var spySubscription = chai.spy(function(eventArgs){ console.log("event", eventArgs); });
+        modelWatcher.onPropertyChanged.subscribe(spySubscription);
+
+        dummyModel.foo = 11;
+        dummyModel.bar = [11, 12];
+
+        setTimeout(function(){
+            // once for foo, once for bar, once for bar[0] and then bar[1]
+            expect(spySubscription).to.have.been.called.exactly(4);
+            modelWatcher.stopWatching();
+            done();
+        }, 250);
     });
 });

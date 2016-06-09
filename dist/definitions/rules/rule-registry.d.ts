@@ -4,4 +4,5 @@ export declare class RuleRegistry {
     registerRule: (validationRule: IValidationRule) => void;
     unregisterRule: (validationRule: IValidationRule) => void;
     getRuleNamed: (ruleName: string) => IValidationRule;
+    hasRuleNamed: (ruleName: string) => boolean;
 }

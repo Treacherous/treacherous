@@ -107,19 +107,28 @@ export class ValidationGroup implements IValidationGroup
         return Promise.all(promiseList);
     }
 
-    private validatePropertyWithRules = (propertyName: string, rules: any) => {
+    private validatePropertyWithRules = (propertyName: string, rules: any): any => {
         var ruleLinks = [];
         var ruleSets = [];
         var validationPromises = [];
 
+        var currentValue;
+        try
+        {
+            currentValue = this.propertyResolver.resolveProperty(this.model, propertyName);
+        }
+        catch(ex)
+        {
+            return Promise.resolve();
+        }
+
         var routeEachRule = (ruleLinkOrSet) => {
             if(this.isForEach(ruleLinkOrSet))
             {
-                var currentPropertyValue = this.propertyResolver.resolveProperty(this.model, propertyName);
-                var isCurrentlyAnArray = TypeHelper.isArrayType(currentPropertyValue);
+                var isCurrentlyAnArray = TypeHelper.isArrayType(currentValue);
 
                 if(isCurrentlyAnArray) {
-                    currentPropertyValue.forEach((element, index) => {
+                    currentValue.forEach((element, index) => {
                         var childPropertyName = `${propertyName}[${index}]`;
                         var promise = this.validatePropertyWithRules(childPropertyName, [ruleLinkOrSet.internalRule]);
                         validationPromises.push(promise);

@@ -13,7 +13,8 @@ describe('Validation Group', function () {
 
     it('should correctly get errors', function (done) {
 
-        var rulesetBuilder = new Treacherous.RulesetBuilder();
+        var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
+        var rulesetBuilder = new Treacherous.RulesetBuilder(dummyRuleRegistry);
         var ruleset = rulesetBuilder.create()
             .forProperty("foo")
             .addRule("maxLength", 2)
@@ -670,8 +671,69 @@ describe('Validation Group', function () {
         validationGroup.getModelErrors()
             .then(function(errors){
                 expect(errors).to.be.empty;
+                validationGroup.release();
                 done();
             });
+    });
+
+    it('should correctly allow empty model then update errors when model changed', function (done) {
+
+        var rulesetBuilder = new Treacherous.RulesetBuilder();
+        var ruleset = rulesetBuilder.create()
+            .forProperty("foo")
+                .addRule("maxLength", 2)
+            .forProperty("bar")
+                .addRuleForEach("maxValue", 10)
+            .build();
+
+        var validationGroup = createValidationGroupFor(null, ruleset);
+        validationGroup.changeValidationTarget({ foo: "not ok", bar: [ 20, 10 ]  });
+        validationGroup.getModelErrors()
+            .then(function(errors){
+                expect(errors).not.to.be.null;
+                expect(errors).to.include.keys("foo");
+                expect(errors.foo).to.contain("6");
+                expect(errors.foo).to.contain("2");
+                expect(errors).to.include.keys("bar[0]");
+                expect(errors["bar[0]"]).to.contain("20");
+                expect(errors["bar[0]"]).to.contain("10");
+                validationGroup.release();
+                done();
+            });
+    });
+
+    it('should correctly report errors with empty models that later on get a schema', function (done) {
+
+        var rulesetBuilder = new Treacherous.RulesetBuilder();
+        var ruleset = rulesetBuilder.create()
+            .forProperty("foo")
+            .addRule("maxLength", 2)
+            .forProperty("bar")
+            .addRuleForEach("maxValue", 10)
+            .build();
+
+        var changingModel = {};
+        var validationGroup = createValidationGroupFor(changingModel, ruleset);
+        changingModel.foo = "not ok";
+        changingModel.bar = [ 20, 10 ];
+
+        console.log("model updated", changingModel);
+        setTimeout(function(){
+            validationGroup.getModelErrors()
+                .then(function(errors){
+                    console.log("ended model", changingModel);
+                    console.log("errors", errors);
+                    expect(errors).not.to.be.null;
+                    expect(errors).to.include.keys("foo");
+                    expect(errors.foo).to.contain("6");
+                    expect(errors.foo).to.contain("2");
+                    expect(errors).to.include.keys("bar[0]");
+                    expect(errors["bar[0]"]).to.contain("20");
+                    expect(errors["bar[0]"]).to.contain("10");
+                    validationGroup.release();
+                    done();
+                });
+        }, 200);
     });
 
 });

@@ -12,7 +12,17 @@ export class FieldErrorProcessor implements IFieldErrorProcessor
 
         var checkIfValid = (isValid) => {
             if(!isValid) {
-                var error = validator.getMessage(fieldValue, ruleLink.ruleOptions);
+                var error;
+                if(ruleLink.messageOverride)
+                {
+                    if(typeof(ruleLink.messageOverride) === "function")
+                    { error = (<((value: any, ruleOptions?: any) => string)>(ruleLink.messageOverride))(fieldValue, ruleLink.ruleOptions); }
+                    else
+                    { error = ruleLink.messageOverride; }
+                }
+                else
+                { error = validator.getMessage(fieldValue, ruleLink.ruleOptions); }
+
                 throw new FieldHasError(error);
             }
             return null;
