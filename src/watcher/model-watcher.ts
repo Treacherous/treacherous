@@ -71,7 +71,7 @@ export class ModelWatcher implements IModelWatcher
                     setTimeout(() => { this.onPropertyChanged.publish(propertyChangedArgs); }, 1);
                 }
             }
-        })
+        });
     }
 
     private watchProperty = (watchRoute, previousData) => {
