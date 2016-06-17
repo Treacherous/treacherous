@@ -202,10 +202,15 @@ export class ValidationGroup implements IValidationGroup
         this.modelWatcher.stopWatching();
     }
 
-    private waitForValidatorsToFinish = () : Promise<void> => {
-        if(this.activePromiseChain)
-        { return this.activePromiseChain; }
+    private waitForValidatorsToFinish = () : Promise<any> => {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                if(this.activePromiseChain)
+                { this.activePromiseChain.then(resolve); }
 
-        return Promise.resolve(null);
+                resolve();
+            }, 1);
+
+        });
     };
 }
