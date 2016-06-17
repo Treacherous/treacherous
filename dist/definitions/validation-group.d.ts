@@ -15,9 +15,11 @@ export declare class ValidationGroup implements IValidationGroup {
     refreshRate: number;
     private propertyErrors;
     private activePromiseChain;
+    private activeValidationCount;
     propertyStateChangedEvent: EventHandler;
     modelStateChangedEvent: EventHandler;
     constructor(fieldErrorProcessor: IFieldErrorProcessor, modelWatcher: IModelWatcher, propertyResolver: PropertyResolver, ruleResolver: IRuleResolver, ruleset: Ruleset, model: any, refreshRate?: number);
+    private countedPromise;
     private isRuleset(possibleRuleset);
     private isForEach(possibleForEach);
     private onModelChanged;

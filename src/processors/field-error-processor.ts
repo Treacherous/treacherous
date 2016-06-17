@@ -25,7 +25,7 @@ export class FieldErrorProcessor implements IFieldErrorProcessor
 
                 throw new FieldHasError(error);
             }
-            return null;
+            return Promise.resolve();
         };
 
         return validator
@@ -43,7 +43,7 @@ export class FieldErrorProcessor implements IFieldErrorProcessor
             var promises = [];
             rules.forEach((rule) => {
                 promises.push(ruleCheck(rule));
-            })
+            });
             return Promise.all(promises);
         }
 

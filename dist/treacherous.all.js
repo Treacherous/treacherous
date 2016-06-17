@@ -70,12 +70,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	__export(__webpack_require__(13));
 	__export(__webpack_require__(38));
 	__export(__webpack_require__(39));
+	__export(__webpack_require__(33));
+	__export(__webpack_require__(40));
+	__export(__webpack_require__(32));
+	__export(__webpack_require__(10));
+	__export(__webpack_require__(30));
+	__export(__webpack_require__(31));
 	__export(__webpack_require__(15));
 	__export(__webpack_require__(16));
 	__export(__webpack_require__(17));
 	__export(__webpack_require__(18));
 	__export(__webpack_require__(20));
-	__export(__webpack_require__(40));
+	__export(__webpack_require__(41));
 	__export(__webpack_require__(21));
 	__export(__webpack_require__(22));
 	__export(__webpack_require__(23));
@@ -86,12 +92,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	__export(__webpack_require__(28));
 	__export(__webpack_require__(14));
 	__export(__webpack_require__(29));
-	__export(__webpack_require__(33));
-	__export(__webpack_require__(41));
-	__export(__webpack_require__(32));
-	__export(__webpack_require__(10));
-	__export(__webpack_require__(30));
-	__export(__webpack_require__(31));
 	__export(__webpack_require__(42));
 	__export(__webpack_require__(34));
 	__export(__webpack_require__(35));
@@ -203,6 +203,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.model = model;
 	        this.refreshRate = refreshRate;
 	        this.propertyErrors = {};
+	        this.countedPromise = function (wrappedPromise) {
+	            if (!wrappedPromise) {
+	                return Promise.resolve();
+	            }
+	            _this.activeValidationCount++;
+	            return wrappedPromise.then(function (r) { _this.activeValidationCount--; return r; }, function (e) { _this.activeValidationCount--; throw (e); });
+	        };
 	        this.onModelChanged = function (eventArgs) {
 	            _this.validateProperty(eventArgs.propertyPath);
 	        };
@@ -234,16 +241,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	                _this.activePromiseChain = Promise.resolve(_this.activePromiseChain)
 	                    .then(function () {
 	                    var fieldValue = _this.propertyResolver.resolveProperty(_this.model, propertyName);
-	                    return _this.fieldErrorProcessor
+	                    var promise = _this.fieldErrorProcessor
 	                        .checkFieldForErrors(fieldValue, propertyRules)
 	                        .then(handlePossibleError);
+	                    return _this.countedPromise(promise);
 	                });
 	            }
 	            else {
 	                var fieldValue = _this.propertyResolver.resolveProperty(_this.model, propertyName);
-	                _this.activePromiseChain = _this.fieldErrorProcessor
+	                _this.activePromiseChain = _this.countedPromise(_this.fieldErrorProcessor
 	                    .checkFieldForErrors(fieldValue, propertyRules)
-	                    .then(handlePossibleError);
+	                    .then(handlePossibleError));
+	                return _this.countedPromise(_this.activePromiseChain);
 	            }
 	        };
 	        this.validatePropertyWithRuleSet = function (propertyName, ruleset) {
@@ -251,7 +260,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var transformedPropertyName;
 	            for (var childPropertyName in ruleset.rules) {
 	                transformedPropertyName = propertyName + "." + childPropertyName;
-	                promiseList.push(_this.validatePropertyWithRules(transformedPropertyName, ruleset.getRulesForProperty(childPropertyName)));
+	                var countedPromise = _this.validatePropertyWithRules(transformedPropertyName, ruleset.getRulesForProperty(childPropertyName));
+	                promiseList.push(countedPromise);
 	            }
 	            return Promise.all(promiseList);
 	        };
@@ -273,7 +283,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	                        currentValue.forEach(function (element, index) {
 	                            var childPropertyName = propertyName + "[" + index + "]";
 	                            var promise = _this.validatePropertyWithRules(childPropertyName, [ruleLinkOrSet.internalRule]);
-	                            validationPromises.push(promise);
+	                            var countedPromise = _this.countedPromise(promise);
+	                            validationPromises.push(countedPromise);
 	                        });
 	                    }
 	                    else {
@@ -293,9 +304,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	                }
 	            };
 	            rules.forEach(routeEachRule);
-	            validationPromises.push(_this.validatePropertyWithRuleLinks(propertyName, ruleLinks));
+	            var countedPromise = _this.countedPromise(_this.validatePropertyWithRuleLinks(propertyName, ruleLinks));
+	            validationPromises.push(countedPromise);
 	            ruleSets.forEach(function (ruleSet) {
-	                validationPromises.push(_this.validatePropertyWithRuleSet(propertyName, ruleSet));
+	                var eachCountedPromise = _this.countedPromise(_this.validatePropertyWithRuleSet(propertyName, ruleSet));
+	                validationPromises.push(eachCountedPromise);
 	            });
 	            return Promise.all(validationPromises);
 	        };
@@ -335,14 +348,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	        };
 	        this.waitForValidatorsToFinish = function () {
 	            return new Promise(function (resolve, reject) {
-	                setTimeout(function () {
-	                    if (_this.activePromiseChain) {
-	                        _this.activePromiseChain.then(resolve);
+	                var interval = setInterval(function () {
+	                    if (_this.activeValidationCount == 0) {
+	                        clearInterval(interval);
+	                        resolve();
 	                    }
-	                    resolve();
-	                }, 1);
+	                }, _this.modelWatcher.scanInterval);
 	            });
 	        };
+	        this.activeValidationCount = 0;
 	        this.propertyStateChangedEvent = new event_js_1.EventHandler(this);
 	        this.modelStateChangedEvent = new event_js_1.EventHandler(this);
 	        this.modelWatcher.setupWatcher(model, ruleset, refreshRate);
@@ -785,7 +799,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                }
 	                throw new field_has_error_1.FieldHasError(error);
 	            }
-	            return null;
+	            return Promise.resolve();
 	        };
 	        return validator
 	            .validate(fieldValue, ruleLink.ruleOptions)

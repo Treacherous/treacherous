@@ -17,6 +17,7 @@ export class ValidationGroup implements IValidationGroup
 {
     private propertyErrors = {};
     private activePromiseChain: Promise<any>;
+    private activeValidationCount: number;
 
     public propertyStateChangedEvent: EventHandler;
     public modelStateChangedEvent: EventHandler;
@@ -28,6 +29,7 @@ export class ValidationGroup implements IValidationGroup
                 private ruleset: Ruleset, private model: any,
                 public refreshRate = 500)
     {
+        this.activeValidationCount = 0;
         this.propertyStateChangedEvent = new EventHandler(this);
         this.modelStateChangedEvent = new EventHandler(this);
 
@@ -35,6 +37,13 @@ export class ValidationGroup implements IValidationGroup
         this.modelWatcher.onPropertyChanged.subscribe(this.onModelChanged);
 
         this.validateModel();
+    }
+
+    private countedPromise = (wrappedPromise:Promise<any>) => {
+        if(!wrappedPromise) { return Promise.resolve(); }
+
+        this.activeValidationCount++;
+        return wrappedPromise.then(r=> { this.activeValidationCount--; return r; }, e => { this.activeValidationCount--; throw(e); } );
     }
 
     private isRuleset(possibleRuleset: any): boolean {
@@ -49,7 +58,7 @@ export class ValidationGroup implements IValidationGroup
         this.validateProperty(eventArgs.propertyPath);
     };
 
-    private validatePropertyWithRuleLinks = (propertyName: string, propertyRules: Array<RuleLink>) => {
+    private validatePropertyWithRuleLinks = (propertyName: string, propertyRules: Array<RuleLink>): any => {
         var handlePossibleError = (possibleError: string) => {
             var hadErrors = this.hasErrors();
 
@@ -83,17 +92,19 @@ export class ValidationGroup implements IValidationGroup
             this.activePromiseChain = Promise.resolve(this.activePromiseChain)
                 .then(() => {
                     var fieldValue = this.propertyResolver.resolveProperty(this.model, propertyName);
-                    return this.fieldErrorProcessor
+                    var promise = this.fieldErrorProcessor
                         .checkFieldForErrors(fieldValue, propertyRules)
                         .then(handlePossibleError);
-                })
+                    return this.countedPromise(promise);
+                });
         }
         else
         {
             var fieldValue = this.propertyResolver.resolveProperty(this.model, propertyName);
-            this.activePromiseChain = this.fieldErrorProcessor
+            this.activePromiseChain = this.countedPromise(this.fieldErrorProcessor
                 .checkFieldForErrors(fieldValue, propertyRules)
-                .then(handlePossibleError);
+                .then(handlePossibleError));
+            return this.countedPromise(this.activePromiseChain);
         }
     };
 
@@ -102,7 +113,8 @@ export class ValidationGroup implements IValidationGroup
         var transformedPropertyName;
         for(var childPropertyName in ruleset.rules){
             transformedPropertyName = `${propertyName}.${childPropertyName}`;
-            promiseList.push(this.validatePropertyWithRules(transformedPropertyName, ruleset.getRulesForProperty(childPropertyName)))
+            var countedPromise = this.validatePropertyWithRules(transformedPropertyName, ruleset.getRulesForProperty(childPropertyName));
+            promiseList.push(countedPromise);
         }
         return Promise.all(promiseList);
     }
@@ -131,7 +143,8 @@ export class ValidationGroup implements IValidationGroup
                     currentValue.forEach((element, index) => {
                         var childPropertyName = `${propertyName}[${index}]`;
                         var promise = this.validatePropertyWithRules(childPropertyName, [ruleLinkOrSet.internalRule]);
-                        validationPromises.push(promise);
+                        var countedPromise = this.countedPromise(promise);
+                        validationPromises.push(countedPromise);
                     });
                 }
                 else
@@ -150,10 +163,12 @@ export class ValidationGroup implements IValidationGroup
 
         rules.forEach(routeEachRule);
 
-        validationPromises.push(this.validatePropertyWithRuleLinks(propertyName, ruleLinks));
+        var countedPromise = this.countedPromise(this.validatePropertyWithRuleLinks(propertyName, ruleLinks));
+        validationPromises.push(countedPromise);
 
         ruleSets.forEach((ruleSet) => {
-            validationPromises.push(this.validatePropertyWithRuleSet(propertyName, ruleSet));
+            var eachCountedPromise = this.countedPromise(this.validatePropertyWithRuleSet(propertyName, ruleSet));
+            validationPromises.push(eachCountedPromise);
         });
 
         return Promise.all(validationPromises);
@@ -204,12 +219,13 @@ export class ValidationGroup implements IValidationGroup
 
     private waitForValidatorsToFinish = () : Promise<any> => {
         return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                if(this.activePromiseChain)
-                { this.activePromiseChain.then(resolve); }
-
-                resolve();
-            }, 1);
+            var interval = setInterval(() => {
+                if(this.activeValidationCount == 0)
+                {
+                    clearInterval(interval);
+                    resolve();
+                }
+            }, this.modelWatcher.scanInterval);
 
         });
     };
