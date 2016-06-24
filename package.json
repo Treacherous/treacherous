@@ -1,9 +1,8 @@
 {
   "name": "treacherous",
-  "version": "0.7.1",
+  "version": "0.8.0",
   "license": "MIT",
   "dependencies": {
-    "bluebird": "^3.3.4",
     "property-resolver": "^0.0.6",
     "event-js": "^0.1.0"
   },
@@ -28,6 +27,7 @@
     "url": "https://github.com/grofit/treacherous"
   },
   "devDependencies": {
+    "bluebird": "^3.3.4",
     "chai": "latest",
     "chai-as-promised": "5.2.0",
     "chai-spies": "latest",
