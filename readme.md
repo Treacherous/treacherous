@@ -4,7 +4,8 @@ A modern async validation system to be used on the server or in the browser as w
 view frameworks.
 
 [![Build Status][build-status-image]][build-status-url]
-[![NPM Version][npm-version-image]][npm-version-url]
+[![Npm Version][npm-version-image]][npm-version-url]
+[![Npm Downloads][npm-downloads-image]][npm-version-url]
 [![Join Gitter Chat][gitter-image]][gitter-url]
 
 It is an attempt to bring some consistency to validation in the javascript world you can write your 
@@ -213,3 +214,4 @@ can write your validation rules once, and consume them anywhere (that has a comp
 [gitter-url]: https://gitter.im/grofit/treacherous
 [npm-version-image]: https://badge.fury.io/js/treacherous.svg
 [npm-version-url]: https://www.npmjs.com/package/treacherous
+[npm-downloads-image]: https://img.shields.io/npm/dm/treacherous.svg?maxAge=2592000
