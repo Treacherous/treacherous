@@ -1,11 +1,11 @@
 # Treacherous
 
-[![Build Status](https://travis-ci.org/grofit/treacherous.svg?branch=master)](https://travis-ci.org/grofit/treacherous)
-[![Join the chat at https://gitter.im/grofit/treacherous](https://badges.gitter.im/grofit/treacherous.svg)](https://gitter.im/grofit/treacherous?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
-
 A modern async validation system to be used on the server or in the browser as well as with or without 
 view frameworks.
+
+[![Build Status][build-status-image]][build-status-url]
+[![NPM Version][npm-version-image]][npm-version-url]
+[![Join Gitter Chat][gitter-image]][gitter-url]
 
 It is an attempt to bring some consistency to validation in the javascript world you can write your 
 validation rules in a single way a single time and re-use it anywhere you want without worrying about
@@ -206,3 +206,10 @@ letting you re-use more of your code base in a more consistent way.
 
 Ultimately each framework tends to have it's own validation system, but with Treacherous you 
 can write your validation rules once, and consume them anywhere (that has a compatible binding layer).
+
+[build-status-image]: https://travis-ci.org/grofit/treacherous.svg
+[build-status-url]: https://travis-ci.org/grofit/treacherous
+[gitter-image]: https://badges.gitter.im/grofit/treacherous.svg
+[gitter-url]: https://gitter.im/grofit/treacherous
+[npm-version-image]: https://badge.fury.io/js/treacherous.svg
+[npm-version-url]: https://www.npmjs.com/package/treacherous
