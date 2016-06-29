@@ -70,12 +70,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	__export(__webpack_require__(13));
 	__export(__webpack_require__(38));
 	__export(__webpack_require__(39));
+	__export(__webpack_require__(40));
 	__export(__webpack_require__(15));
 	__export(__webpack_require__(16));
 	__export(__webpack_require__(17));
 	__export(__webpack_require__(18));
 	__export(__webpack_require__(20));
-	__export(__webpack_require__(40));
+	__export(__webpack_require__(41));
 	__export(__webpack_require__(21));
 	__export(__webpack_require__(22));
 	__export(__webpack_require__(23));
@@ -87,12 +88,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	__export(__webpack_require__(14));
 	__export(__webpack_require__(29));
 	__export(__webpack_require__(33));
-	__export(__webpack_require__(41));
+	__export(__webpack_require__(42));
 	__export(__webpack_require__(32));
 	__export(__webpack_require__(10));
 	__export(__webpack_require__(30));
 	__export(__webpack_require__(31));
-	__export(__webpack_require__(42));
+	__export(__webpack_require__(43));
 	__export(__webpack_require__(34));
 	__export(__webpack_require__(35));
 
@@ -135,7 +136,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.ruleRegistry.registerRule(new not_equal_validation_rule_1.NotEqualValidationRule());
 	exports.ruleRegistry.registerRule(new number_validation_rule_1.NumberValidationRule());
 	exports.ruleRegistry.registerRule(new regex_validation_rule_1.RegexValidationRule());
-	exports.ruleRegistry.registerRule(new required_validation_rule_1.RequiredValidaitonRule());
+	exports.ruleRegistry.registerRule(new required_validation_rule_1.RequiredValidationRule());
 	exports.ruleRegistry.registerRule(new step_validation_rule_1.StepValidationRule());
 	var fieldErrorProcessor = new field_error_processor_1.FieldErrorProcessor(exports.ruleRegistry);
 	var modelWatcher = new model_watcher_1.ModelWatcher();
@@ -1212,11 +1213,11 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 28 */
 /***/ function(module, exports) {
 
-	var RequiredValidaitonRule = (function () {
-	    function RequiredValidaitonRule() {
+	var RequiredValidationRule = (function () {
+	    function RequiredValidationRule() {
 	        this.ruleName = "required";
 	    }
-	    RequiredValidaitonRule.prototype.validate = function (value, isRequired) {
+	    RequiredValidationRule.prototype.validate = function (value, isRequired) {
 	        if (isRequired === void 0) { isRequired = true; }
 	        if (value === undefined || value === null) {
 	            return Promise.resolve(!isRequired);
@@ -1235,12 +1236,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	        return Promise.resolve((testValue + '').length > 0);
 	    };
-	    RequiredValidaitonRule.prototype.getMessage = function (value, isRequired) {
+	    RequiredValidationRule.prototype.getMessage = function (value, isRequired) {
 	        return "This field is required";
 	    };
-	    return RequiredValidaitonRule;
+	    return RequiredValidationRule;
 	})();
-	exports.RequiredValidaitonRule = RequiredValidaitonRule;
+	exports.RequiredValidationRule = RequiredValidationRule;
 
 
 /***/ },
@@ -1648,7 +1649,31 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 40 */
 /***/ function(module, exports) {
 
-	
+	var AdvancedRegexValidationRule = (function () {
+	    function AdvancedRegexValidationRule(ruleName, expression, message) {
+	        if (!ruleName || ruleName.length == 0) {
+	            throw new Error("ruleName is required, an empty rule name is invalid");
+	        }
+	        if (!expression || expression.length == 0) {
+	            throw new Error("expression is required, an empty regex expression is invalid");
+	        }
+	        this.ruleName = ruleName;
+	        this.expression = expression;
+	        this.message = (typeof message === "function") ? message : function () { return message; };
+	    }
+	    AdvancedRegexValidationRule.prototype.validate = function (value, regexPattern) {
+	        if (value === undefined || value === null || value.length == 0) {
+	            return Promise.resolve(true);
+	        }
+	        var matchesPattern = value.toString().match(this.expression) !== null;
+	        return Promise.resolve(matchesPattern);
+	    };
+	    AdvancedRegexValidationRule.prototype.getMessage = function (value, regexPattern) {
+	        return this.message(value);
+	    };
+	    return AdvancedRegexValidationRule;
+	})();
+	exports.AdvancedRegexValidationRule = AdvancedRegexValidationRule;
 
 
 /***/ },
@@ -1660,6 +1685,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 42 */
+/***/ function(module, exports) {
+
+	
+
+
+/***/ },
+/* 43 */
 /***/ function(module, exports) {
 
 	

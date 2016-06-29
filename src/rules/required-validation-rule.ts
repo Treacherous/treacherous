@@ -1,6 +1,6 @@
 import {IValidationRule} from "./ivalidation-rule";
 
-export class RequiredValidaitonRule implements IValidationRule
+export class RequiredValidationRule implements IValidationRule
 {
     public ruleName = "required";
 

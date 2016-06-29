@@ -4,7 +4,7 @@ var expect = chai.expect;
 describe('Rule registry', function () {
 
     it('should correctly get rule for name', function () {
-        var requiredRule = new Treacherous.RequiredValidaitonRule();
+        var requiredRule = new Treacherous.RequiredValidationRule();
 
         var ruleRegistry = new Treacherous.RuleRegistry();
         ruleRegistry.registerRule(requiredRule);

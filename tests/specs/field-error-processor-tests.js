@@ -5,7 +5,7 @@ describe('Field Error Processor', function () {
 
     it('should correctly return an error for the field', function (done) {
         var ruleRegistry = new Treacherous.RuleRegistry();
-        ruleRegistry.registerRule(new Treacherous.RequiredValidaitonRule());
+        ruleRegistry.registerRule(new Treacherous.RequiredValidationRule());
         ruleRegistry.registerRule(new Treacherous.MaxLengthValidationRule());
 
         var fieldErrorProcessor = new Treacherous.FieldErrorProcessor(ruleRegistry);
@@ -27,7 +27,7 @@ describe('Field Error Processor', function () {
 
     it('should correctly return a custom error message function for the field', function (done) {
         var ruleRegistry = new Treacherous.RuleRegistry();
-        ruleRegistry.registerRule(new Treacherous.RequiredValidaitonRule());
+        ruleRegistry.registerRule(new Treacherous.RequiredValidationRule());
 
         var fieldErrorProcessor = new Treacherous.FieldErrorProcessor(ruleRegistry);
 
@@ -48,7 +48,7 @@ describe('Field Error Processor', function () {
 
     it('should correctly return a custom error message for the field', function (done) {
         var ruleRegistry = new Treacherous.RuleRegistry();
-        ruleRegistry.registerRule(new Treacherous.RequiredValidaitonRule());
+        ruleRegistry.registerRule(new Treacherous.RequiredValidationRule());
 
         var fieldErrorProcessor = new Treacherous.FieldErrorProcessor(ruleRegistry);
 
@@ -71,7 +71,7 @@ describe('Field Error Processor', function () {
 
     it('should correctly return no error for the field', function (done) {
         var ruleRegistry = new Treacherous.RuleRegistry();
-        ruleRegistry.registerRule(new Treacherous.RequiredValidaitonRule());
+        ruleRegistry.registerRule(new Treacherous.RequiredValidationRule());
         ruleRegistry.registerRule(new Treacherous.MaxLengthValidationRule());
 
         var fieldErrorProcessor = new Treacherous.FieldErrorProcessor(ruleRegistry);
@@ -92,7 +92,7 @@ describe('Field Error Processor', function () {
 
     it('should stop looking for errors on first fail', function (done) {
         var ruleRegistry = new Treacherous.RuleRegistry();
-        ruleRegistry.registerRule(new Treacherous.RequiredValidaitonRule());
+        ruleRegistry.registerRule(new Treacherous.RequiredValidationRule());
 
         var maxLengthTreacherous = new Treacherous.MaxLengthValidationRule();
         var spiedValidationMethod = chai.spy.on(maxLengthTreacherous, 'validate');

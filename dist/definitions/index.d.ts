@@ -11,6 +11,7 @@ export * from "./processors/field-error-processor";
 export * from "./processors/field-has-error";
 export * from "./processors/ifield-error-processor";
 export * from "./processors/validation-error";
+export * from "./rules/advanced-regex-rule";
 export * from "./rules/date-validation-rule";
 export * from "./rules/decimal-validation-rule";
 export * from "./rules/email-validation-rule";

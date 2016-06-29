@@ -15,7 +15,7 @@ import {MinValueValidationRule} from "./rules/min-value-validation-rule"
 import {NotEqualValidationRule} from "./rules/not-equal-validation-rule"
 import {NumberValidationRule} from "./rules/number-validation-rule"
 import {RegexValidationRule} from "./rules/regex-validation-rule"
-import {RequiredValidaitonRule} from "./rules/required-validation-rule"
+import {RequiredValidationRule} from "./rules/required-validation-rule"
 import {StepValidationRule} from "./rules/step-validation-rule"
 import {RulesetBuilder} from "./rulesets/ruleset-builder";
 import {ValidationGroup} from "./validation-group";
@@ -36,7 +36,7 @@ ruleRegistry.registerRule(new MinValueValidationRule());
 ruleRegistry.registerRule(new NotEqualValidationRule());
 ruleRegistry.registerRule(new NumberValidationRule());
 ruleRegistry.registerRule(new RegexValidationRule());
-ruleRegistry.registerRule(new RequiredValidaitonRule());
+ruleRegistry.registerRule(new RequiredValidationRule());
 ruleRegistry.registerRule(new StepValidationRule());
 
 var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry);
