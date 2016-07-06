@@ -1,10 +1,11 @@
-var assert = chai.assert;
-var expect = chai.expect;
+import {expect} from "chai";
+import {RulesetBuilder} from "../../src/rulesets/ruleset-builder";
+import {RuleResolver} from "../../src/rulesets/rule-resolver";
 
 describe('Rule resolver', function () {
 
     it('should correctly resolve a property name to a rule', function () {
-        var rulesetBuilder = new Treacherous.RulesetBuilder();
+        var rulesetBuilder = new RulesetBuilder();
 
         var ruleset = rulesetBuilder.create()
             .forProperty("foo")
@@ -13,7 +14,7 @@ describe('Rule resolver', function () {
 
         var propertyRoute = "foo";
 
-        var ruleResolver = new Treacherous.RuleResolver();
+        var ruleResolver = new RuleResolver();
         var locatedRules = ruleResolver.resolvePropertyRules(propertyRoute, ruleset);
 
         expect(locatedRules).not.to.be.null;
@@ -23,7 +24,7 @@ describe('Rule resolver', function () {
     });
 
     it('should correctly resolve a property route to a rule', function () {
-        var rulesetBuilder = new Treacherous.RulesetBuilder();
+        var rulesetBuilder = new RulesetBuilder();
 
         var nestedRuleset = rulesetBuilder.create()
             .forProperty("bar")
@@ -38,7 +39,7 @@ describe('Rule resolver', function () {
 
         var propertyRoute = "foo.bar";
 
-        var ruleResolver = new Treacherous.RuleResolver();
+        var ruleResolver = new RuleResolver();
         var locatedRules = ruleResolver.resolvePropertyRules(propertyRoute, ruleset);
 
         expect(locatedRules).not.to.be.null;
@@ -50,7 +51,7 @@ describe('Rule resolver', function () {
     });
 
     it('should correctly resolve a property route ending in an array to a rule', function () {
-        var rulesetBuilder = new Treacherous.RulesetBuilder();
+        var rulesetBuilder = new RulesetBuilder();
 
         var nestedRuleset = rulesetBuilder.create()
             .forProperty("bar")
@@ -64,7 +65,7 @@ describe('Rule resolver', function () {
 
         var propertyRoute = "foo.bar[0]";
 
-        var ruleResolver = new Treacherous.RuleResolver();
+        var ruleResolver = new RuleResolver();
         var locatedRules = ruleResolver.resolvePropertyRules(propertyRoute, ruleset);
 
         expect(locatedRules).not.to.be.null;
@@ -74,7 +75,7 @@ describe('Rule resolver', function () {
     });
 
     it('should only resolve array child property rules and not array container rules', function () {
-        var rulesetBuilder = new Treacherous.RulesetBuilder();
+        var rulesetBuilder = new RulesetBuilder();
 
         var ruleset = rulesetBuilder.create()
             .forProperty("foo")
@@ -84,7 +85,7 @@ describe('Rule resolver', function () {
 
         var propertyRoute = "foo[0]";
 
-        var ruleResolver = new Treacherous.RuleResolver();
+        var ruleResolver = new RuleResolver();
         var locatedRules = ruleResolver.resolvePropertyRules(propertyRoute, ruleset);
 
         expect(locatedRules).not.to.be.null;
@@ -94,7 +95,7 @@ describe('Rule resolver', function () {
     });
 
     it('should correctly resolve a property route with foreach ruleset', function () {
-        var rulesetBuilder = new Treacherous.RulesetBuilder();
+        var rulesetBuilder = new RulesetBuilder();
         var elementRuleset = rulesetBuilder.create()
             .forProperty("bar")
             .addRule("required")
@@ -108,7 +109,7 @@ describe('Rule resolver', function () {
 
         var propertyRoute = "foo[1].bar";
 
-        var ruleResolver = new Treacherous.RuleResolver();
+        var ruleResolver = new RuleResolver();
         var locatedRules = ruleResolver.resolvePropertyRules(propertyRoute, ruleset);
 
         expect(locatedRules).not.to.be.null;
@@ -119,7 +120,7 @@ describe('Rule resolver', function () {
     });
 
     it('should correctly resolve a property route with a foreach to a rule', function () {
-        var rulesetBuilder = new Treacherous.RulesetBuilder();
+        var rulesetBuilder = new RulesetBuilder();
 
         var nestedRuleset = rulesetBuilder.create()
             .forProperty("woo")
@@ -139,7 +140,7 @@ describe('Rule resolver', function () {
 
         var propertyRoute = "foo.bar[2].woo";
 
-        var ruleResolver = new Treacherous.RuleResolver();
+        var ruleResolver = new RuleResolver();
         var locatedRules = ruleResolver.resolvePropertyRules(propertyRoute, ruleset);
 
         expect(locatedRules).not.to.be.null;

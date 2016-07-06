@@ -39,7 +39,7 @@
     "gulp-typedoc": "^2.0.0",
     "gulp-typescript": "2.10.0",
     "gulp-uglify": "latest",
-    "karma": "^0.13.19",
+    "karma": "^1.1.0",
     "karma-chai": "^0.1.0",
     "karma-chai-as-promised": "0.1.2",
     "karma-chai-spies": "latest",
@@ -53,6 +53,8 @@
     "require-dir": "^0.1.0",
     "rimraf": "latest",
     "typedoc": "^0.3.12",
-    "webpack-stream": "^3.1.0"
+    "webpack-stream": "^3.1.0",
+    "karma-webpack": "^1.7.0",
+    "ts-loader": "^0.8.0"
   }
 }

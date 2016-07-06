@@ -1,18 +1,19 @@
-var assert = chai.assert;
-var expect = chai.expect;
+import {expect} from "chai";
+import {createRuleset, createGroup, createGroupWithRules, ruleRegistry} from "../../src/exposer";
+import {Ruleset} from "../../src/rulesets/ruleset";
 
 describe('Treacherous Sanity Checks', function () {
 
     it('should correctly expose methods', function () {
-        var ruleBuilder = Treacherous.createRuleset();
+        var ruleBuilder = createRuleset();
         expect(ruleBuilder).is.not.null;
         expect(ruleBuilder.create).to.be.a("function");
 
-        var validationGroup = Treacherous.createGroup({}, new Treacherous.Ruleset());
+        var validationGroup = createGroup({}, new Ruleset());
         expect(validationGroup).is.not.null;
         expect(validationGroup.getModelErrors).to.be.a("function");
 
-        var validationGroupExplicitRules = Treacherous.createGroupWithRules({}, function(rulesetBuilder){
+        var validationGroupExplicitRules = createGroupWithRules({}, function(rulesetBuilder){
             return rulesetBuilder.create().build();
         });
         expect(validationGroupExplicitRules).is.not.null;
@@ -21,7 +22,7 @@ describe('Treacherous Sanity Checks', function () {
 
     it('should correctly generate rules', function() {
 
-       var ruleset = Treacherous.createRuleset()
+       var ruleset = createRuleset()
            .forProperty("dummy")
            .addRule("required")
            .build();
@@ -31,7 +32,7 @@ describe('Treacherous Sanity Checks', function () {
 
     it('should correctly expose the rule registry', function() {
 
-        var requiredRule = Treacherous.ruleRegistry.getRuleNamed("required");
+        var requiredRule = ruleRegistry.getRuleNamed("required");
         expect(requiredRule).is.not.null;
     });
 
@@ -41,12 +42,12 @@ describe('Treacherous Sanity Checks', function () {
             foo: [10, 20, 30]
         };
 
-        var ruleset = Treacherous.createRuleset()
+        var ruleset = createRuleset()
             .forProperty("foo")
             .addRuleForEach("maxValue", 19)
             .build();
 
-        var validationGroup = Treacherous.createGroup(dummyModel, ruleset);
+        var validationGroup = createGroup(dummyModel, ruleset);
 
         validationGroup.getModelErrors()
             .then(function(errors){

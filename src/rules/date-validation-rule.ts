@@ -1,4 +1,3 @@
-;
 import {IValidationRule} from "./ivalidation-rule";
 
 export class DateValidationRule implements IValidationRule

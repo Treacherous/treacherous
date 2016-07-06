@@ -4,7 +4,7 @@ export class MaxValueValidationRule implements IValidationRule
 {
     public ruleName = "maxValue";
 
-    public validate(value, maxValue: number): Promise<boolean>
+    public validate(value, maxValue: number|Date): Promise<boolean>
     {
         if (value === undefined || value === null || value.length == 0)
         { return Promise.resolve(true); }

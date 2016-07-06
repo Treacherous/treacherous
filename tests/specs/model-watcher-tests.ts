@@ -1,5 +1,8 @@
-var assert = chai.assert;
-var expect = chai.expect;
+import {use, expect, spy} from "chai";
+import {RulesetBuilder} from "../../src/rulesets/ruleset-builder";
+import {ModelWatcher} from "../../src/watcher/model-watcher";
+import * as spies from "chai-spies";
+use(spies);
 
 describe('Model Watcher', function () {
 
@@ -12,7 +15,7 @@ describe('Model Watcher', function () {
             }
         };
 
-        var rulesetBuilder = new Treacherous.RulesetBuilder();
+        var rulesetBuilder = new RulesetBuilder();
         var ruleset = rulesetBuilder.create()
             .forProperty("foo")
                 .addRule("required", true)
@@ -21,9 +24,9 @@ describe('Model Watcher', function () {
                 .addRuleForEach("maxValue", 20)
             .build();
 
-        var modelWatcher = new Treacherous.ModelWatcher();
+        var modelWatcher = new ModelWatcher();
         modelWatcher.setupWatcher(dummyModel, ruleset, 50);
-        var spySubscription = chai.spy(function(eventArgs){});
+        var spySubscription = spy(function(eventArgs){});
 
         modelWatcher.onPropertyChanged.subscribe(spySubscription);
 
@@ -48,7 +51,7 @@ describe('Model Watcher', function () {
             ]
         };
 
-        var rulesetBuilder = new Treacherous.RulesetBuilder();
+        var rulesetBuilder = new RulesetBuilder();
         var nestedRuleset = rulesetBuilder.create()
             .forProperty("val")
             .addRule("maxValue", 30)
@@ -59,9 +62,9 @@ describe('Model Watcher', function () {
             .addRulesetForEach(nestedRuleset)
             .build();
 
-        var modelWatcher = new Treacherous.ModelWatcher();
+        var modelWatcher = new ModelWatcher();
         modelWatcher.setupWatcher(dummyModel, ruleset, 50);
-        var spySubscription = chai.spy(function(eventArgs){});
+        var spySubscription = spy(function(eventArgs){});
 
         modelWatcher.onPropertyChanged.subscribe(spySubscription);
 
@@ -80,7 +83,7 @@ describe('Model Watcher', function () {
             bar: [ 10, 20 ]
         };
 
-        var rulesetBuilder = new Treacherous.RulesetBuilder();
+        var rulesetBuilder = new RulesetBuilder();
         var ruleset = rulesetBuilder.create()
             .forProperty("foo")
             .addRule("required", true)
@@ -89,17 +92,13 @@ describe('Model Watcher', function () {
             .addRuleForEach("maxValue", 20)
             .build();
 
-        var modelWatcher = new Treacherous.ModelWatcher();
+        var modelWatcher = new ModelWatcher();
         modelWatcher.setupWatcher(dummyModel, ruleset, 50);
-        var spySubscription = chai.spy(function(eventArgs){});
+        var spySubscription = spy(function(eventArgs){});
 
         modelWatcher.onPropertyChanged.subscribe(spySubscription);
 
-        console.log("watcher before", modelWatcher.watchCache);
-
         dummyModel.bar.push(30);
-
-        console.log("watcher after", modelWatcher.watchCache);
 
         setTimeout(function(){
             expect(spySubscription).to.have.been.called.exactly(2);
@@ -120,7 +119,7 @@ describe('Model Watcher', function () {
             }
         };
 
-        var rulesetBuilder = new Treacherous.RulesetBuilder();
+        var rulesetBuilder = new RulesetBuilder();
         var woopRuleset = rulesetBuilder.create()
             .forProperty("woop")
             .addRule("maxValue", 10)
@@ -136,12 +135,13 @@ describe('Model Watcher', function () {
             .addRuleset(testRuleset)
             .build();
 
-        var modelWatcher = new Treacherous.ModelWatcher();
+        var modelWatcher = new ModelWatcher();
         modelWatcher.setupWatcher(dummyModel, ruleset, 50);
 
-        expect(modelWatcher.watchCache.length).to.equal(1);
-        expect(modelWatcher.watchCache[0].propertyPath).to.equal("blah.test.woop");
-        expect(modelWatcher.watchCache[0].previousValue).to.equal(20);
+        var watchCache = modelWatcher["watchCache"];
+        expect(watchCache.length).to.equal(1);
+        expect(watchCache[0].propertyPath).to.equal("blah.test.woop");
+        expect(watchCache[0].previousValue).to.equal(20);
         modelWatcher.stopWatching();
     });
 
@@ -149,13 +149,13 @@ describe('Model Watcher', function () {
     it('should correctly update when model is changed', function (done) {
         var dummyModel = { foo: 0 };
 
-        var rulesetBuilder = new Treacherous.RulesetBuilder();
+        var rulesetBuilder = new RulesetBuilder();
         var ruleset = rulesetBuilder.create()
             .forProperty("foo")
             .addRule("maxValue", 10)
             .build();
 
-        var modelWatcher = new Treacherous.ModelWatcher();
+        var modelWatcher = new ModelWatcher();
         modelWatcher.setupWatcher(dummyModel, ruleset, 50);
 
         modelWatcher.onPropertyChanged.subscribe(function(data){
@@ -173,7 +173,7 @@ describe('Model Watcher', function () {
     it('should correctly cope with null model setup and replacement', function (done) {
         var dummyModel = null;
 
-        var rulesetBuilder = new Treacherous.RulesetBuilder();
+        var rulesetBuilder = new RulesetBuilder();
         var ruleset = rulesetBuilder.create()
             .forProperty("foo")
                 .addRule("maxValue", 10)
@@ -182,7 +182,7 @@ describe('Model Watcher', function () {
                 .addRuleForEach("maxValue", 10)
             .build();
 
-        var modelWatcher = new Treacherous.ModelWatcher();
+        var modelWatcher = new ModelWatcher();
         modelWatcher.setupWatcher(dummyModel, ruleset, 50);
 
         var newModel = {
@@ -190,7 +190,7 @@ describe('Model Watcher', function () {
             bar: [11, 12]
         };
 
-        var spySubscription = chai.spy(function(eventArgs){console.log("event", eventArgs);});
+        var spySubscription = spy(function(eventArgs){console.log("event", eventArgs);});
         modelWatcher.onPropertyChanged.subscribe(spySubscription);
         modelWatcher.changeWatcherTarget(newModel);
 
@@ -203,9 +203,9 @@ describe('Model Watcher', function () {
     });
 
     it('should correctly cope with empty model which is updated', function (done) {
-        var dummyModel = {};
+        var dummyModel: any = {};
 
-        var rulesetBuilder = new Treacherous.RulesetBuilder();
+        var rulesetBuilder = new RulesetBuilder();
         var ruleset = rulesetBuilder.create()
             .forProperty("foo")
             .addRule("maxValue", 10)
@@ -213,10 +213,10 @@ describe('Model Watcher', function () {
             .addRuleForEach("maxValue", 10)
             .build();
 
-        var modelWatcher = new Treacherous.ModelWatcher();
+        var modelWatcher = new ModelWatcher();
         modelWatcher.setupWatcher(dummyModel, ruleset, 50);
 
-        var spySubscription = chai.spy(function(eventArgs){ console.log("event", eventArgs); });
+        var spySubscription = spy(function(eventArgs){ console.log("event", eventArgs); });
         modelWatcher.onPropertyChanged.subscribe(spySubscription);
 
         dummyModel.foo = 11;

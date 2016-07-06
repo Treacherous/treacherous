@@ -1,12 +1,13 @@
-var assert = chai.assert;
-var expect = chai.expect;
+import {expect} from "chai";
+import {RuleRegistry} from "../../src/rules/rule-registry";
+import {RequiredValidationRule} from "../../src/rules/required-validation-rule";
 
 describe('Rule registry', function () {
 
     it('should correctly get rule for name', function () {
-        var requiredRule = new Treacherous.RequiredValidationRule();
+        var requiredRule = new RequiredValidationRule();
 
-        var ruleRegistry = new Treacherous.RuleRegistry();
+        var ruleRegistry = new RuleRegistry();
         ruleRegistry.registerRule(requiredRule);
 
         var returnedRule = ruleRegistry.getRuleNamed(requiredRule.ruleName);
@@ -14,7 +15,7 @@ describe('Rule registry', function () {
     });
 
     it('should return null for missing rule', function () {
-        var ruleRegistry = new Treacherous.RuleRegistry();
+        var ruleRegistry = new RuleRegistry();
 
         var returnedRule = ruleRegistry.getRuleNamed("doesn't-exist");
         expect(returnedRule).to.be.null;

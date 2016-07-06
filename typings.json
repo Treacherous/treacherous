@@ -1,0 +1,11 @@
+{
+  "name": "treacherous",
+  "devDependencies": {
+    "chai": "registry:npm/chai#3.5.0+20160415060238",
+    "chai-spies": "registry:npm/chai-spies#0.7.1+20160614064916"
+  },
+  "globalDevDependencies": {
+    "bluebird": "registry:dt/bluebird#2.0.0+20160319051630",
+    "mocha": "registry:dt/mocha#2.2.5+20160619032855"
+  }
+}

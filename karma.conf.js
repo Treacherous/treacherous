@@ -1,17 +1,26 @@
 module.exports = function(config) {
     config.set({
-
-        basePath: '..',
-
-        // frameworks to use
-        frameworks: ['mocha', 'chai-as-promised', 'chai-spies', 'chai'],
-
         files: [
-            'dist/treacherous.all.js',
-            'tests/specs/**/*.js',
-            'node_modules/property-resolver/**/property-resolver.js',
-            'node_modules/bluebird/**/browser/bluebird.js'
+            'node_modules/bluebird/js/browser/bluebird.js',
+            'tests/specs/**/*.ts'
         ],
+
+        preprocessors: {
+            'tests/specs/**/*.ts': ['webpack']
+        },
+
+        webpack: {
+            module: {
+                loaders: [
+                    { test: /\.tsx?$/, loader: 'ts-loader', exclude: /node_modules/}
+                ]
+            },
+            resolve: {
+                extensions: ['.ts', '.js', '.tsx', '.jsx', '']
+            }
+        },
+
+        frameworks: ['mocha', 'chai'],
 
         // test result reporter
         reporters: ['progress'],

@@ -4,7 +4,7 @@ export class MinValueValidationRule implements IValidationRule
 {
     public ruleName = "minValue";
 
-    public validate(value, minValue: number): Promise<boolean>
+    public validate(value, minValue: number|Date): Promise<boolean>
     {
         if (value === undefined || value === null || value.length == 0)
         { return Promise.resolve(true); }
