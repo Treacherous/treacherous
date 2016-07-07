@@ -1,5 +1,6 @@
 import {expect} from "chai";
 import {MaxValueValidationRule} from "../../../src/rules/max-value-validation-rule";
+
 describe("Validation Rules", function(){
     describe('Max Value Rule', function () {
 
