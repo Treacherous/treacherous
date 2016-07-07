@@ -4,5 +4,6 @@ node_js:
 before_install:
   - npm install -g typings
   - npm install -g karma
+  - npm install
 install:
   - typings install
