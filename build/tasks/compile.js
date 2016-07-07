@@ -15,6 +15,6 @@ gulp.task('compile', ["clean", "generate-exports"], function() {
 
     return merge([
         tsResult.dts.pipe(gulp.dest(paths.dist + "/definitions")),
-        tsResult.js.pipe(gulp.dest(paths.output))
+        tsResult.js.pipe(gulp.dest(paths.dist + "/commonjs"))
     ]);
 });

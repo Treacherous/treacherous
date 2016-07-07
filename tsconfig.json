@@ -6,9 +6,6 @@
     "experimentalDecorators": true,
     "sourceMap": false
   },
-  "files": [
-    "typings/index.d.ts"
-  ],
   "exclude": [
     "node_modules"
   ]

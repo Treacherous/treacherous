@@ -20,7 +20,7 @@ module.exports = function(config) {
             }
         },
 
-        frameworks: ['mocha', 'chai'],
+        frameworks: ['mocha'],
 
         // test result reporter
         reporters: ['progress'],
