@@ -51,6 +51,7 @@
     "typedoc": "^0.3.12",
     "karma-webpack": "^1.7.0",
     "webpack": "^1.4.0",
-    "ts-loader": "^0.8.0"
+    "ts-loader": "^0.8.0",
+    "typescript": "^1.8.10"
   }
 }
