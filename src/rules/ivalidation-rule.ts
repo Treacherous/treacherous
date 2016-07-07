@@ -1,6 +1,6 @@
 export interface IValidationRule
 {
     ruleName: string;
-    validate(value, options?: any): Promise<boolean>;
-    getMessage(value, options?: any);
+    validate(value: any, options?: any): Promise<boolean>;
+    getMessage(value: any, options?: any);
 }

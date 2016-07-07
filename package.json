@@ -38,20 +38,20 @@
     "gulp-typedoc": "^2.0.0",
     "gulp-typescript": "2.10.0",
     "gulp-uglify": "latest",
-    "karma": "^1.1.0",
+    "karma": "1.1.0",
     "karma-firefox-launcher": "latest",
     "karma-mocha": "latest",
     "mocha": "latest",
     "karma-phantomjs-launcher": "^1.0.0",
     "phantomjs-prebuilt": "^2.1.7",
-    "karma-webpack": "^1.7.0",
-    "webpack": "^1.4.0",
+    "karma-webpack": "1.7.0",
+    "webpack": "1.13.1",
+    "ts-loader": "0.8.2",
+    "typescript": "1.8.10",
     "merge2": "latest",
     "mkdirp": "latest",
     "require-dir": "^0.1.0",
     "rimraf": "latest",
-    "typedoc": "^0.3.12",
-    "ts-loader": "^0.8.0",
-    "typescript": "^1.8.10"
+    "typedoc": "^0.3.12"
   }
 }

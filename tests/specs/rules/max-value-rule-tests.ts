@@ -24,8 +24,8 @@ describe("Validation Rules", function(){
 
         it('should be valid when date is <= max date', function (done) {
             var rule = new MaxValueValidationRule();
-            var maximumDate = new Date(2000, 01, 01);
-            var validDate = new Date(1990, 01, 01);
+            var maximumDate = new Date(2000, 1, 1);
+            var validDate = new Date(1990, 1, 1);
             rule.validate(validDate, maximumDate).then(function(isValid){
                 expect(isValid).to.be.true;
                 done();
@@ -60,13 +60,12 @@ describe("Validation Rules", function(){
 
         it('should be invalid when date is > max date', function (done) {
             var rule = new MaxValueValidationRule();
-            var maximumDate = new Date(2000, 01, 01);
-            var invalidDate = new Date(2001, 01, 01);
+            var maximumDate = new Date(2000, 1, 1);
+            var invalidDate = new Date(2001, 1, 1);
             rule.validate(invalidDate, maximumDate).then(function(isValid){
                 expect(isValid).to.be.false;
                 done();
             });
         });
-
     });
 });

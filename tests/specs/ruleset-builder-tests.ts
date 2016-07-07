@@ -8,7 +8,7 @@ describe('Ruleset Builder', function () {
 
     it('should correctly add rules to the ruleset', function () {
         var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
-        var rulesetBuilder = new RulesetBuilder(<RuleRegistry>dummyRuleRegistry);
+        var rulesetBuilder = new RulesetBuilder(<any>dummyRuleRegistry);
 
         var ruleset: any = rulesetBuilder.create()
             .forProperty("foo")
@@ -25,7 +25,7 @@ describe('Ruleset Builder', function () {
 
     it('should support custom message strings on rules added to the ruleset', function () {
         var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
-        var rulesetBuilder = new RulesetBuilder(<RuleRegistry>dummyRuleRegistry);
+        var rulesetBuilder = new RulesetBuilder(<any>dummyRuleRegistry);
 
         var ruleset: any = rulesetBuilder.create()
             .forProperty("foo")
@@ -41,7 +41,7 @@ describe('Ruleset Builder', function () {
 
     it('should support custom message functions on rules added to the ruleset', function () {
         var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
-        var rulesetBuilder = new RulesetBuilder(<RuleRegistry>dummyRuleRegistry);
+        var rulesetBuilder = new RulesetBuilder(<any>dummyRuleRegistry);
 
         var ruleset: any = rulesetBuilder.create()
             .forProperty("foo")
@@ -57,7 +57,7 @@ describe('Ruleset Builder', function () {
 
     it('should correctly add rulesets to properties in the generated ruleset', function () {
         var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
-        var rulesetBuilder = new RulesetBuilder(<RuleRegistry>dummyRuleRegistry);
+        var rulesetBuilder = new RulesetBuilder(<any>dummyRuleRegistry);
 
         var dummyRuleset: any = new Ruleset();
         dummyRuleset.rules.bar = [ new RuleLink("required", true) ];
@@ -75,7 +75,7 @@ describe('Ruleset Builder', function () {
 
     it('should correctly add foreach rules to the ruleset', function () {
         var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
-        var rulesetBuilder = new RulesetBuilder(<RuleRegistry>dummyRuleRegistry);
+        var rulesetBuilder = new RulesetBuilder(<any>dummyRuleRegistry);
 
         var ruleset: any = rulesetBuilder.create()
             .forProperty("foo")
@@ -90,7 +90,7 @@ describe('Ruleset Builder', function () {
 
     it('should not allow empty rule names with ruleRegistry', function () {
         var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
-        var rulesetBuilder = new RulesetBuilder(<RuleRegistry>dummyRuleRegistry);
+        var rulesetBuilder = new RulesetBuilder(<any>dummyRuleRegistry);
         var hasFailed = false;
 
         try

@@ -24,8 +24,8 @@ describe("Validation Rules", function(){
 
         it('should be valid when date is >= min date', function (done) {
             var rule = new MinValueValidationRule();
-            var minDate = new Date(2000, 01, 01);
-            var validDate = new Date(2001, 01, 01);
+            var minDate = new Date(2000, 1, 1);
+            var validDate = new Date(2001, 1, 1);
             rule.validate(validDate, minDate).then(function(isValid){
                 expect(isValid).to.be.true;
                 done();
@@ -60,8 +60,8 @@ describe("Validation Rules", function(){
 
         it('should be invalid when date is < min date', function (done) {
             var rule = new MinValueValidationRule();
-            var minDate = new Date(2000, 01, 01);
-            var invalidDate = new Date(1990, 01, 01);
+            var minDate = new Date(2000, 1, 1);
+            var invalidDate = new Date(1990, 1, 1);
             rule.validate(invalidDate, minDate).then(function(isValid){
                 expect(isValid).to.be.false;
                 done();

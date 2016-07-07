@@ -21,7 +21,7 @@ describe('Validation Group', function () {
     it('should correctly get errors', function (done) {
 
         var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
-        var rulesetBuilder = new RulesetBuilder(<RuleRegistry>dummyRuleRegistry);
+        var rulesetBuilder = new RulesetBuilder(<any>dummyRuleRegistry);
         var ruleset = rulesetBuilder.create()
             .forProperty("foo")
             .addRule("maxLength", 2)
@@ -545,7 +545,7 @@ describe('Validation Group', function () {
     it('should only return errors when all validation events have finished', function (done) {
 
         // This basically delays validation so others stack
-        var delayedRequiresValid = {
+        var delayedRequiresValid: any = {
             ruleName: "delayed",
             validate: function(value, options){
                 return new Promise(function(resolve, reject){
@@ -581,7 +581,7 @@ describe('Validation Group', function () {
 
     it('should only return valid state when all validation events have finished', function (done) {
 
-        var delayedRequiresValid = {
+        var delayedRequiresValid: any = {
             ruleName: "delayed",
             validate: function(value, options){
                 return new Promise(function(resolve, reject){
@@ -617,7 +617,7 @@ describe('Validation Group', function () {
 
     it('should correctly delay error requests until validation has finished', function (done) {
 
-        var delayedRequires10Rule = {
+        var delayedRequires10Rule: any = {
             ruleName: "delayed",
             validate: function(value, options){
                 return new Promise(function(resolve, reject){
