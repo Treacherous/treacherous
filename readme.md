@@ -14,16 +14,14 @@ each framework/platforms many different validation paradigms or libraries.
 
 ## Features / Benefits
 
-- Fully async validation`*`
+- Fully async validation
 - Separation of rules and validation allowing composable rulesets
 - Supports nested complex objects/arrays
 - Outside in validation, does not augment your models in any way
-- Can be integrated with any front end framework`**`
+- Can be integrated with any front end framework`*`
 - Works in browser or server
 
-`*` = Currently has a hard dependency on bluebird (looking to refactor out going forward), and incorrect validation does not reject promises (this was a design decision but is open to discussion.)
-
-`**` = Currently supports [knockout](https://github.com/grofit/treacherous-knockout), [aurelia] (https://github.com/grofit/treacherous-aurelia), others coming soon.
+`*` = Currently supports [knockout](https://github.com/grofit/treacherous-knockout), [aurelia] (https://github.com/grofit/treacherous-aurelia), others coming soon.
 
 ---
 
@@ -35,15 +33,9 @@ Just do an `npm install treacherous`
 
 ### In browser
 
-There are a few different flavours in the dist directory for the browser ([read more here](docs/installing.md)).
-
-- If you have a module aware framework in your browser use `treacheous.js`
-- If you are running without modules then include either `treacherous.browser.js` or `treacherous.all.js`
-
-The difference between the two latter ones is that one requires you to include ([event-js](https://github.com/grofit/eventjs) and [property-resolver](https://github.com/grofit/property-resolver)), 
-however the `all` one has those bundled in, for most instances use the browser one and include the other 2 files.
-
-In non module aware scenarios it will self register the `Treacherous` global var for you.
+As this is distributed as a commonjs module it is recommended that you consume it via your existing module 
+loader, or in the scenario where you do not have one it is recommended that you use webpack to just package 
+it up as a UMD module to consume.
 
 ---
 
@@ -76,6 +68,8 @@ validationGroup.isValid()
 ### Validating simple arrays in models
 
 ```js
+var Treacherous = require("treacherous");
+
 var simpleModel = {
     foo: [10, 20, 30]
 };
