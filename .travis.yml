@@ -3,5 +3,6 @@ node_js:
   - "4"
 before_install:
   - npm install -g typings
+  - npm install -g karma
 install:
   - typings install
