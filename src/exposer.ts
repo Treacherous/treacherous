@@ -19,7 +19,7 @@ import {RequiredValidationRule} from "./rules/required-validation-rule"
 import {StepValidationRule} from "./rules/step-validation-rule"
 import {RulesetBuilder} from "./rulesets/ruleset-builder";
 import {ValidationGroup} from "./validation-group";
-import {ModelWatcher} from "./watcher/model-watcher";
+import {ModelWatcherFactory} from "./factories/model-watcher-factory";
 import {PropertyResolver} from "property-resolver";
 import {RuleResolver} from "./rulesets/rule-resolver";
 
@@ -40,10 +40,10 @@ ruleRegistry.registerRule(new RequiredValidationRule());
 ruleRegistry.registerRule(new StepValidationRule());
 
 var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry);
-var modelWatcher = new ModelWatcher();
 var propertyResolver = new PropertyResolver();
 var ruleResolver = new RuleResolver();
-var validationGroupFactory = new ValidationGroupFactory(fieldErrorProcessor, modelWatcher, propertyResolver, ruleResolver);
+var modelWatcherFactory = new ModelWatcherFactory(propertyResolver);
+var validationGroupFactory = new ValidationGroupFactory(fieldErrorProcessor, modelWatcherFactory, propertyResolver, ruleResolver);
 
 export function createRuleset(): RulesetBuilder
 {

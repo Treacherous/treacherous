@@ -16,7 +16,7 @@ var regex_validation_rule_1 = require("./rules/regex-validation-rule");
 var required_validation_rule_1 = require("./rules/required-validation-rule");
 var step_validation_rule_1 = require("./rules/step-validation-rule");
 var ruleset_builder_1 = require("./rulesets/ruleset-builder");
-var model_watcher_1 = require("./watcher/model-watcher");
+var model_watcher_factory_1 = require("./factories/model-watcher-factory");
 var property_resolver_1 = require("property-resolver");
 var rule_resolver_1 = require("./rulesets/rule-resolver");
 exports.ruleRegistry = new rule_registry_1.RuleRegistry();
@@ -35,10 +35,10 @@ exports.ruleRegistry.registerRule(new regex_validation_rule_1.RegexValidationRul
 exports.ruleRegistry.registerRule(new required_validation_rule_1.RequiredValidationRule());
 exports.ruleRegistry.registerRule(new step_validation_rule_1.StepValidationRule());
 var fieldErrorProcessor = new field_error_processor_1.FieldErrorProcessor(exports.ruleRegistry);
-var modelWatcher = new model_watcher_1.ModelWatcher();
 var propertyResolver = new property_resolver_1.PropertyResolver();
 var ruleResolver = new rule_resolver_1.RuleResolver();
-var validationGroupFactory = new validation_group_factory_1.ValidationGroupFactory(fieldErrorProcessor, modelWatcher, propertyResolver, ruleResolver);
+var modelWatcherFactory = new model_watcher_factory_1.ModelWatcherFactory(propertyResolver);
+var validationGroupFactory = new validation_group_factory_1.ValidationGroupFactory(fieldErrorProcessor, modelWatcherFactory, propertyResolver, ruleResolver);
 function createRuleset() {
     return new ruleset_builder_1.RulesetBuilder().create();
 }

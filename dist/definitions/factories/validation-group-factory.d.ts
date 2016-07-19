@@ -1,13 +1,14 @@
-import { ValidationGroup } from "../validation-group";
 import { Ruleset } from "../rulesets/ruleset";
-import { IModelWatcher } from "../watcher/imodel-watcher";
 import { IRuleResolver } from "../rulesets/irule-resolver";
 import { IFieldErrorProcessor } from "../processors/ifield-error-processor";
-export declare class ValidationGroupFactory {
+import { IModelWatcherFactory } from "./imodel-watcher-factory";
+import { IValidationGroupFactory } from "./ivalidation-group-factory";
+import { IValidationGroup } from "../ivalidation-group";
+export declare class ValidationGroupFactory implements IValidationGroupFactory {
     private fieldErrorProcessor;
-    private modelWatcher;
+    private modelWatcherFactory;
     private propertyResolver;
     private ruleResolver;
-    constructor(fieldErrorProcessor: IFieldErrorProcessor, modelWatcher: IModelWatcher, propertyResolver: any, ruleResolver: IRuleResolver);
-    createValidationGroup: (model: any, ruleset: Ruleset) => ValidationGroup;
+    constructor(fieldErrorProcessor: IFieldErrorProcessor, modelWatcherFactory: IModelWatcherFactory, propertyResolver: any, ruleResolver: IRuleResolver);
+    createValidationGroup: (model: any, ruleset: Ruleset) => IValidationGroup;
 }

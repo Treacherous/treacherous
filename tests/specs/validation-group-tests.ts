@@ -742,5 +742,4 @@ describe('Validation Group', function () {
                 });
         }, 200);
     });
-
 });
