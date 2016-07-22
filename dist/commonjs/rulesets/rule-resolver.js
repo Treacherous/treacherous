@@ -1,3 +1,4 @@
+"use strict";
 var property_resolver_1 = require("property-resolver");
 var RuleResolver = (function () {
     function RuleResolver(propertyResolver) {
@@ -86,5 +87,5 @@ var RuleResolver = (function () {
         };
     }
     return RuleResolver;
-})();
+}());
 exports.RuleResolver = RuleResolver;

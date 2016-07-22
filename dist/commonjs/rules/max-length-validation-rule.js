@@ -1,3 +1,4 @@
+"use strict";
 var MaxLengthValidationRule = (function () {
     function MaxLengthValidationRule() {
         this.ruleName = "maxLength";
@@ -15,5 +16,5 @@ var MaxLengthValidationRule = (function () {
         return "This field has a length of " + value.length + " but should contain no more than " + maxLength;
     };
     return MaxLengthValidationRule;
-})();
+}());
 exports.MaxLengthValidationRule = MaxLengthValidationRule;

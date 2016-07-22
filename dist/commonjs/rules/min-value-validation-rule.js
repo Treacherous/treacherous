@@ -1,3 +1,4 @@
+"use strict";
 var MinValueValidationRule = (function () {
     function MinValueValidationRule() {
         this.ruleName = "minValue";
@@ -15,5 +16,5 @@ var MinValueValidationRule = (function () {
         return "This field has a value of " + value + " but should be greater than or equal to " + minValue;
     };
     return MinValueValidationRule;
-})();
+}());
 exports.MinValueValidationRule = MinValueValidationRule;

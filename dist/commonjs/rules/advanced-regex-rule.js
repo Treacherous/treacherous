@@ -1,3 +1,4 @@
+"use strict";
 var AdvancedRegexValidationRule = (function () {
     function AdvancedRegexValidationRule(ruleName, expression, message) {
         if (!ruleName || ruleName.length == 0) {
@@ -21,5 +22,5 @@ var AdvancedRegexValidationRule = (function () {
         return this.message(value);
     };
     return AdvancedRegexValidationRule;
-})();
+}());
 exports.AdvancedRegexValidationRule = AdvancedRegexValidationRule;

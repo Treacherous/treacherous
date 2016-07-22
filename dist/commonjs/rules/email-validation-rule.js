@@ -1,3 +1,4 @@
+"use strict";
 ;
 var EmailValidationRule = (function () {
     function EmailValidationRule() {
@@ -15,5 +16,5 @@ var EmailValidationRule = (function () {
         return "This field contains \"" + value + "\" which is not a valid email address";
     };
     return EmailValidationRule;
-})();
+}());
 exports.EmailValidationRule = EmailValidationRule;

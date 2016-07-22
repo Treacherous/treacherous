@@ -1,3 +1,4 @@
+"use strict";
 var PropertyChangedEvent = (function () {
     function PropertyChangedEvent(propertyPath, newValue, oldValue) {
         this.propertyPath = propertyPath;
@@ -5,5 +6,5 @@ var PropertyChangedEvent = (function () {
         this.oldValue = oldValue;
     }
     return PropertyChangedEvent;
-})();
+}());
 exports.PropertyChangedEvent = PropertyChangedEvent;

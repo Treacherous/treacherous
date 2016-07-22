@@ -1,3 +1,4 @@
+"use strict";
 var RegexValidationRule = (function () {
     function RegexValidationRule() {
         this.ruleName = "regex";
@@ -13,5 +14,5 @@ var RegexValidationRule = (function () {
         return "This field does not match the expected format";
     };
     return RegexValidationRule;
-})();
+}());
 exports.RegexValidationRule = RegexValidationRule;

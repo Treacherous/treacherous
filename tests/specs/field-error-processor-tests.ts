@@ -17,6 +17,7 @@ describe('Field Error Processor', function () {
 
         var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry);
 
+        var dummyModel = {};
         var dummyField = "123";
         var dummyRules = [
             new RuleLink("required", true),
@@ -24,7 +25,7 @@ describe('Field Error Processor', function () {
         ];
 
         fieldErrorProcessor
-            .checkFieldForErrors(dummyField, dummyRules)
+            .checkFieldForErrors(dummyModel, dummyField, dummyRules)
             .then(function(error){
                 expect(error).not.to.be.null;
                 expect(error).to.contain("3").and.to.contain("2");
@@ -38,6 +39,7 @@ describe('Field Error Processor', function () {
 
         var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry);
 
+        var dummyModel = {};
         var expectedMessage = "you should have put in some text";
         var dummyField = "";
         var rule = new RuleLink("required", true);
@@ -45,7 +47,7 @@ describe('Field Error Processor', function () {
         var dummyRules = [rule];
 
         fieldErrorProcessor
-            .checkFieldForErrors(dummyField, dummyRules)
+            .checkFieldForErrors(dummyModel, dummyField, dummyRules)
             .then(function(error){
                 expect(error).not.to.be.null;
                 expect(error).to.equal(expectedMessage);
@@ -59,6 +61,7 @@ describe('Field Error Processor', function () {
 
         var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry);
 
+        var dummyModel = {};
         var expectedMessage = "you should have put in some text";
         var dummyField = "";
         var rule = new RuleLink("required", true);
@@ -68,7 +71,7 @@ describe('Field Error Processor', function () {
         ];
 
         fieldErrorProcessor
-            .checkFieldForErrors(dummyField, dummyRules)
+            .checkFieldForErrors(dummyModel, dummyField, dummyRules)
             .then(function(error){
                 expect(error).not.to.be.null;
                 expect(error).to.equal(expectedMessage);
@@ -83,6 +86,7 @@ describe('Field Error Processor', function () {
 
         var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry);
 
+        var dummyModel = {};
         var dummyField = "12";
         var dummyRules = [
             new RuleLink("required", true),
@@ -90,7 +94,7 @@ describe('Field Error Processor', function () {
         ];
 
         fieldErrorProcessor
-            .checkFieldForErrors(dummyField, dummyRules)
+            .checkFieldForErrors(dummyModel, dummyField, dummyRules)
             .then(function(error){
                 expect(error).to.be.null;
                 done();
@@ -107,6 +111,7 @@ describe('Field Error Processor', function () {
 
         var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry);
 
+        var dummyModel = {};
         var dummyField = null;
         var dummyRules = [
             new RuleLink("required", true),
@@ -114,7 +119,7 @@ describe('Field Error Processor', function () {
         ];
 
         fieldErrorProcessor
-            .checkFieldForErrors(dummyField, dummyRules)
+            .checkFieldForErrors(dummyModel, dummyField, dummyRules)
             .then(function(error){
                 expect(error).not.to.be.null;
                 expect(spiedValidationMethod).to.not.have.been.called;

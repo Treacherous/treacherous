@@ -1,3 +1,4 @@
+"use strict";
 var PropertyStateChangedEvent = (function () {
     function PropertyStateChangedEvent(property, isValid, error) {
         this.property = property;
@@ -5,5 +6,5 @@ var PropertyStateChangedEvent = (function () {
         this.error = error;
     }
     return PropertyStateChangedEvent;
-})();
+}());
 exports.PropertyStateChangedEvent = PropertyStateChangedEvent;

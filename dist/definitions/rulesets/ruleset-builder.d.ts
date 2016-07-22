@@ -11,6 +11,7 @@ export declare class RulesetBuilder {
     forProperty: (propertyName: string) => RulesetBuilder;
     addRule: (rule: string, ruleOptions?: any) => RulesetBuilder;
     withMessage: (messageOverride: ((value: any, ruleOptions?: any) => string) | string) => RulesetBuilder;
+    appliesIf: (appliesFunction: ((model: any, value: any, ruleOptions?: any) => boolean) | boolean) => RulesetBuilder;
     addRuleForEach: (rule: string, ruleOptions?: any) => RulesetBuilder;
     addRuleset: (ruleset: Ruleset) => RulesetBuilder;
     addRulesetForEach: (ruleset: Ruleset) => RulesetBuilder;

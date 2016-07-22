@@ -1,9 +1,17 @@
+"use strict";
 var field_has_error_1 = require("./field-has-error");
 var FieldErrorProcessor = (function () {
     function FieldErrorProcessor(ruleRegistry) {
         this.ruleRegistry = ruleRegistry;
     }
-    FieldErrorProcessor.prototype.processRuleLink = function (fieldValue, ruleLink) {
+    FieldErrorProcessor.prototype.processRuleLink = function (model, fieldValue, ruleLink) {
+        var shouldRuleApply = ruleLink.appliesIf === true
+            || ((typeof (ruleLink.appliesIf) === "function")
+                ? ruleLink.appliesIf(model, fieldValue, ruleLink.ruleOptions)
+                : false);
+        if (!shouldRuleApply) {
+            return Promise.resolve();
+        }
         var validator = this.ruleRegistry.getRuleNamed(ruleLink.ruleName);
         var checkIfValid = function (isValid) {
             if (!isValid) {
@@ -27,10 +35,10 @@ var FieldErrorProcessor = (function () {
             .validate(fieldValue, ruleLink.ruleOptions)
             .then(checkIfValid);
     };
-    FieldErrorProcessor.prototype.checkFieldForErrors = function (fieldValue, rules) {
+    FieldErrorProcessor.prototype.checkFieldForErrors = function (model, fieldValue, rules) {
         var _this = this;
         var ruleCheck = function (ruleLinkOrSet) {
-            return _this.processRuleLink(fieldValue, ruleLinkOrSet);
+            return _this.processRuleLink(model, fieldValue, ruleLinkOrSet);
         };
         var checkEachRule = function (rules) {
             var promises = [];
@@ -47,5 +55,5 @@ var FieldErrorProcessor = (function () {
         });
     };
     return FieldErrorProcessor;
-})();
+}());
 exports.FieldErrorProcessor = FieldErrorProcessor;

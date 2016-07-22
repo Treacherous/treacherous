@@ -1,3 +1,4 @@
+"use strict";
 var TypeHelper = (function () {
     function TypeHelper() {
     }
@@ -11,5 +12,5 @@ var TypeHelper = (function () {
         return Object.prototype.toString.call(value) === '[object Array]';
     };
     return TypeHelper;
-})();
+}());
 exports.TypeHelper = TypeHelper;

@@ -1,3 +1,4 @@
+"use strict";
 var MaxValueValidationRule = (function () {
     function MaxValueValidationRule() {
         this.ruleName = "maxValue";
@@ -15,5 +16,5 @@ var MaxValueValidationRule = (function () {
         return "This field has a value of " + value + " but should be less than or equal to " + maxValue;
     };
     return MaxValueValidationRule;
-})();
+}());
 exports.MaxValueValidationRule = MaxValueValidationRule;

@@ -1,3 +1,4 @@
+"use strict";
 var property_resolver_1 = require("property-resolver");
 var event_js_1 = require("event-js");
 var property_state_changed_event_1 = require("./events/property-state-changed-event");
@@ -58,7 +59,7 @@ var ValidationGroup = (function () {
                     .then(function () {
                     var fieldValue = _this.propertyResolver.resolveProperty(_this.model, propertyName);
                     var promise = _this.fieldErrorProcessor
-                        .checkFieldForErrors(fieldValue, propertyRules)
+                        .checkFieldForErrors(_this.model, fieldValue, propertyRules)
                         .then(handlePossibleError);
                     return _this.countedPromise(promise);
                 });
@@ -66,7 +67,7 @@ var ValidationGroup = (function () {
             else {
                 var fieldValue = _this.propertyResolver.resolveProperty(_this.model, propertyName);
                 _this.activePromiseChain = _this.countedPromise(_this.fieldErrorProcessor
-                    .checkFieldForErrors(fieldValue, propertyRules)
+                    .checkFieldForErrors(_this.model, fieldValue, propertyRules)
                     .then(handlePossibleError));
                 return _this.countedPromise(_this.activePromiseChain);
             }
@@ -186,5 +187,5 @@ var ValidationGroup = (function () {
         return possibleForEach.isForEach;
     };
     return ValidationGroup;
-})();
+}());
 exports.ValidationGroup = ValidationGroup;

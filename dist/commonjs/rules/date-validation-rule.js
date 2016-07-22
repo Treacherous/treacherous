@@ -1,3 +1,4 @@
+"use strict";
 var DateValidationRule = (function () {
     function DateValidationRule() {
         this.ruleName = "date";
@@ -14,5 +15,5 @@ var DateValidationRule = (function () {
         return "This field contains \"" + value + "\" which is not a valid date";
     };
     return DateValidationRule;
-})();
+}());
 exports.DateValidationRule = DateValidationRule;

@@ -1,3 +1,4 @@
+"use strict";
 var ComparerHelper = (function () {
     function ComparerHelper() {
     }
@@ -9,5 +10,5 @@ var ComparerHelper = (function () {
     };
     ComparerHelper.dateTimeCompararer = function (value1, value2) { return (value1.getTime() == value2.getTime()); };
     return ComparerHelper;
-})();
+}());
 exports.ComparerHelper = ComparerHelper;

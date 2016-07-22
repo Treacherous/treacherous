@@ -1,3 +1,4 @@
+"use strict";
 var type_helper_1 = require("../helpers/type-helper");
 var comparer_helper_1 = require("../helpers/comparer-helper");
 var NotEqualValidationRule = (function () {
@@ -23,5 +24,5 @@ var NotEqualValidationRule = (function () {
         return "This field is " + value + " but should not be equal to " + (optionsOrValue.value || optionsOrValue);
     };
     return NotEqualValidationRule;
-})();
+}());
 exports.NotEqualValidationRule = NotEqualValidationRule;

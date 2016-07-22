@@ -1,3 +1,4 @@
+"use strict";
 var RequiredValidationRule = (function () {
     function RequiredValidationRule() {
         this.ruleName = "required";
@@ -25,5 +26,5 @@ var RequiredValidationRule = (function () {
         return "This field is required";
     };
     return RequiredValidationRule;
-})();
+}());
 exports.RequiredValidationRule = RequiredValidationRule;
