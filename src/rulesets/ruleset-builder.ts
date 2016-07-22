@@ -49,6 +49,14 @@ export class RulesetBuilder
         return this;
     }
 
+    public appliesIf = (appliesFunction: ((value: any, ruleOptions?: any, reason?: number) => boolean) | boolean): RulesetBuilder =>
+    {
+        if(!this.currentRule)
+        { throw new Error("An appliesIf function must precede an addRule call in the chain"); }
+        this.currentRule.appliesIf = appliesFunction;
+        return this;
+    }
+
     public addRuleForEach = (rule: string, ruleOptions?: any): RulesetBuilder =>
     {
         if(rule == null || typeof(rule) == "undefined" || rule.length == 0)

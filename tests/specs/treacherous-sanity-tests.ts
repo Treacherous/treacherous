@@ -58,7 +58,7 @@ describe('Treacherous Sanity Checks', function () {
                 expect(errors["foo[2]"]).to.contain("30");
                 validationGroup.release();
                 done();
-            });
+            }).catch(done);
     });
 
 });

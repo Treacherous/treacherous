@@ -28,22 +28,22 @@
     "url": "https://github.com/grofit/treacherous"
   },
   "devDependencies": {
-    "bluebird": "^3.3.4",
+    "bluebird": "^3.4.1",
     "chai": "latest",
     "chai-spies": "latest",
     "del": "latest",
-    "gulp": "3.9.0",
+    "gulp": "3.9.1",
     "gulp-bump": "latest",
     "gulp-es6-exporter": "^0.0.5",
     "gulp-rename": "latest",
     "gulp-typedoc": "^2.0.0",
-    "gulp-typescript": "2.10.0",
+    "gulp-typescript": "2.13.6",
     "gulp-uglify": "latest",
-    "karma": "1.1.0",
+    "karma": "1.1.1",
     "karma-firefox-launcher": "latest",
     "karma-mocha": "latest",
     "mocha": "latest",
-    "karma-phantomjs-launcher": "^1.0.0",
+    "karma-phantomjs-launcher": "^1.0.1",
     "phantomjs-prebuilt": "^2.1.7",
     "karma-webpack": "1.7.0",
     "webpack": "1.13.1",
@@ -51,8 +51,8 @@
     "typescript": "1.8.10",
     "merge2": "latest",
     "mkdirp": "latest",
-    "require-dir": "^0.1.0",
+    "require-dir": "^0.3.0",
     "rimraf": "latest",
-    "typedoc": "^0.3.12"
+    "typedoc": "^0.4.4"
   }
 }

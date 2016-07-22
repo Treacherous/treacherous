@@ -8,6 +8,15 @@ export class FieldErrorProcessor implements IFieldErrorProcessor
     constructor(public ruleRegistry: RuleRegistry){}
 
     public processRuleLink(fieldValue: any, ruleLink: RuleLink): Promise<any>{
+
+        // Early exit if this rule should not be applied...
+        var apply = ruleLink.appliesIf === true
+            || ((typeof(ruleLink.appliesIf) === "function")
+                ? ruleLink.appliesIf(fieldValue, ruleLink.ruleOptions, 0)
+                : false);
+        if (!apply)
+            return Promise.resolve();
+
         var validator = this.ruleRegistry.getRuleNamed(ruleLink.ruleName);
 
         var checkIfValid = (isValid) => {

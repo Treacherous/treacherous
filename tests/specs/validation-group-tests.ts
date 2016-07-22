@@ -38,8 +38,61 @@ describe('Validation Group', function () {
                 expect(errors).to.include.keys("foo");
                 validationGroup.release();
                 done();
-            });
+            }).catch(done);
+
     });
+
+    it('should apply appliesId rules correctly for TRUE', function (done) {
+
+        var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
+        var rulesetBuilder = new RulesetBuilder(<any>dummyRuleRegistry);
+        var ruleset = rulesetBuilder.create()
+            .forProperty("foo")
+            .addRule("maxLength", 2)
+            .appliesIf((v,o) => { return dummyModel.checkFoo })
+            .build();
+
+        var dummyModel = {
+            foo: "hello",
+            checkFoo: true
+        };
+
+        var validationGroup = createValidationGroupFor(dummyModel, ruleset);
+        validationGroup.getModelErrors()
+            .then(function(errors){
+                expect(errors).not.to.be.null;
+                expect(errors).to.include.keys("foo");
+                validationGroup.release();
+                done();
+            }).catch(done);
+    });
+
+
+    it('should apply appliesId rules correctly for FALSE', function (done) {
+
+        var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
+        var rulesetBuilder = new RulesetBuilder(<any>dummyRuleRegistry);
+        var ruleset = rulesetBuilder.create()
+            .forProperty("foo")
+            .addRule("maxLength", 2)
+            .appliesIf((v,o) => { return dummyModel.checkFoo })
+            .build();
+
+        var dummyModel = {
+            foo: "hello",
+            checkFoo: false
+        };
+
+        var validationGroup = createValidationGroupFor(dummyModel, ruleset);
+        validationGroup.getModelErrors()
+            .then(function(errors){
+                expect(errors).not.to.be.null;
+                expect(errors).not.to.include.keys("foo");
+                validationGroup.release();
+                done();
+            }).catch(done);
+    });
+
 
     it('should correctly get errors in nested objects', function (done) {
 
@@ -68,7 +121,7 @@ describe('Validation Group', function () {
                 expect(errors["foo.bar"]).to.contain("9");
                 validationGroup.release();
                 done();
-            });
+            }).catch(done);
     });
 
     it('should correctly get errors in complex arrays', function (done) {
@@ -104,7 +157,8 @@ describe('Validation Group', function () {
                 expect(errors["foo[2].bar"]).to.contain("5");
                 validationGroup.release();
                 done();
-            });
+            }).catch(done);
+
     });
 
     it('should correctly get errors in simple arrays', function (done) {
@@ -128,7 +182,7 @@ describe('Validation Group', function () {
                 expect(errors["foo[2]"]).to.contain("30");
                 validationGroup.release();
                 done();
-            });
+            }).catch(done);
     });
 
     it('should correctly get property error', function (done) {
@@ -151,7 +205,7 @@ describe('Validation Group', function () {
                 expect(error).to.contain("5");
                 validationGroup.release();
                 done();
-            });
+            }).catch(done);
     });
 
     it('should correctly get nested property error', function (done) {
@@ -180,7 +234,7 @@ describe('Validation Group', function () {
                 expect(error).to.contain("5");
                 validationGroup.release();
                 done();
-            });
+            }).catch(done);
     });
 
     it('should correctly get property error in complex arrays', function (done) {
@@ -211,7 +265,7 @@ describe('Validation Group', function () {
                 console.log(error);
                 expect(error).not.to.be.null;
                 expect(error).to.contain("required");
-            });
+            }).catch(done);
 
         var checkTwo = validationGroup.getPropertyError("foo[2].bar")
             .then(function(error){
@@ -219,13 +273,13 @@ describe('Validation Group', function () {
                 expect(error).not.to.be.null;
                 expect(error).to.contain("8");
                 expect(error).to.contain("5");
-            });
+            }).catch(done);
 
         Promise.all([checkOne, checkTwo])
             .then(function() {
                 validationGroup.release();
                 done();
-            });
+            }).catch(done);
     });
 
     it('should correctly get property error in simple array', function (done) {
@@ -248,7 +302,7 @@ describe('Validation Group', function () {
                 expect(error).to.contain("30");
                 validationGroup.release();
                 done();
-            });
+            }).catch(done);
     });
 
     it('should return undefined if no error exists for property', function (done) {
@@ -269,7 +323,7 @@ describe('Validation Group', function () {
                 expect(error).to.be.undefined;
                 validationGroup.release();
                 done();
-            });
+            }).catch(done);
     });
 
     it('should not apply array errors to child indexes', function (done) {
@@ -296,7 +350,7 @@ describe('Validation Group', function () {
                 expect(errors["foo"]).to.contain("3");
                 validationGroup.release();
                 done();
-            });
+            }).catch(done);
     });
 
     it('should correctly get errors when invalid elements added to arrays', function (done) {
@@ -336,7 +390,7 @@ describe('Validation Group', function () {
                     expect(errors["foo[2].bar"]).to.contain("5");
                     validationGroup.release();
                     done();
-                });
+                }).catch(done);
         }, 100);
     });
 
@@ -516,7 +570,7 @@ describe('Validation Group', function () {
             expect(errors.foo).to.contain("15");
             validationGroup.release();
             done();
-        });
+        }).catch(done);
     });
 
     it('should correctly return promise indicating validity', function (done) {
@@ -539,7 +593,7 @@ describe('Validation Group', function () {
             expect(errors.foo).to.contain("15");
             validationGroup.release();
             done();
-        });
+        }).catch(done);
     });
 
     it('should only return errors when all validation events have finished', function (done) {
@@ -573,7 +627,7 @@ describe('Validation Group', function () {
                 expect(errors).to.be.empty;
                 validationGroup.release();
                 done();
-            });
+            }).catch(done);
 
         dummyModel.foo = "invalid";
         dummyModel.foo = "valid";
@@ -609,7 +663,7 @@ describe('Validation Group', function () {
                 expect(isValid).to.be.true;
                 validationGroup.release();
                 done();
-            });
+            }).catch(done);
 
         dummyModel.foo = "invalid";
         dummyModel.foo = "valid";
@@ -645,14 +699,14 @@ describe('Validation Group', function () {
         var promise1 = validationGroup.getModelErrors()
             .then(function(errors){
                 expect(errors).to.be.empty;
-            });
+            }).catch(done);
 
         dummyModel.foo = 10;
 
         var promise2 = validationGroup.getModelErrors()
             .then(function(errors){
                 expect(errors).to.be.empty;
-            });
+            }).catch(done);
 
         Promise.all([promise1, promise2])
             .then(function(){
@@ -680,7 +734,7 @@ describe('Validation Group', function () {
                 expect(errors).to.be.empty;
                 validationGroup.release();
                 done();
-            });
+            }).catch(done);
     });
 
     it('should correctly allow empty model then update errors when model changed', function (done) {
@@ -706,7 +760,7 @@ describe('Validation Group', function () {
                 expect(errors["bar[0]"]).to.contain("10");
                 validationGroup.release();
                 done();
-            });
+            }).catch(done);
     });
 
     it('should correctly report errors with empty models that later on get a schema', function (done) {
@@ -739,7 +793,7 @@ describe('Validation Group', function () {
                     expect(errors["bar[0]"]).to.contain("10");
                     validationGroup.release();
                     done();
-                });
+                }).catch(done);
         }, 200);
     });
 });
