@@ -1,3 +1,4 @@
+"use strict";
 var validation_group_factory_1 = require("./factories/validation-group-factory");
 var field_error_processor_1 = require("./processors/field-error-processor");
 var rule_registry_1 = require("./rules/rule-registry");

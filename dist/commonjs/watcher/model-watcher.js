@@ -1,3 +1,4 @@
+"use strict";
 var property_resolver_1 = require("property-resolver");
 var event_js_1 = require("event-js");
 var type_helper_1 = require("../helpers/type-helper");
@@ -175,5 +176,5 @@ var ModelWatcher = (function () {
         this.onPropertyChanged = new event_js_1.EventHandler(this);
     }
     return ModelWatcher;
-})();
+}());
 exports.ModelWatcher = ModelWatcher;

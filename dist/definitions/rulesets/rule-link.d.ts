@@ -3,4 +3,5 @@ export declare class RuleLink {
     ruleOptions: any;
     constructor(ruleName: string, ruleOptions?: any);
     messageOverride: ((value: any, ruleOptions?: any) => string) | string;
+    appliesIf: (((model: any, value: any, ruleOptions?: any) => boolean) | boolean);
 }

@@ -1,3 +1,4 @@
+"use strict";
 var StepValidationRule = (function () {
     function StepValidationRule() {
         this.ruleName = "step";
@@ -14,5 +15,5 @@ var StepValidationRule = (function () {
         return "This field has a value of " + value + " and should be an increment of " + step;
     };
     return StepValidationRule;
-})();
+}());
 exports.StepValidationRule = StepValidationRule;

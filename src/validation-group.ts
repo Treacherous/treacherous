@@ -93,7 +93,7 @@ export class ValidationGroup implements IValidationGroup
                 .then(() => {
                     var fieldValue = this.propertyResolver.resolveProperty(this.model, propertyName);
                     var promise = this.fieldErrorProcessor
-                        .checkFieldForErrors(fieldValue, propertyRules)
+                        .checkFieldForErrors(this.model, fieldValue, propertyRules)
                         .then(handlePossibleError);
                     return this.countedPromise(promise);
                 });
@@ -102,7 +102,7 @@ export class ValidationGroup implements IValidationGroup
         {
             var fieldValue = this.propertyResolver.resolveProperty(this.model, propertyName);
             this.activePromiseChain = this.countedPromise(this.fieldErrorProcessor
-                .checkFieldForErrors(fieldValue, propertyRules)
+                .checkFieldForErrors(this.model, fieldValue, propertyRules)
                 .then(handlePossibleError));
             return this.countedPromise(this.activePromiseChain);
         }

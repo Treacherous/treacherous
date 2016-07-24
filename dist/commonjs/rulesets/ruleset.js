@@ -1,3 +1,4 @@
+"use strict";
 var Ruleset = (function () {
     function Ruleset() {
         var _this = this;
@@ -18,5 +19,5 @@ var Ruleset = (function () {
         this.getRulesForProperty = function (property) { return _this.rules[property]; };
     }
     return Ruleset;
-})();
+}());
 exports.Ruleset = Ruleset;

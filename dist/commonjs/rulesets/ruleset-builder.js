@@ -1,3 +1,4 @@
+"use strict";
 var ruleset_1 = require("./ruleset");
 var rule_link_1 = require("./rule-link");
 var for_each_rule_1 = require("./for-each-rule");
@@ -35,6 +36,13 @@ var RulesetBuilder = (function () {
             _this.currentRule.messageOverride = messageOverride;
             return _this;
         };
+        this.appliesIf = function (appliesFunction) {
+            if (!_this.currentRule) {
+                throw new Error("An appliesIf function must precede an addRule call in the chain");
+            }
+            _this.currentRule.appliesIf = appliesFunction;
+            return _this;
+        };
         this.addRuleForEach = function (rule, ruleOptions) {
             if (rule == null || typeof (rule) == "undefined" || rule.length == 0) {
                 throw new Error("A rule name is required");
@@ -69,5 +77,5 @@ var RulesetBuilder = (function () {
         };
     }
     return RulesetBuilder;
-})();
+}());
 exports.RulesetBuilder = RulesetBuilder;

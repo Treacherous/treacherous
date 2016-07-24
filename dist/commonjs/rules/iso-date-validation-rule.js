@@ -1,3 +1,4 @@
+"use strict";
 ;
 var ISODateValidationRule = (function () {
     function ISODateValidationRule() {
@@ -15,5 +16,5 @@ var ISODateValidationRule = (function () {
         return "This field contains \"" + value + "\" which is not a valid ISO date";
     };
     return ISODateValidationRule;
-})();
+}());
 exports.ISODateValidationRule = ISODateValidationRule;

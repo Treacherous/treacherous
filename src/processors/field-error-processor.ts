@@ -7,7 +7,16 @@ export class FieldErrorProcessor implements IFieldErrorProcessor
 {
     constructor(public ruleRegistry: RuleRegistry){}
 
-    public processRuleLink(fieldValue: any, ruleLink: RuleLink): Promise<any>{
+    public processRuleLink(model: any, fieldValue: any, ruleLink: RuleLink): Promise<any>{
+
+        var shouldRuleApply = ruleLink.appliesIf === true
+            || ((typeof(ruleLink.appliesIf) === "function")
+                ? ruleLink.appliesIf(model, fieldValue, ruleLink.ruleOptions)
+                : false);
+
+        if (!shouldRuleApply)
+        { return Promise.resolve(); }
+
         var validator = this.ruleRegistry.getRuleNamed(ruleLink.ruleName);
 
         var checkIfValid = (isValid) => {
@@ -33,10 +42,10 @@ export class FieldErrorProcessor implements IFieldErrorProcessor
             .then(checkIfValid);
     }
 
-    public checkFieldForErrors(fieldValue: any, rules: any): Promise<string>
+    public checkFieldForErrors(model: any, fieldValue: any, rules: any): Promise<string>
     {
         var ruleCheck = (ruleLinkOrSet: any): Promise<any>  => {
-            return this.processRuleLink(fieldValue, ruleLinkOrSet);
+            return this.processRuleLink(model, fieldValue, ruleLinkOrSet);
         };
 
         var checkEachRule = (rules: any) => {

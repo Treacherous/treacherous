@@ -49,6 +49,14 @@ export class RulesetBuilder
         return this;
     }
 
+    public appliesIf = (appliesFunction: ((model: any, value: any, ruleOptions?: any) => boolean) | boolean): RulesetBuilder =>
+    {
+        if(!this.currentRule)
+        { throw new Error("An appliesIf function must precede an addRule call in the chain"); }
+        this.currentRule.appliesIf = appliesFunction;
+        return this;
+    }
+
     public addRuleForEach = (rule: string, ruleOptions?: any): RulesetBuilder =>
     {
         if(rule == null || typeof(rule) == "undefined" || rule.length == 0)
@@ -61,7 +69,7 @@ export class RulesetBuilder
         { throw new Error("A property must precede any rule calls in the chain"); }
 
         var ruleLink = new RuleLink(rule, ruleOptions);
-        this.currentRule=ruleLink;
+        this.currentRule = ruleLink;
         this.internalRuleset.addRule(this.currentProperty, new ForEachRule<RuleLink>(ruleLink));
 
         return this;

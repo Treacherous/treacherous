@@ -1,3 +1,4 @@
+"use strict";
 ;
 var DecimalValidationRule = (function () {
     function DecimalValidationRule() {
@@ -15,5 +16,5 @@ var DecimalValidationRule = (function () {
         return "This field contains " + value + " which is not a decimal value";
     };
     return DecimalValidationRule;
-})();
+}());
 exports.DecimalValidationRule = DecimalValidationRule;

@@ -1,3 +1,4 @@
+"use strict";
 var MinLengthValidationRule = (function () {
     function MinLengthValidationRule() {
         this.ruleName = "minLength";
@@ -15,5 +16,5 @@ var MinLengthValidationRule = (function () {
         return "This field has a length of " + value.length + " but should more than " + minLength;
     };
     return MinLengthValidationRule;
-})();
+}());
 exports.MinLengthValidationRule = MinLengthValidationRule;

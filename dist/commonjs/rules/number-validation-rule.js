@@ -1,3 +1,4 @@
+"use strict";
 var NumberValidationRule = (function () {
     function NumberValidationRule() {
         this.ruleName = "number";
@@ -14,5 +15,5 @@ var NumberValidationRule = (function () {
         return "This field contains " + value + " which is not a numeric value";
     };
     return NumberValidationRule;
-})();
+}());
 exports.NumberValidationRule = NumberValidationRule;

@@ -17,6 +17,7 @@ describe('Field Error Processor', function () {
 
         var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry);
 
+        var dummyModel = {};
         var dummyField = "123";
         var dummyRules = [
             new RuleLink("required", true),
@@ -24,12 +25,12 @@ describe('Field Error Processor', function () {
         ];
 
         fieldErrorProcessor
-            .checkFieldForErrors(dummyField, dummyRules)
+            .checkFieldForErrors(dummyModel, dummyField, dummyRules)
             .then(function(error){
                 expect(error).not.to.be.null;
                 expect(error).to.contain("3").and.to.contain("2");
                 done();
-            });
+            }).catch(done);
     });
 
     it('should correctly return a custom error message function for the field', function (done) {
@@ -38,6 +39,7 @@ describe('Field Error Processor', function () {
 
         var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry);
 
+        var dummyModel = {};
         var expectedMessage = "you should have put in some text";
         var dummyField = "";
         var rule = new RuleLink("required", true);
@@ -45,12 +47,12 @@ describe('Field Error Processor', function () {
         var dummyRules = [rule];
 
         fieldErrorProcessor
-            .checkFieldForErrors(dummyField, dummyRules)
+            .checkFieldForErrors(dummyModel, dummyField, dummyRules)
             .then(function(error){
                 expect(error).not.to.be.null;
                 expect(error).to.equal(expectedMessage);
                 done();
-            });
+            }).catch(done);
     });
 
     it('should correctly return a custom error message for the field', function (done) {
@@ -59,6 +61,7 @@ describe('Field Error Processor', function () {
 
         var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry);
 
+        var dummyModel = {};
         var expectedMessage = "you should have put in some text";
         var dummyField = "";
         var rule = new RuleLink("required", true);
@@ -68,12 +71,12 @@ describe('Field Error Processor', function () {
         ];
 
         fieldErrorProcessor
-            .checkFieldForErrors(dummyField, dummyRules)
+            .checkFieldForErrors(dummyModel, dummyField, dummyRules)
             .then(function(error){
                 expect(error).not.to.be.null;
                 expect(error).to.equal(expectedMessage);
                 done();
-            });
+            }).catch(done);
     });
 
     it('should correctly return no error for the field', function (done) {
@@ -83,6 +86,7 @@ describe('Field Error Processor', function () {
 
         var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry);
 
+        var dummyModel = {};
         var dummyField = "12";
         var dummyRules = [
             new RuleLink("required", true),
@@ -90,11 +94,11 @@ describe('Field Error Processor', function () {
         ];
 
         fieldErrorProcessor
-            .checkFieldForErrors(dummyField, dummyRules)
+            .checkFieldForErrors(dummyModel, dummyField, dummyRules)
             .then(function(error){
                 expect(error).to.be.null;
                 done();
-            });
+            }).catch(done);
     });
 
     it('should stop looking for errors on first fail', function (done) {
@@ -107,6 +111,7 @@ describe('Field Error Processor', function () {
 
         var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry);
 
+        var dummyModel = {};
         var dummyField = null;
         var dummyRules = [
             new RuleLink("required", true),
@@ -114,12 +119,12 @@ describe('Field Error Processor', function () {
         ];
 
         fieldErrorProcessor
-            .checkFieldForErrors(dummyField, dummyRules)
+            .checkFieldForErrors(dummyModel, dummyField, dummyRules)
             .then(function(error){
                 expect(error).not.to.be.null;
                 expect(spiedValidationMethod).to.not.have.been.called;
                 done();
-            });
+            }).catch(done);
     });
 
 });

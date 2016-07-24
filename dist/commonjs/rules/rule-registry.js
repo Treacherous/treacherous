@@ -1,3 +1,4 @@
+"use strict";
 var RuleRegistry = (function () {
     function RuleRegistry() {
         var _this = this;
@@ -16,5 +17,5 @@ var RuleRegistry = (function () {
         };
     }
     return RuleRegistry;
-})();
+}());
 exports.RuleRegistry = RuleRegistry;

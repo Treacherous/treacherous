@@ -1,3 +1,4 @@
+"use strict";
 var validation_group_1 = require("../validation-group");
 var ValidationGroupFactory = (function () {
     function ValidationGroupFactory(fieldErrorProcessor, modelWatcherFactory, propertyResolver, ruleResolver) {
@@ -12,5 +13,5 @@ var ValidationGroupFactory = (function () {
         };
     }
     return ValidationGroupFactory;
-})();
+}());
 exports.ValidationGroupFactory = ValidationGroupFactory;
