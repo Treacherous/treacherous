@@ -115,6 +115,8 @@ describe('Validation Group', function () {
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
         validationGroup.getModelErrors()
             .then(function(errors){
+                console.log(dummyModel);
+                console.log(errors);
                 expect(errors).not.to.be.null;
                 expect(errors).to.include.keys("foo.bar");
                 expect(errors["foo.bar"]).to.contain("5");
@@ -149,6 +151,8 @@ describe('Validation Group', function () {
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
         validationGroup.getModelErrors()
             .then(function(errors){
+                console.log(dummyModel);
+                console.log(errors);
                 expect(errors).not.to.be.null;
                 expect(errors).to.include.keys("foo[1].bar");
                 expect(errors["foo[1].bar"]).to.contain("required");
@@ -265,7 +269,7 @@ describe('Validation Group', function () {
                 console.log(error);
                 expect(error).not.to.be.null;
                 expect(error).to.contain("required");
-            }).catch(done);
+            });
 
         var checkTwo = validationGroup.getPropertyError("foo[2].bar")
             .then(function(error){
@@ -273,13 +277,13 @@ describe('Validation Group', function () {
                 expect(error).not.to.be.null;
                 expect(error).to.contain("8");
                 expect(error).to.contain("5");
-            }).catch(done);
+            });
 
         Promise.all([checkOne, checkTwo])
             .then(function() {
                 validationGroup.release();
                 done();
-            }).catch(done);
+            });
     });
 
     it('should correctly get property error in simple array', function (done) {
@@ -601,9 +605,9 @@ describe('Validation Group', function () {
         // This basically delays validation so others stack
         var delayedRequiresValid: any = {
             ruleName: "delayed",
-            validate: function(value, options){
+            validate: function(mr, prop, options){
                 return new Promise(function(resolve, reject){
-                    setTimeout(function() { resolve(value == "valid"); }, 200);
+                    setTimeout(function() { resolve(mr.get(prop) == "valid"); }, 200);
                 });
             },
             getMessage: function(value, options) { return "delayed rule: " + value; }
@@ -637,9 +641,9 @@ describe('Validation Group', function () {
 
         var delayedRequiresValid: any = {
             ruleName: "delayed",
-            validate: function(value, options){
+            validate: function(mr, prop, options){
                 return new Promise(function(resolve, reject){
-                    setTimeout(function() { resolve(value == "valid"); }, 100);
+                    setTimeout(function() { resolve(mr.get(prop) == "valid"); }, 100);
                 });
             },
             getMessage: function(value, options) { return "delayed rule: " + value; }
@@ -673,9 +677,9 @@ describe('Validation Group', function () {
 
         var delayedRequires10Rule: any = {
             ruleName: "delayed",
-            validate: function(value, options){
+            validate: function(mr, prop, options){
                 return new Promise(function(resolve, reject){
-                    setTimeout(function() { resolve(value == 10); }, 100);
+                    setTimeout(function() { resolve(mr.get(prop) == 10); }, 100);
                 });
             },
             getMessage: function(value, options) { return "delayed rule: " + value; }

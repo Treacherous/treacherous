@@ -4,8 +4,10 @@ export class RequiredValidationRule implements IValidationRule
 {
     public ruleName = "required";
 
-    public validate(value, isRequired: boolean = true): Promise<boolean>
+    public validate(mr, prop, isRequired: boolean = true): Promise<boolean>
     {
+        var value = mr.get(prop);
+
         if (value === undefined || value === null) {
             return Promise.resolve(!isRequired);
         }
@@ -27,7 +29,8 @@ export class RequiredValidationRule implements IValidationRule
         return Promise.resolve((testValue + '').length > 0);
     }
 
-    public getMessage(value, isRequired) {
+    public getMessage(mr, prop, isRequired) {
+        var value = mr.get(prop);
         return "This field is required";
     }
 }

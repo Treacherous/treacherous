@@ -11,6 +11,7 @@ import {TypeHelper} from "./helpers/type-helper";
 import {IValidationGroup} from "./ivalidation-group";
 import {IFieldErrorProcessor} from "./processors/ifield-error-processor";
 import {IRuleResolver} from "./rulesets/irule-resolver";
+import {ModelResolver} from "./model-resolver";
 
 // TODO: This class is WAY to long, needs refactoring
 export class ValidationGroup implements IValidationGroup
@@ -26,9 +27,11 @@ export class ValidationGroup implements IValidationGroup
                 private modelWatcher: IModelWatcher,
                 private propertyResolver = new PropertyResolver(),
                 private ruleResolver: IRuleResolver = new RuleResolver(),
-                private ruleset: Ruleset, private model: any,
+                private ruleset: Ruleset,
+                private model: any,
                 public refreshRate = 500)
     {
+        this.model = this.model || {};
         this.activeValidationCount = 0;
         this.propertyStateChangedEvent = new EventHandler(this);
         this.modelStateChangedEvent = new EventHandler(this);
@@ -91,18 +94,18 @@ export class ValidationGroup implements IValidationGroup
         {
             this.activePromiseChain = Promise.resolve(this.activePromiseChain)
                 .then(() => {
-                    var fieldValue = this.propertyResolver.resolveProperty(this.model, propertyName);
+                    var mr = new ModelResolver(this.propertyResolver, this.model);
                     var promise = this.fieldErrorProcessor
-                        .checkFieldForErrors(this.model, fieldValue, propertyRules)
+                        .checkFieldForErrors(this.model, propertyName, propertyRules)
                         .then(handlePossibleError);
                     return this.countedPromise(promise);
                 });
         }
         else
         {
-            var fieldValue = this.propertyResolver.resolveProperty(this.model, propertyName);
+            var mr = new ModelResolver(this.propertyResolver, this.model);
             this.activePromiseChain = this.countedPromise(this.fieldErrorProcessor
-                .checkFieldForErrors(this.model, fieldValue, propertyRules)
+                .checkFieldForErrors(this.model, propertyName, propertyRules)
                 .then(handlePossibleError));
             return this.countedPromise(this.activePromiseChain);
         }
@@ -127,10 +130,12 @@ export class ValidationGroup implements IValidationGroup
         var currentValue;
         try
         {
-            currentValue = this.propertyResolver.resolveProperty(this.model, propertyName);
+            var mr = new ModelResolver(this.propertyResolver, this.model);
+            currentValue = mr.get(propertyName);
         }
         catch(ex)
         {
+            throw(ex);
             return Promise.resolve();
         }
 
@@ -142,6 +147,7 @@ export class ValidationGroup implements IValidationGroup
                 if(isCurrentlyAnArray) {
                     currentValue.forEach((element, index) => {
                         var childPropertyName = `${propertyName}[${index}]`;
+                        console.log(childPropertyName);
                         var promise = this.validatePropertyWithRules(childPropertyName, [ruleLinkOrSet.internalRule]);
                         var countedPromise = this.countedPromise(promise);
                         validationPromises.push(countedPromise);
@@ -226,7 +232,6 @@ export class ValidationGroup implements IValidationGroup
                     resolve();
                 }
             }, this.modelWatcher.scanInterval);
-
         });
     };
 }

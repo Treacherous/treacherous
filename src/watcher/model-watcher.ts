@@ -6,6 +6,7 @@ import {Ruleset} from "../rulesets/ruleset";
 import {PropertyWatcher} from "./property-watcher";
 import {PropertyChangedEvent} from "../events/property-changed-event";
 import {IModelWatcher} from "./imodel-watcher";
+import {ModelResolver} from "../model-resolver";
 
 export class ModelWatcher implements IModelWatcher
 {
@@ -172,7 +173,9 @@ export class ModelWatcher implements IModelWatcher
             var hasChanged = false;
 
             try
-            { currentValue = this.propertyResolver.resolveProperty(this.model, propertyWatcher.propertyPath); }
+            {
+                currentValue = this.propertyResolver.resolveProperty(this.model, propertyWatcher.propertyPath);
+            }
             catch(ex) { }
 
             if(typeof(currentValue) == "undefined")

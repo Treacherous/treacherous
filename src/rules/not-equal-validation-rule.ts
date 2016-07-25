@@ -6,8 +6,10 @@ export class NotEqualValidationRule implements IValidationRule
 {
     public ruleName = "notEqual";
 
-    public validate(value, optionsOrValue): Promise<boolean>
+    public validate(mr, prop, optionsOrValue): Promise<boolean>
     {
+        var value = mr.get(prop);
+
         if (value === undefined || value === null)
         { return Promise.resolve(true); }
 
@@ -23,7 +25,8 @@ export class NotEqualValidationRule implements IValidationRule
         return Promise.resolve(result);
     }
 
-    public getMessage(value, optionsOrValue) {
+    public getMessage(mr, prop, optionsOrValue) {
+        var value = mr.get(prop);
         return `This field is ${value} but should not be equal to ${optionsOrValue.value || optionsOrValue}`;
     }
 }

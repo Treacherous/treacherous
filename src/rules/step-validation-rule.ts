@@ -4,8 +4,9 @@ export class StepValidationRule implements IValidationRule
 {
     public ruleName = "step";
 
-    public validate(value, step: number): Promise<boolean>
+    public validate(mr, prop, step: number): Promise<boolean>
     {
+        var value = mr.get(prop);
         if (value === undefined || value === null)
         { return Promise.resolve(true); }
 
@@ -14,7 +15,8 @@ export class StepValidationRule implements IValidationRule
         return Promise.resolve(matchesStep);
     }
 
-    public getMessage(value, step) {
+    public getMessage(mr, prop, step) {
+        var value = mr.get(prop);
         return `This field has a value of ${value} and should be an increment of ${step}`;
     }
 }

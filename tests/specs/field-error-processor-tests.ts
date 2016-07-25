@@ -6,6 +6,7 @@ import {FieldErrorProcessor} from "../../src/processors/field-error-processor";
 import {RuleLink} from "../../src/rulesets/rule-link";
 
 import * as spies from "chai-spies";
+import {EqualValidationRule} from "../../src/rules/equal-validation-rule";
 use(spies);
 
 describe('Field Error Processor', function () {
@@ -17,15 +18,14 @@ describe('Field Error Processor', function () {
 
         var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry);
 
-        var dummyModel = {};
-        var dummyField = "123";
+        var dummyModel = { dummyField: "123"};
         var dummyRules = [
             new RuleLink("required", true),
             new RuleLink("maxLength", 2)
         ];
 
         fieldErrorProcessor
-            .checkFieldForErrors(dummyModel, dummyField, dummyRules)
+            .checkFieldForErrors(dummyModel, 'dummyField', dummyRules)
             .then(function(error){
                 expect(error).not.to.be.null;
                 expect(error).to.contain("3").and.to.contain("2");
@@ -79,6 +79,31 @@ describe('Field Error Processor', function () {
             }).catch(done);
     });
 
+    it('should correctly return a custom error message with model and value data', function (done) {
+        var ruleRegistry = new RuleRegistry();
+        ruleRegistry.registerRule(new EqualValidationRule());
+
+        var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry);
+
+        var dummyModel = { foo: "AA", bar:"BB" };
+        var dummyField = "foo";
+        var rule = new RuleLink("equal", "bar");
+        var expectedMessage = "Should have had foo (AA) == bar (BB)";
+        rule.messageOverride = (m,v,o) => `Should have had ${v} (${m.get(v)}) == ${o} (${m.get(o)})`;
+        var dummyRules = [
+            rule
+        ];
+
+        fieldErrorProcessor
+            .checkFieldForErrors(dummyModel, dummyField, dummyRules)
+            .then(function(error){
+                console.log(error)
+                expect(error).not.to.be.null;
+                expect(error).to.equal(expectedMessage);
+                done();
+            }).catch(done);
+    });
+
     it('should correctly return no error for the field', function (done) {
         var ruleRegistry = new RuleRegistry();
         ruleRegistry.registerRule(new RequiredValidationRule());
@@ -86,15 +111,14 @@ describe('Field Error Processor', function () {
 
         var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry);
 
-        var dummyModel = {};
-        var dummyField = "12";
+        var dummyModel = { dummyField : "12" };
         var dummyRules = [
             new RuleLink("required", true),
             new RuleLink("maxLength", 2)
         ];
 
         fieldErrorProcessor
-            .checkFieldForErrors(dummyModel, dummyField, dummyRules)
+            .checkFieldForErrors(dummyModel, 'dummyField', dummyRules)
             .then(function(error){
                 expect(error).to.be.null;
                 done();

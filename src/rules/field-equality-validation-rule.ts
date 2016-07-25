@@ -3,10 +3,11 @@ import {ModelResolver} from "../model-resolver";
 import {IValidationRule} from "./ivalidation-rule";
 import {TypeHelper} from "../helpers/type-helper";
 import {ComparerHelper} from "../helpers/comparer-helper";
+import {property} from "../helpers/property";
 
-export class EqualValidationRule implements IValidationRule
+export class FieldEqualityValidationRule implements IValidationRule
 {
-    public ruleName = "equal";
+    public ruleName = "fieldEquality";
 
     public validate(mr, prop, optionsOrValue): Promise<boolean>
     {
@@ -15,8 +16,7 @@ export class EqualValidationRule implements IValidationRule
         { return Promise.resolve(true); }
 
         var result;
-        //var comparison = (typeof optionsOrValue == "function") ? optionsOrValue() : optionsOrValue.value || optionsOrValue;
-        var comparison = optionsOrValue.value || optionsOrValue;
+        var comparison = mr.get(optionsOrValue.value || optionsOrValue);
         var weakEquality = optionsOrValue.weakEquality || false;
 
         if(TypeHelper.isDateType(comparison))
@@ -28,7 +28,8 @@ export class EqualValidationRule implements IValidationRule
     }
 
     public getMessage(mr, prop, optionsOrValue) {
-        var value = mr.get(prop);
-        return `This field is ${value} but should be equal to ${optionsOrValue.value || optionsOrValue}`;
+        var field1 = mr.get(prop);
+        var field2 = mr.get(optionsOrValue.value || optionsOrValue);
+        return `Field ${prop} should be equal to ${optionsOrValue.value || optionsOrValue}`;
     }
 }

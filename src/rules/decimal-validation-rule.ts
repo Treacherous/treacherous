@@ -6,8 +6,9 @@ export class DecimalValidationRule implements IValidationRule
     public ruleName = "decimal";
     private decimalRegex = /^-?(?:\d+|\d{1,3}(?:,\d{3})+)?(?:\.\d+)?$/;
 
-    public validate(value): Promise<boolean>
+    public validate(mr, prop): Promise<boolean>
     {
+        var value = mr.get(prop);
         if (value === undefined || value === null)
         { return Promise.resolve(true); }
 
@@ -15,7 +16,8 @@ export class DecimalValidationRule implements IValidationRule
         return Promise.resolve(matchesRegex);
     }
 
-    public getMessage(value) {
+    public getMessage(mr, prop) {
+        var value = mr.get(prop);
         return `This field contains ${value} which is not a decimal value`;
     }
 }
