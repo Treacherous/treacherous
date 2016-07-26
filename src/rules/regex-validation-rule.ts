@@ -4,7 +4,7 @@ export class RegexValidationRule implements IValidationRule
 {
     public ruleName = "regex";
 
-    public validate(value, regexPattern: RegExp): Promise<boolean>
+    public validate(model, value, regexPattern: RegExp): Promise<boolean>
     {
         if (value === undefined || value === null || value.length == 0)
         { return Promise.resolve(true); }
@@ -13,7 +13,7 @@ export class RegexValidationRule implements IValidationRule
         return Promise.resolve(matchesPattern);
     }
 
-    public getMessage(value, regexPattern) {
+    public getMessage(model, value, regexPattern) {
         return `This field does not match the expected format`;
     }
 }

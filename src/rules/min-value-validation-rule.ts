@@ -4,7 +4,7 @@ export class MinValueValidationRule implements IValidationRule
 {
     public ruleName = "minValue";
 
-    public validate(value: any, minValue: any): Promise<boolean>
+    public validate(model, value: any, minValue: any): Promise<boolean>
     {
         if (value === undefined || value === null || value.length == 0)
         { return Promise.resolve(true); }
@@ -15,7 +15,7 @@ export class MinValueValidationRule implements IValidationRule
         return Promise.resolve(false);
     }
 
-    public getMessage(value: any, minValue: any) {
+    public getMessage(model, value: any, minValue: any) {
         return `This field has a value of ${value} but should be greater than or equal to ${minValue}`;
     }
 }

@@ -4,7 +4,7 @@ export class MinLengthValidationRule implements IValidationRule
 {
     public ruleName = "minLength";
 
-    public validate(value, minLength: number): Promise<boolean>
+    public validate(model, value, minLength: number): Promise<boolean>
     {
         if (value === undefined || value === null || value.length == 0)
         { return Promise.resolve(true); }
@@ -15,7 +15,7 @@ export class MinLengthValidationRule implements IValidationRule
         return Promise.resolve(false);
     }
 
-    public getMessage(value, minLength: number) {
+    public getMessage(model, value, minLength: number) {
         return `This field has a length of ${value.length} but should more than ${minLength}`;
     }
 }

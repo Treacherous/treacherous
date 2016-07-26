@@ -6,7 +6,7 @@ export class NotEqualValidationRule implements IValidationRule
 {
     public ruleName = "notEqual";
 
-    public validate(value, optionsOrValue): Promise<boolean>
+    public validate(model, value, optionsOrValue): Promise<boolean>
     {
         if (value === undefined || value === null)
         { return Promise.resolve(true); }
@@ -23,7 +23,7 @@ export class NotEqualValidationRule implements IValidationRule
         return Promise.resolve(result);
     }
 
-    public getMessage(value, optionsOrValue) {
+    public getMessage(model, value, optionsOrValue) {
         return `This field is ${value} but should not be equal to ${optionsOrValue.value || optionsOrValue}`;
     }
 }

@@ -1,4 +1,3 @@
-;
 import {IValidationRule} from "./ivalidation-rule";
 import {TypeHelper} from "../helpers/type-helper";
 import {ComparerHelper} from "../helpers/comparer-helper";
@@ -7,7 +6,7 @@ export class EqualValidationRule implements IValidationRule
 {
     public ruleName = "equal";
 
-    public validate(value, optionsOrValue): Promise<boolean>
+    public validate(model, value, optionsOrValue): Promise<boolean>
     {
         if (value === undefined || value === null)
         { return Promise.resolve(true); }
@@ -25,7 +24,7 @@ export class EqualValidationRule implements IValidationRule
         return Promise.resolve(result);
     }
 
-    public getMessage(value, optionsOrValue) {
+    public getMessage(model, value, optionsOrValue) {
         return `This field is ${value} but should be equal to ${optionsOrValue.value || optionsOrValue}`;
     }
 }
