@@ -6,7 +6,8 @@ var EqualValidationRule = (function () {
     function EqualValidationRule() {
         this.ruleName = "equal";
     }
-    EqualValidationRule.prototype.validate = function (value, optionsOrValue) {
+    EqualValidationRule.prototype.validate = function (mr, prop, optionsOrValue) {
+        var value = mr.get(prop);
         if (value === undefined || value === null) {
             return Promise.resolve(true);
         }
@@ -22,7 +23,8 @@ var EqualValidationRule = (function () {
         }
         return Promise.resolve(result);
     };
-    EqualValidationRule.prototype.getMessage = function (value, optionsOrValue) {
+    EqualValidationRule.prototype.getMessage = function (mr, prop, optionsOrValue) {
+        var value = mr.get(prop);
         return "This field is " + value + " but should be equal to " + (optionsOrValue.value || optionsOrValue);
     };
     return EqualValidationRule;

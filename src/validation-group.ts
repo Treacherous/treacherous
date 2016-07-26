@@ -12,33 +12,39 @@ import {IValidationGroup} from "./ivalidation-group";
 import {IFieldErrorProcessor} from "./processors/ifield-error-processor";
 import {IRuleResolver} from "./rulesets/irule-resolver";
 import {ModelResolver} from "./model-resolver";
+import {ValidationSettings, validationSettingsDefaults} from "./validation-settings";
 
 // TODO: This class is WAY to long, needs refactoring
 export class ValidationGroup implements IValidationGroup
 {
-    private propertyErrors = {};
+    public propertyErrors = {};
     private activePromiseChain: Promise<any>;
     private activeValidationCount: number;
+    public modelWatcher: IModelWatcher;
+    private propertyResolver:PropertyResolver;
 
     public propertyStateChangedEvent: EventHandler;
     public modelStateChangedEvent: EventHandler;
 
     constructor(private fieldErrorProcessor: IFieldErrorProcessor,
-                private modelWatcher: IModelWatcher,
-                private propertyResolver = new PropertyResolver(),
                 private ruleResolver: IRuleResolver = new RuleResolver(),
                 private ruleset: Ruleset,
                 private model: any,
+                private settings: ValidationSettings,
                 public refreshRate = 500)
     {
+        var _settings = settings || validationSettingsDefaults;
         this.model = this.model || {};
         this.activeValidationCount = 0;
         this.propertyStateChangedEvent = new EventHandler(this);
         this.modelStateChangedEvent = new EventHandler(this);
+        this.modelWatcher = _settings.createModelWatcher();
+        this.propertyResolver = _settings.createPropertyResolver();
 
-        this.modelWatcher.setupWatcher(model, ruleset, refreshRate);
-        this.modelWatcher.onPropertyChanged.subscribe(this.onModelChanged);
-
+        if (this.modelWatcher) {
+            this.modelWatcher.setupWatcher(model, ruleset, refreshRate);
+            this.modelWatcher.onPropertyChanged.subscribe(this.onModelChanged);
+        }
         this.validateModel();
     }
 

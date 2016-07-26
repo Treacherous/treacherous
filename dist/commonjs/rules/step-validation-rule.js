@@ -3,7 +3,8 @@ var StepValidationRule = (function () {
     function StepValidationRule() {
         this.ruleName = "step";
     }
-    StepValidationRule.prototype.validate = function (value, step) {
+    StepValidationRule.prototype.validate = function (mr, prop, step) {
+        var value = mr.get(prop);
         if (value === undefined || value === null) {
             return Promise.resolve(true);
         }
@@ -11,7 +12,8 @@ var StepValidationRule = (function () {
         var matchesStep = Math.abs(dif) < 0.00001 || Math.abs(1 - dif) < 0.00001;
         return Promise.resolve(matchesStep);
     };
-    StepValidationRule.prototype.getMessage = function (value, step) {
+    StepValidationRule.prototype.getMessage = function (mr, prop, step) {
+        var value = mr.get(prop);
         return "This field has a value of " + value + " and should be an increment of " + step;
     };
     return StepValidationRule;

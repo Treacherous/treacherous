@@ -1,23 +1,22 @@
 "use strict";
-var property_resolver_1 = require("property-resolver");
 var event_js_1 = require("event-js");
 var property_state_changed_event_1 = require("./events/property-state-changed-event");
 var model_state_changed_event_1 = require("./events/model-state-changed-event");
 var rule_resolver_1 = require("./rulesets/rule-resolver");
 var type_helper_1 = require("./helpers/type-helper");
+var model_resolver_1 = require("./model-resolver");
+var validation_settings_1 = require("./validation-settings");
 // TODO: This class is WAY to long, needs refactoring
 var ValidationGroup = (function () {
-    function ValidationGroup(fieldErrorProcessor, modelWatcher, propertyResolver, ruleResolver, ruleset, model, refreshRate) {
+    function ValidationGroup(fieldErrorProcessor, ruleResolver, ruleset, model, settings, refreshRate) {
         var _this = this;
-        if (propertyResolver === void 0) { propertyResolver = new property_resolver_1.PropertyResolver(); }
         if (ruleResolver === void 0) { ruleResolver = new rule_resolver_1.RuleResolver(); }
         if (refreshRate === void 0) { refreshRate = 500; }
         this.fieldErrorProcessor = fieldErrorProcessor;
-        this.modelWatcher = modelWatcher;
-        this.propertyResolver = propertyResolver;
         this.ruleResolver = ruleResolver;
         this.ruleset = ruleset;
         this.model = model;
+        this.settings = settings;
         this.refreshRate = refreshRate;
         this.propertyErrors = {};
         this.countedPromise = function (wrappedPromise) {
@@ -57,17 +56,17 @@ var ValidationGroup = (function () {
             if (_this.activePromiseChain) {
                 _this.activePromiseChain = Promise.resolve(_this.activePromiseChain)
                     .then(function () {
-                    var fieldValue = _this.propertyResolver.resolveProperty(_this.model, propertyName);
+                    var mr = new model_resolver_1.ModelResolver(_this.propertyResolver, _this.model);
                     var promise = _this.fieldErrorProcessor
-                        .checkFieldForErrors(_this.model, fieldValue, propertyRules)
+                        .checkFieldForErrors(_this.model, propertyName, propertyRules)
                         .then(handlePossibleError);
                     return _this.countedPromise(promise);
                 });
             }
             else {
-                var fieldValue = _this.propertyResolver.resolveProperty(_this.model, propertyName);
+                var mr = new model_resolver_1.ModelResolver(_this.propertyResolver, _this.model);
                 _this.activePromiseChain = _this.countedPromise(_this.fieldErrorProcessor
-                    .checkFieldForErrors(_this.model, fieldValue, propertyRules)
+                    .checkFieldForErrors(_this.model, propertyName, propertyRules)
                     .then(handlePossibleError));
                 return _this.countedPromise(_this.activePromiseChain);
             }
@@ -88,9 +87,11 @@ var ValidationGroup = (function () {
             var validationPromises = [];
             var currentValue;
             try {
-                currentValue = _this.propertyResolver.resolveProperty(_this.model, propertyName);
+                var mr = new model_resolver_1.ModelResolver(_this.propertyResolver, _this.model);
+                currentValue = mr.get(propertyName);
             }
             catch (ex) {
+                throw (ex);
                 return Promise.resolve();
             }
             var routeEachRule = function (ruleLinkOrSet) {
@@ -99,6 +100,7 @@ var ValidationGroup = (function () {
                     if (isCurrentlyAnArray) {
                         currentValue.forEach(function (element, index) {
                             var childPropertyName = propertyName + "[" + index + "]";
+                            console.log(childPropertyName);
                             var promise = _this.validatePropertyWithRules(childPropertyName, [ruleLinkOrSet.internalRule]);
                             var countedPromise = _this.countedPromise(promise);
                             validationPromises.push(countedPromise);
@@ -173,11 +175,17 @@ var ValidationGroup = (function () {
                 }, _this.modelWatcher.scanInterval);
             });
         };
+        var _settings = settings || validation_settings_1.validationSettingsDefaults;
+        this.model = this.model || {};
         this.activeValidationCount = 0;
         this.propertyStateChangedEvent = new event_js_1.EventHandler(this);
         this.modelStateChangedEvent = new event_js_1.EventHandler(this);
-        this.modelWatcher.setupWatcher(model, ruleset, refreshRate);
-        this.modelWatcher.onPropertyChanged.subscribe(this.onModelChanged);
+        this.modelWatcher = _settings.createModelWatcher();
+        this.propertyResolver = _settings.createPropertyResolver();
+        if (this.modelWatcher) {
+            this.modelWatcher.setupWatcher(model, ruleset, refreshRate);
+            this.modelWatcher.onPropertyChanged.subscribe(this.onModelChanged);
+        }
         this.validateModel();
     }
     ValidationGroup.prototype.isRuleset = function (possibleRuleset) {

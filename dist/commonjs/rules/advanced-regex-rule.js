@@ -11,14 +11,16 @@ var AdvancedRegexValidationRule = (function () {
         this.expression = expression;
         this.message = (typeof message === "function") ? message : function () { return message; };
     }
-    AdvancedRegexValidationRule.prototype.validate = function (value, regexPattern) {
+    AdvancedRegexValidationRule.prototype.validate = function (mr, prop, regexPattern) {
+        var value = mr.get(prop);
         if (value === undefined || value === null || value.length == 0) {
             return Promise.resolve(true);
         }
         var matchesPattern = value.toString().match(this.expression) !== null;
         return Promise.resolve(matchesPattern);
     };
-    AdvancedRegexValidationRule.prototype.getMessage = function (value, regexPattern) {
+    AdvancedRegexValidationRule.prototype.getMessage = function (mr, prop, regexPattern) {
+        var value = mr.get(prop);
         return this.message(value);
     };
     return AdvancedRegexValidationRule;

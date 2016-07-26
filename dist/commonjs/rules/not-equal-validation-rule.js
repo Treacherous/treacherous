@@ -5,7 +5,8 @@ var NotEqualValidationRule = (function () {
     function NotEqualValidationRule() {
         this.ruleName = "notEqual";
     }
-    NotEqualValidationRule.prototype.validate = function (value, optionsOrValue) {
+    NotEqualValidationRule.prototype.validate = function (mr, prop, optionsOrValue) {
+        var value = mr.get(prop);
         if (value === undefined || value === null) {
             return Promise.resolve(true);
         }
@@ -20,7 +21,8 @@ var NotEqualValidationRule = (function () {
         }
         return Promise.resolve(result);
     };
-    NotEqualValidationRule.prototype.getMessage = function (value, optionsOrValue) {
+    NotEqualValidationRule.prototype.getMessage = function (mr, prop, optionsOrValue) {
+        var value = mr.get(prop);
         return "This field is " + value + " but should not be equal to " + (optionsOrValue.value || optionsOrValue);
     };
     return NotEqualValidationRule;

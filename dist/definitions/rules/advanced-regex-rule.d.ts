@@ -4,6 +4,6 @@ export declare class AdvancedRegexValidationRule implements IValidationRule {
     expression: string;
     message: (value) => string;
     constructor(ruleName: string, expression: string, message: string | ((value) => string));
-    validate(value: any, regexPattern: RegExp): Promise<boolean>;
-    getMessage(value: any, regexPattern: any): string;
+    validate(mr: any, prop: any, regexPattern: RegExp): Promise<boolean>;
+    getMessage(mr: any, prop: any, regexPattern: any): string;
 }

@@ -7,16 +7,24 @@ import {RuleResolver} from "../../src/rulesets/rule-resolver";
 import {ValidationGroup} from "../../src/validation-group";
 import {RuleRegistry} from "../../src/rules/rule-registry";
 import {ModelWatcher} from "../../src/watcher/model-watcher";
+import {ValidationSettings} from "../../src/validation-settings";
 
 describe('Validation Group', function () {
 
     var createValidationGroupFor = function(model, ruleset) {
         var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry);
-        var propertyResolver = new PropertyResolver();
         var ruleResolver = new RuleResolver();
-        var modelWatcher = new ModelWatcher();
-        return new ValidationGroup(fieldErrorProcessor, modelWatcher, propertyResolver, ruleResolver, ruleset, model, 50);
+        return new ValidationGroup(fieldErrorProcessor, ruleResolver, ruleset, model, null, 50);
     }
+
+
+    var createNonPollingValidationGroupFor = function(model, ruleset) {
+        var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry);
+        var ruleResolver = new RuleResolver();
+        return new ValidationGroup(fieldErrorProcessor, ruleResolver, ruleset, model, new ValidationSettings({ modelWatcherFactory: () => null }), 50);
+    }
+
+
 
     it('should correctly get errors', function (done) {
 
@@ -383,6 +391,7 @@ describe('Validation Group', function () {
         dummyModel.foo.push({ bar: "too long" });
 
         setTimeout(function(){
+            console.log(validationGroup.propertyErrors)
             validationGroup.getModelErrors()
                 .then(function(errors){
                     console.log(errors);
@@ -395,7 +404,7 @@ describe('Validation Group', function () {
                     validationGroup.release();
                     done();
                 }).catch(done);
-        }, 100);
+        }, 1000);
     });
 
     it('should correctly notify on property validation change', function (done) {
@@ -526,6 +535,10 @@ describe('Validation Group', function () {
         dummyModel.foo.push(10);
     });
 
+
+
+
+
     it('should correctly notify on validation change', function (done) {
 
         var rulesetBuilder = new RulesetBuilder();
@@ -553,6 +566,36 @@ describe('Validation Group', function () {
             dummyModel.foo = "this is now no longer valid";
         }, 100);
     });
+
+
+    it('should not notify if model watcher is not used', function (done) {
+
+        var rulesetBuilder = new RulesetBuilder();
+        var ruleset = rulesetBuilder.create()
+            .forProperty("foo")
+            .addRule("maxLength", 15)
+            .build();
+
+        var dummyModel = {
+            foo: "hello"
+        };
+
+        //var validationGroup = createNonPollingValidationGroupFor(dummyModel, ruleset);
+
+        setTimeout(function(){
+            dummyModel.foo = "this is now no longer valid";
+        }, 100);
+
+        var validationGroup = createValidationGroupFor(dummyModel, ruleset);
+        console.log(dummyModel);
+        setTimeout(function() {
+            console.log(dummyModel);
+            console.log(validationGroup);
+            done();
+        },1000);
+
+    });
+
 
     it('should correctly provide errors', function (done) {
 
