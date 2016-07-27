@@ -77,7 +77,7 @@ export class ValidationGroup implements IValidationGroup
     private incCounter = () => { this.validationCounter++; }
 
     public get ValidationState() {
-        return !this.validationCounter ? (!this.propertyErrors=={} ? 'valid' : 'invalid') : 'calculating';
+        return !this.validationCounter ? (!this.hasErrors ? 'valid' : 'invalid') : 'calculating';
     }
 
     private isRuleset(possibleRuleset: any): boolean {
@@ -96,7 +96,7 @@ export class ValidationGroup implements IValidationGroup
     private validatePropertyWithRuleLinks = (propertyName: string, propertyRules: Array<RuleLink>): any => {
         return this.CountedPromise(this.fieldErrorProcessor.checkFieldForErrors(this.modelResolver, propertyName, propertyRules))
             .then(v => {
-                var hadErrors = this.hasErrors();
+                var hadErrors = this.hasErrors;
 
                 if (!v) {
                     if (this.propertyErrors[propertyName]) {
@@ -202,12 +202,12 @@ export class ValidationGroup implements IValidationGroup
         return this;
     };
 
-    private hasErrors = (): boolean => {
-        return Object.keys(this.propertyErrors).length > 0;
+    public get hasErrors():boolean {
+        return (Object.keys(this.propertyErrors).length > 0);
     }
 
     public changeValidationTarget = (model: any) => {
-        this.modelResolver.model = model;
+        this.modelResolver = new ModelResolver(this.settings.createPropertyResolver(), model || {});
         if (this.modelWatcher)
             this.modelWatcher.changeWatcherTarget(this.modelResolver.model);
     }
@@ -224,7 +224,7 @@ export class ValidationGroup implements IValidationGroup
     {
         return this.startValidateModel()
             .OnCompletion()
-            .then(() => { return !this.hasErrors() });
+            .then(() => { return !this.hasErrors });
     }
 
     public getModelErrors = (): Promise<any> =>

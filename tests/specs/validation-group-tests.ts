@@ -21,6 +21,16 @@ describe('Validation Group', function () {
         return new ValidationGroup(fieldErrorProcessor, ruleResolver, ruleset, model, <IValidationSettings>{ useModelWatcher :false });
     }
 
+    var delayedRequiresValid = (retval?:any=true, delay?:number=100) => { return {
+        ruleName: "delayed",
+        validate: function(mr, prop, options){
+            return new Promise(function(resolve, reject){
+                setTimeout(function() { resolve(mr.get(prop) == "valid"); }, 100);
+            });
+        },
+        getMessage: function(value, options) { return "delayed rule: " + value; }
+    }};
+
     it('should not notify if model watcher is not used', function (done) {
         var rulesetBuilder = new RulesetBuilder();
         var ruleset = rulesetBuilder.create()
@@ -681,17 +691,7 @@ describe('Validation Group', function () {
 
     it('should only return valid state when all validation events have finished', function (done) {
 
-        var delayedRequiresValid: any = {
-            ruleName: "delayed",
-            validate: function(mr, prop, options){
-                return new Promise(function(resolve, reject){
-                    setTimeout(function() { resolve(mr.get(prop) == "valid"); }, 100);
-                });
-            },
-            getMessage: function(value, options) { return "delayed rule: " + value; }
-        };
-
-        ruleRegistry.registerRule(delayedRequiresValid);
+        ruleRegistry.registerRule(delayedRequiresValid());
 
         var rulesetBuilder = new RulesetBuilder();
         var ruleset = rulesetBuilder.create()
@@ -714,6 +714,39 @@ describe('Validation Group', function () {
         dummyModel.foo = "invalid";
         dummyModel.foo = "valid";
     });
+
+    it('validation status should cycle between states', function (done) {
+
+        ruleRegistry.registerRule(delayedRequiresValid(true, 50));
+
+        var rulesetBuilder = new RulesetBuilder();
+        var ruleset = rulesetBuilder.create()
+            .forProperty("foo")
+            .addRule("delayed")
+            .build();
+
+        var dummyModel = {
+            foo: "invalid"
+        };
+
+        var validationGroup = createValidationGroupFor(dummyModel, ruleset);
+
+        expect(validationGroup.ValidationState).equals("valid");
+
+        validationGroup.validate()
+            .then(function(isValid){
+                expect(validationGroup.ValidationState).equals("valid");
+                expect(isValid).to.be.true;
+                validationGroup.release();
+                done();
+            }).catch(done);
+
+        expect(validationGroup.ValidationState).equals("calculating");
+
+        dummyModel.foo = "invalid";
+        dummyModel.foo = "valid";
+    });
+
 
     it('should correctly delay error requests until validation has finished', function (done) {
 
