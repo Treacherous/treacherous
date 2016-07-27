@@ -1,13 +1,11 @@
 import {expect} from "chai";
-import {PropertyResolver} from "property-resolver";
 import {FieldErrorProcessor} from "../../src/processors/field-error-processor";
 import {RulesetBuilder} from "../../src/rulesets/ruleset-builder";
 import {ruleRegistry} from "../../src/exposer";
 import {RuleResolver} from "../../src/rulesets/rule-resolver";
 import {ValidationGroup} from "../../src/validation-group";
-import {RuleRegistry} from "../../src/rules/rule-registry";
-import {ModelWatcher} from "../../src/watcher/model-watcher";
-import {ValidationSettings} from "../../src/validation-settings";
+import {IValidationSettings} from "../../src/ivalidation-settings";
+import {validationSettingsDefaults} from "../../src/validation-settings";
 
 describe('Validation Group', function () {
 
@@ -17,14 +15,35 @@ describe('Validation Group', function () {
         return new ValidationGroup(fieldErrorProcessor, ruleResolver, ruleset, model, null, 50);
     }
 
-
     var createNonPollingValidationGroupFor = function(model, ruleset) {
         var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry);
         var ruleResolver = new RuleResolver();
-        return new ValidationGroup(fieldErrorProcessor, ruleResolver, ruleset, model, new ValidationSettings({ modelWatcherFactory: () => null }), 50);
+        return new ValidationGroup(fieldErrorProcessor, ruleResolver, ruleset, model, <IValidationSettings>{ useModelWatcher :false });
     }
 
+    it('should not notify if model watcher is not used', function (done) {
+        var rulesetBuilder = new RulesetBuilder();
+        var ruleset = rulesetBuilder.create()
+            .forProperty("foo")
+            .addRule("maxLength", 15)
+            .build();
 
+        var dummyModel = {
+            foo: "hello"
+        };
+
+        setTimeout(function(){
+            dummyModel.foo = "this is now no longer valid";
+        }, 100);
+
+        var validationGroup = createNonPollingValidationGroupFor(dummyModel, ruleset);
+        //var validationGroup = createValidationGroupFor(dummyModel, ruleset);
+        setTimeout(function() {
+            expect(validationGroup.propertyErrors).to.be.empty;
+            done();
+        },600);
+
+    });
 
     it('should correctly get errors', function (done) {
 
@@ -123,8 +142,6 @@ describe('Validation Group', function () {
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
         validationGroup.getModelErrors()
             .then(function(errors){
-                console.log(dummyModel);
-                console.log(errors);
                 expect(errors).not.to.be.null;
                 expect(errors).to.include.keys("foo.bar");
                 expect(errors["foo.bar"]).to.contain("5");
@@ -210,14 +227,16 @@ describe('Validation Group', function () {
         };
 
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.getPropertyError("foo")
-            .then(function(error){
-                expect(error).not.to.be.null;
-                expect(error).to.contain("2");
-                expect(error).to.contain("5");
-                validationGroup.release();
-                done();
-            }).catch(done);
+        validationGroup.validate().then(v => {
+            validationGroup.getPropertyError("foo")
+                .then(function (error) {
+                    expect(error).not.to.be.null;
+                    expect(error).to.contain("2");
+                    expect(error).to.contain("5");
+                    validationGroup.release();
+                    done();
+                }).catch(done);
+        })
     });
 
     it('should correctly get nested property error', function (done) {
@@ -239,14 +258,15 @@ describe('Validation Group', function () {
         };
 
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.getPropertyError("foo.bar")
+        validationGroup.validate().then(v => {
+            validationGroup.getPropertyError("foo.bar")
             .then(function(error){
                 expect(error).not.to.be.null;
                 expect(error).to.contain("9");
                 expect(error).to.contain("5");
                 validationGroup.release();
                 done();
-            }).catch(done);
+            }).catch(done) });
     });
 
     it('should correctly get property error in complex arrays', function (done) {
@@ -272,7 +292,8 @@ describe('Validation Group', function () {
         };
 
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        var checkOne = validationGroup.getPropertyError("foo[1].bar")
+        var checkOne = validationGroup.validate().then(v => {
+            validationGroup.getPropertyError("foo[1].bar")
             .then(function(error){
                 console.log(error);
                 expect(error).not.to.be.null;
@@ -292,7 +313,8 @@ describe('Validation Group', function () {
                 validationGroup.release();
                 done();
             });
-    });
+    })});
+
 
     it('should correctly get property error in simple array', function (done) {
 
@@ -307,14 +329,16 @@ describe('Validation Group', function () {
         };
 
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.getPropertyError("foo[2]")
+        validationGroup.validate().then(v => {
+            validationGroup.validateProperty("foo[2]")
+            .then(v => {  console.log(validationGroup.propertyErrors); return validationGroup.getPropertyError("foo[2]")})
             .then(function(error){
                 expect(error).not.to.be.null;
                 expect(error).to.contain("25");
                 expect(error).to.contain("30");
                 validationGroup.release();
                 done();
-            }).catch(done);
+            }).catch(done); })
     });
 
     it('should return undefined if no error exists for property', function (done) {
@@ -330,8 +354,9 @@ describe('Validation Group', function () {
         };
 
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.getPropertyError("nothing")
-            .then(function(error){
+        validationGroup.validateProperty("nothing")
+            .then(() => validationGroup.getPropertyError("nothing"))
+            .then(error => {
                 expect(error).to.be.undefined;
                 validationGroup.release();
                 done();
@@ -391,7 +416,6 @@ describe('Validation Group', function () {
         dummyModel.foo.push({ bar: "too long" });
 
         setTimeout(function(){
-            console.log(validationGroup.propertyErrors)
             validationGroup.getModelErrors()
                 .then(function(errors){
                     console.log(errors);
@@ -404,8 +428,9 @@ describe('Validation Group', function () {
                     validationGroup.release();
                     done();
                 }).catch(done);
-        }, 1000);
+        }, 600);
     });
+
 
     it('should correctly notify on property validation change', function (done) {
 
@@ -428,6 +453,8 @@ describe('Validation Group', function () {
             done();
         });
 
+        validationGroup.validate();
+
         setTimeout(function(){
             dummyModel.foo = "still valid";
             console.log("This is still valid")
@@ -438,7 +465,6 @@ describe('Validation Group', function () {
             console.log("This is not valid");
         }, 100);
     });
-
     it('should correctly notify on property in nested object validation change', function (done) {
 
         var rulesetBuilder = new RulesetBuilder();
@@ -522,6 +548,8 @@ describe('Validation Group', function () {
         };
 
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
+        console.log(validationGroup.modelWatcher)
+
         validationGroup.propertyStateChangedEvent.subscribe(function(args){
             console.log("triggered", args);
             expect(args.isValid).to.be.false;
@@ -565,35 +593,6 @@ describe('Validation Group', function () {
         setTimeout(function(){
             dummyModel.foo = "this is now no longer valid";
         }, 100);
-    });
-
-
-    it('should not notify if model watcher is not used', function (done) {
-
-        var rulesetBuilder = new RulesetBuilder();
-        var ruleset = rulesetBuilder.create()
-            .forProperty("foo")
-            .addRule("maxLength", 15)
-            .build();
-
-        var dummyModel = {
-            foo: "hello"
-        };
-
-        //var validationGroup = createNonPollingValidationGroupFor(dummyModel, ruleset);
-
-        setTimeout(function(){
-            dummyModel.foo = "this is now no longer valid";
-        }, 100);
-
-        var validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        console.log(dummyModel);
-        setTimeout(function() {
-            console.log(dummyModel);
-            console.log(validationGroup);
-            done();
-        },1000);
-
     });
 
 
@@ -705,7 +704,7 @@ describe('Validation Group', function () {
         };
 
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.isValid()
+        validationGroup.validate()
             .then(function(isValid){
                 expect(isValid).to.be.true;
                 validationGroup.release();

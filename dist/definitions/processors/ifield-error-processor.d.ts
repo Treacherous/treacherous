@@ -1,5 +1,6 @@
 import { RuleLink } from "../rulesets/rule-link";
+import { ModelResolver } from "../model-resolver";
 export interface IFieldErrorProcessor {
-    processRuleLink(model: any, fieldValue: any, ruleLink: RuleLink): Promise<any>;
-    checkFieldForErrors(model: any, fieldValue: any, rules: any): Promise<string>;
+    processRuleLink(mr: ModelResolver, propname: string, ruleLink: RuleLink): Promise<any>;
+    checkFieldForErrors(mr: ModelResolver, propname: string, rules: any): Promise<string>;
 }

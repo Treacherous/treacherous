@@ -5,14 +5,15 @@ import {IPropertyResolver} from "./iproperty-resolver";
 import {IValidationSettings} from "./ivalidation-settings";
 
 export class ValidationSettings implements IValidationSettings {
-    createModelWatcher:(any)=>IModelWatcher;
-    createPropertyResolver:(any)=>IPropertyResolver;
+    createModelWatcher:(any?)=>IModelWatcher;
+    createPropertyResolver:(any?)=>IPropertyResolver;
+    useModelWatcher:boolean = true;
 
-    constructor(...params) {
-        this.createPropertyResolver = () => new PropertyResolver();
-        this.createModelWatcher = () => new ModelWatcher();
+    constructor(params?:IValidationSettings) {
         Object.assign(this, params);
+        this.createPropertyResolver = this.createPropertyResolver || (() => new PropertyResolver());
+        this.createModelWatcher = this.createModelWatcher || (() => new ModelWatcher());
     }
 }
 
-export var validationSettingsDefaults = new ValidationSettings();
+export const validationSettingsDefaults = new ValidationSettings();

@@ -49,7 +49,8 @@ describe('Treacherous Sanity Checks', function () {
 
         var validationGroup = createGroup(dummyModel, ruleset);
 
-        validationGroup.getModelErrors()
+        validationGroup.validate()
+            .then(v => validationGroup.getModelErrors())
             .then(function(errors){
                 console.log("errors", errors);
                 expect(errors).to.include.keys("foo[1]");

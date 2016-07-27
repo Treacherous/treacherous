@@ -3,7 +3,7 @@ import { IModelWatcher } from "./watcher/imodel-watcher";
 export interface IValidationGroup {
     propertyStateChangedEvent: EventHandler;
     modelStateChangedEvent: EventHandler;
-    isValid(): Promise<boolean>;
+    validate(): Promise<boolean>;
     getModelErrors(): Promise<any>;
     getPropertyError(propertyRoute: string): Promise<any>;
     modelWatcher: IModelWatcher;

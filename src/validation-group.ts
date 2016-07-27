@@ -1,4 +1,14 @@
-import {PropertyResolver} from "property-resolver";
+/*
+ validate() fires validateModel() then waits to ensure every rule has been resolved and returns Promise of true/false
+ validateProperty(prop) calls the rules for a single Property, waits to ensure any pending rules have been resolved, and returns Promise of true/false
+
+ getModelErrors() waits to ensure any pending rules have been resolved and returns Promise of all errors
+ getPropertyError() waits to ensure any pending rules have been resolved and returns single error list for property
+
+ startValidateModel() starts a set of Promises to validate everything in the RuleSet. Returns validationGroup without waiting
+ startValidateProperty(prop) starts a set of Promises to validate a single Property. Returns validationGroup without waiting
+ */
+
 import {PropertyChangedEvent} from "./events/property-changed-event";
 import {EventHandler} from "event-js";
 import {Ruleset} from "./rulesets/ruleset";
@@ -12,16 +22,18 @@ import {IValidationGroup} from "./ivalidation-group";
 import {IFieldErrorProcessor} from "./processors/ifield-error-processor";
 import {IRuleResolver} from "./rulesets/irule-resolver";
 import {ModelResolver} from "./model-resolver";
-import {ValidationSettings, validationSettingsDefaults} from "./validation-settings";
+import {validationSettingsDefaults} from "./validation-settings";
+import {IValidationSettings} from "./ivalidation-settings";
 
 // TODO: This class is WAY to long, needs refactoring
 export class ValidationGroup implements IValidationGroup
 {
     public propertyErrors = {};
-    private activePromiseChain: Promise<any>;
-    private activeValidationCount: number;
+    private validationCounter: number;
+    waiting = [];
+    public settings:IValidationSettings;
     public modelWatcher: IModelWatcher;
-    private propertyResolver:PropertyResolver;
+    private modelResolver:ModelResolver;
 
     public propertyStateChangedEvent: EventHandler;
     public modelStateChangedEvent: EventHandler;
@@ -29,30 +41,43 @@ export class ValidationGroup implements IValidationGroup
     constructor(private fieldErrorProcessor: IFieldErrorProcessor,
                 private ruleResolver: IRuleResolver = new RuleResolver(),
                 private ruleset: Ruleset,
-                private model: any,
-                private settings: ValidationSettings,
+                model: any,
+                private settingOverrides: IValidationSettings,
                 public refreshRate = 500)
     {
-        var _settings = settings || validationSettingsDefaults;
-        this.model = this.model || {};
-        this.activeValidationCount = 0;
+        this.settings = Object.assign({}, validationSettingsDefaults, settingOverrides);
+        this.validationCounter = 0;
         this.propertyStateChangedEvent = new EventHandler(this);
         this.modelStateChangedEvent = new EventHandler(this);
-        this.modelWatcher = _settings.createModelWatcher();
-        this.propertyResolver = _settings.createPropertyResolver();
+        this.modelResolver = new ModelResolver(this.settings.createPropertyResolver(), model || {});
 
-        if (this.modelWatcher) {
+        if (this.settings.useModelWatcher && this.settings.createModelWatcher) {
+            this.modelWatcher = this.settings.createModelWatcher();
             this.modelWatcher.setupWatcher(model, ruleset, refreshRate);
             this.modelWatcher.onPropertyChanged.subscribe(this.onModelChanged);
         }
-        this.validateModel();
     }
 
-    private countedPromise = (wrappedPromise:Promise<any>) => {
-        if(!wrappedPromise) { return Promise.resolve(); }
+    private OnCompletion = () => {
+        return new Promise(r=> this.validationCounter ? this.waiting.push(() => r('All Resolved') ) : r('Nothing queued') );
+    }
 
-        this.activeValidationCount++;
-        return wrappedPromise.then(r=> { this.activeValidationCount--; return r; }, e => { this.activeValidationCount--; throw(e); } );
+    private CountedPromise = (p:Promise) => {
+        if(!p) { return Promise.resolve(undefined); }
+        if(!p.then) { throw new Error("Non-Promise pass in: " + p) }
+        this.incCounter();
+        return p.then(r=> { this.decCounter(); return r; }, c=> { this.decCounter(); throw c; } );
+    }
+
+    private decCounter = () => { this.validationCounter--;
+        if (!this.validationCounter) {
+            while (this.waiting.length) this.waiting.shift()();
+        }
+    }
+    private incCounter = () => { this.validationCounter++; }
+
+    public get ValidationState() {
+        return !this.validationCounter ? (!this.propertyErrors=={} ? 'valid' : 'invalid') : 'calculating';
     }
 
     private isRuleset(possibleRuleset: any): boolean {
@@ -64,85 +89,67 @@ export class ValidationGroup implements IValidationGroup
     }
 
     private onModelChanged = (eventArgs: PropertyChangedEvent) => {
-        this.validateProperty(eventArgs.propertyPath);
+        this.startValidateProperty(eventArgs.propertyPath);
     };
 
+    // End of the property deep-dive for launching Promises against properties
     private validatePropertyWithRuleLinks = (propertyName: string, propertyRules: Array<RuleLink>): any => {
-        var handlePossibleError = (possibleError: string) => {
-            var hadErrors = this.hasErrors();
+        return this.CountedPromise(this.fieldErrorProcessor.checkFieldForErrors(this.modelResolver, propertyName, propertyRules))
+            .then(v => {
+                var hadErrors = this.hasErrors();
 
-            if (!possibleError) {
-                if (this.propertyErrors[propertyName]) {
-                    delete this.propertyErrors[propertyName];
-                    var eventArgs = new PropertyStateChangedEvent(propertyName, true);
+                if (!v) {
+                    if (this.propertyErrors[propertyName]) {
+                        delete this.propertyErrors[propertyName];
+                        var eventArgs = new PropertyStateChangedEvent(propertyName, true);
+                        this.propertyStateChangedEvent.publish(eventArgs);
+                        if (hadErrors) {
+                            this.modelStateChangedEvent.publish(new ModelStateChangedEvent(true));
+                        }
+                    }
+                    return;
+                }
+
+                var previousError = this.propertyErrors[propertyName];
+                this.propertyErrors[propertyName] = v;
+
+                if(v != previousError){
+                    var eventArgs = new PropertyStateChangedEvent(propertyName, false, v);
                     this.propertyStateChangedEvent.publish(eventArgs);
-                    if (hadErrors) {
-                        this.modelStateChangedEvent.publish(new ModelStateChangedEvent(true));
+
+                    if (!hadErrors) {
+                        this.modelStateChangedEvent.publish(new ModelStateChangedEvent(false));
                     }
                 }
-                return;
-            }
 
-            var previousError = this.propertyErrors[propertyName];
-            this.propertyErrors[propertyName] = possibleError;
-
-            if(possibleError != previousError){
-                var eventArgs = new PropertyStateChangedEvent(propertyName, false, possibleError);
-                this.propertyStateChangedEvent.publish(eventArgs);
-
-                if (!hadErrors) {
-                    this.modelStateChangedEvent.publish(new ModelStateChangedEvent(false));
-                }
-            }
-        };
-
-        if(this.activePromiseChain)
-        {
-            this.activePromiseChain = Promise.resolve(this.activePromiseChain)
-                .then(() => {
-                    var mr = new ModelResolver(this.propertyResolver, this.model);
-                    var promise = this.fieldErrorProcessor
-                        .checkFieldForErrors(this.model, propertyName, propertyRules)
-                        .then(handlePossibleError);
-                    return this.countedPromise(promise);
-                });
-        }
-        else
-        {
-            var mr = new ModelResolver(this.propertyResolver, this.model);
-            this.activePromiseChain = this.countedPromise(this.fieldErrorProcessor
-                .checkFieldForErrors(this.model, propertyName, propertyRules)
-                .then(handlePossibleError));
-            return this.countedPromise(this.activePromiseChain);
-        }
+            })
+            .then(this.OnCompletion)
     };
 
+    // Calls validatePropertyWithRules
     private validatePropertyWithRuleSet = (propertyName: string, ruleset: Ruleset) => {
-        var promiseList = [];
         var transformedPropertyName;
         for(var childPropertyName in ruleset.rules){
             transformedPropertyName = `${propertyName}.${childPropertyName}`;
-            var countedPromise = this.validatePropertyWithRules(transformedPropertyName, ruleset.getRulesForProperty(childPropertyName));
-            promiseList.push(countedPromise);
+            this.validatePropertyWithRules(transformedPropertyName, ruleset.getRulesForProperty(childPropertyName));
         }
-        return Promise.all(promiseList);
     }
 
-    private validatePropertyWithRules = (propertyName: string, rules: any): any => {
+
+    // Starts CountedPromises for every rule in the set passed in. Does not wait for completion.
+    private validatePropertyWithRules = (propertyName: string, rules: any): ValidationGroup => {
         var ruleLinks = [];
         var ruleSets = [];
-        var validationPromises = [];
 
         var currentValue;
         try
         {
-            var mr = new ModelResolver(this.propertyResolver, this.model);
-            currentValue = mr.get(propertyName);
+            currentValue = this.modelResolver.get(propertyName);
         }
         catch(ex)
         {
+            console.warn(`Failed to resolve property ${propertyName} during validation. Does it exist in your model?`);
             throw(ex);
-            return Promise.resolve();
         }
 
         var routeEachRule = (ruleLinkOrSet) => {
@@ -153,10 +160,7 @@ export class ValidationGroup implements IValidationGroup
                 if(isCurrentlyAnArray) {
                     currentValue.forEach((element, index) => {
                         var childPropertyName = `${propertyName}[${index}]`;
-                        console.log(childPropertyName);
-                        var promise = this.validatePropertyWithRules(childPropertyName, [ruleLinkOrSet.internalRule]);
-                        var countedPromise = this.countedPromise(promise);
-                        validationPromises.push(countedPromise);
+                        this.validatePropertyWithRules(childPropertyName, [ruleLinkOrSet.internalRule]);
                     });
                 }
                 else
@@ -175,28 +179,27 @@ export class ValidationGroup implements IValidationGroup
 
         rules.forEach(routeEachRule);
 
-        var countedPromise = this.countedPromise(this.validatePropertyWithRuleLinks(propertyName, ruleLinks));
-        validationPromises.push(countedPromise);
+        this.validatePropertyWithRuleLinks(propertyName, ruleLinks);
 
         ruleSets.forEach((ruleSet) => {
-            var eachCountedPromise = this.countedPromise(this.validatePropertyWithRuleSet(propertyName, ruleSet));
-            validationPromises.push(eachCountedPromise);
+            this.CountedPromise(this.validatePropertyWithRuleSet(propertyName, ruleSet));
         });
-
-        return Promise.all(validationPromises);
+        return this;
     }
 
-    private validateProperty = (propertyName: string) => {
-        var rulesForProperty = this.ruleResolver.resolvePropertyRules(propertyName, this.ruleset);
-        if(!rulesForProperty) { return; }
 
+
+    private startValidateProperty = (propertyName: string) => {
+        var rulesForProperty = this.ruleResolver.resolvePropertyRules(propertyName, this.ruleset);
+        if(!rulesForProperty) { return this; }
         return this.validatePropertyWithRules(propertyName, rulesForProperty);
     };
 
-    private validateModel = () => {
+    public startValidateModel = () => {
         for(var parameterName in this.ruleset.rules) {
-            this.validateProperty(parameterName);
+            this.startValidateProperty(parameterName);
         }
+        return this;
     };
 
     private hasErrors = (): boolean => {
@@ -204,40 +207,42 @@ export class ValidationGroup implements IValidationGroup
     }
 
     public changeValidationTarget = (model: any) => {
-        this.model = model;
-        this.modelWatcher.changeWatcherTarget(this.model);
+        this.modelResolver.model = model;
+        if (this.modelWatcher)
+            this.modelWatcher.changeWatcherTarget(this.modelResolver.model);
     }
 
-    public isValid = (): Promise<boolean> =>
+
+    public validateProperty = (propertyname): Promise<boolean> =>
     {
-        return this.waitForValidatorsToFinish()
+        return this.startValidateProperty(propertyname)
+            .OnCompletion()
+            .then(() => { return !this.getPropertyError(propertyname) });
+    }
+
+    public validate = (): Promise<boolean> =>
+    {
+        return this.startValidateModel()
+            .OnCompletion()
             .then(() => { return !this.hasErrors() });
     }
 
     public getModelErrors = (): Promise<any> =>
     {
-        return this.waitForValidatorsToFinish()
-            .then(() => { return this.propertyErrors});
+        return this.startValidateModel()
+            .OnCompletion()
+            .then(() => {
+                return this.propertyErrors});
     }
     
     public getPropertyError = (propertyRoute: string): Promise<any> => {
-        return this.waitForValidatorsToFinish()
-            .then(() => { return this.propertyErrors[propertyRoute]; })
+        return this
+            .OnCompletion()
+            .then(() => this.propertyErrors[propertyRoute])
     }
 
     public release = () => {
-        this.modelWatcher.stopWatching();
+        if (this.modelWatcher)
+            this.modelWatcher.stopWatching();
     }
-
-    private waitForValidatorsToFinish = () : Promise<any> => {
-        return new Promise((resolve, reject) => {
-            var interval = setInterval(() => {
-                if(this.activeValidationCount == 0)
-                {
-                    clearInterval(interval);
-                    resolve();
-                }
-            }, this.modelWatcher.scanInterval);
-        });
-    };
 }
