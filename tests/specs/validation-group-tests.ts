@@ -4,8 +4,7 @@ import {RulesetBuilder} from "../../src/rulesets/ruleset-builder";
 import {ruleRegistry} from "../../src/exposer";
 import {RuleResolver} from "../../src/rulesets/rule-resolver";
 import {ValidationGroup} from "../../src/validation-group";
-import {IValidationSettings} from "../../src/ivalidation-settings";
-import {validationSettingsDefaults} from "../../src/validation-settings";
+import {IValidationSettings} from "../../src/settings/ivalidation-settings";
 
 describe('Validation Group', function () {
 

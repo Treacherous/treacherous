@@ -1,14 +1,15 @@
 import {IValidationRule} from "./ivalidation-rule";
 import {TypeHelper} from "../helpers/type-helper";
 import {ComparerHelper} from "../helpers/comparer-helper";
+import {IModelResolver} from "../resolvers/imodel-resolver";
 
 export class NotEqualValidationRule implements IValidationRule
 {
     public ruleName = "notEqual";
 
-    public validate(mr, prop, optionsOrValue): Promise<boolean>
+    public validate(modelResolver: IModelResolver, propertyName: string, optionsOrValue: any): Promise<boolean>
     {
-        var value = mr.get(prop);
+        var value = modelResolver.resolve(propertyName);
 
         if (value === undefined || value === null)
         { return Promise.resolve(true); }
@@ -25,8 +26,8 @@ export class NotEqualValidationRule implements IValidationRule
         return Promise.resolve(result);
     }
 
-    public getMessage(mr, prop, optionsOrValue) {
-        var value = mr.get(prop);
+    public getMessage(modelResolver: IModelResolver, propertyName: string, optionsOrValue: any) {
+        var value = modelResolver.resolve(propertyName);
         return `This field is ${value} but should not be equal to ${optionsOrValue.value || optionsOrValue}`;
     }
 }

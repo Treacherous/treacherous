@@ -1,7 +1,7 @@
 import {expect} from "chai";
 import {EqualValidationRule} from "../../../src/rules/equal-validation-rule";
 import {PropertyResolver} from "property-resolver";
-import {ModelResolver} from "../../../src/model-resolver";
+import {ModelResolver} from "../../../src/resolvers/model-resolver";
 import {FieldEqualityValidationRule} from "../../../src/rules/field-equality-validation-rule";
 
 describe("Validation Rules", function(){

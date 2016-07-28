@@ -21,6 +21,8 @@ import {RulesetBuilder} from "./rulesets/ruleset-builder";
 import {ValidationGroup} from "./validation-group";
 import {PropertyResolver} from "property-resolver";
 import {RuleResolver} from "./rulesets/rule-resolver";
+import {DefaultValidationSettings} from "./settings/default-validation-settings";
+import {IValidationSettings} from "./settings/ivalidation-settings";
 
 export var ruleRegistry = new RuleRegistry();
 ruleRegistry.registerRule(new DateValidationRule());
@@ -40,21 +42,22 @@ ruleRegistry.registerRule(new StepValidationRule());
 
 var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry);
 var propertyResolver = new PropertyResolver();
+var defaultValidationSettings = new DefaultValidationSettings(propertyResolver);
 var ruleResolver = new RuleResolver();
-var validationGroupFactory = new ValidationGroupFactory(fieldErrorProcessor, ruleResolver);
+var validationGroupFactory = new ValidationGroupFactory(fieldErrorProcessor, ruleResolver, defaultValidationSettings);
 
 export function createRuleset(): RulesetBuilder
 {
     return new RulesetBuilder().create();
 }
 
-export function createGroupWithRules(model: any, rulesCreator: (rulesetBuilder: RulesetBuilder) => Ruleset): ValidationGroup
+export function createGroupWithRules(model: any, rulesCreator: (rulesetBuilder: RulesetBuilder) => Ruleset, validationSettings?: IValidationSettings): ValidationGroup
 {
     var ruleset = rulesCreator(new RulesetBuilder());
-    return validationGroupFactory.createValidationGroup(model, ruleset) as ValidationGroup;
+    return validationGroupFactory.createValidationGroup(model, ruleset, validationSettings || defaultValidationSettings) as ValidationGroup;
 }
 
-export function createGroup(model: any, ruleset: Ruleset): ValidationGroup
+export function createGroup(model: any, ruleset: Ruleset, validationSettings?: IValidationSettings): ValidationGroup
 {
-    return validationGroupFactory.createValidationGroup(model, ruleset) as ValidationGroup;
+    return validationGroupFactory.createValidationGroup(model, ruleset, validationSettings || defaultValidationSettings) as ValidationGroup;
 }

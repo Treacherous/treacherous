@@ -1,22 +1,20 @@
-import {ModelResolver} from "../model-resolver";
-;
 import {IValidationRule} from "./ivalidation-rule";
 import {TypeHelper} from "../helpers/type-helper";
 import {ComparerHelper} from "../helpers/comparer-helper";
-import {property} from "../helpers/property";
+import {IModelResolver} from "../resolvers/imodel-resolver";
 
 export class FieldEqualityValidationRule implements IValidationRule
 {
     public ruleName = "fieldEquality";
 
-    public validate(mr, prop, optionsOrValue): Promise<boolean>
+    public validate(modelResolver: IModelResolver, propertyName: string, optionsOrValue: any): Promise<boolean>
     {
-        var value = mr.get(prop);
+        var value = modelResolver.resolve(propertyName);
         if (value === undefined || value === null)
         { return Promise.resolve(true); }
 
         var result;
-        var comparison = mr.get(optionsOrValue.value || optionsOrValue);
+        var comparison = modelResolver.resolve(optionsOrValue.value || optionsOrValue);
         var weakEquality = optionsOrValue.weakEquality || false;
 
         if(TypeHelper.isDateType(comparison))
@@ -27,9 +25,9 @@ export class FieldEqualityValidationRule implements IValidationRule
         return Promise.resolve(result);
     }
 
-    public getMessage(mr, prop, optionsOrValue) {
-        var field1 = mr.get(prop);
-        var field2 = mr.get(optionsOrValue.value || optionsOrValue);
-        return `Field ${prop} should be equal to ${optionsOrValue.value || optionsOrValue}`;
+    public getMessage(modelResolver: IModelResolver, propertyName: string, optionsOrValue: any) {
+        var field1 = modelResolver.resolve(propertyName);
+        var field2 = modelResolver.resolve(optionsOrValue.value || optionsOrValue);
+        return `Field ${propertyName} should be equal to ${optionsOrValue.value || optionsOrValue}`;
     }
 }

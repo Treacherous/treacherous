@@ -1,13 +1,14 @@
 import {IValidationRule} from "./ivalidation-rule";
+import {IModelResolver} from "../resolvers/imodel-resolver";
 
 export class NumberValidationRule implements IValidationRule
 {
     public ruleName = "number";
     private numberRegex = /^\d+$/;
 
-    public validate(mr, prop): Promise<boolean>
+    public validate(modelResolver: IModelResolver, propertyName: string): Promise<boolean>
     {
-        var value = mr.get(prop);
+        var value = modelResolver.resolve(propertyName);
         if (value === undefined || value === null)
         { return Promise.resolve(true); }
 
@@ -15,8 +16,8 @@ export class NumberValidationRule implements IValidationRule
         return Promise.resolve(matchesRegex);
     }
 
-    public getMessage(mr, prop) {
-        var value = mr.get(prop);
+    public getMessage(modelResolver: IModelResolver, propertyName: string) {
+        var value = modelResolver.resolve(propertyName);
         return `This field contains ${value} which is not a numeric value`;
     }
 }

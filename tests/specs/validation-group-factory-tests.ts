@@ -8,7 +8,7 @@ describe('Validation Group', function () {
 
     it('should create unique model watchers per group', function () {
 
-        var validationGroupFactory = new ValidationGroupFactory(null, null);
+        var validationGroupFactory = new ValidationGroupFactory(null, null, null);
         var dummyRuleset = new Ruleset();
         var vg1 = validationGroupFactory.createValidationGroup({}, dummyRuleset);
         var vg2 = validationGroupFactory.createValidationGroup({}, dummyRuleset);

@@ -1,7 +1,7 @@
 import {expect} from "chai";
 import {MaxValueValidationRule} from "../../../src/rules/max-value-validation-rule";
 import {PropertyResolver} from "property-resolver";
-import {ModelResolver} from "../../../src/model-resolver";
+import {ModelResolver} from "../../../src/resolvers/model-resolver";
 
 describe("Validation Rules", function(){
     describe('Max Value Rule', function () {

@@ -7,7 +7,9 @@ import {RuleLink} from "../../src/rulesets/rule-link";
 
 import * as spies from "chai-spies";
 import {EqualValidationRule} from "../../src/rules/equal-validation-rule";
-import {ModelResolver} from "../../src/model-resolver";
+import {ModelResolver} from "../../src/resolvers/model-resolver";
+import {PropertyResolver} from "property-resolver";
+
 use(spies);
 
 describe('Field Error Processor', function () {
@@ -19,7 +21,7 @@ describe('Field Error Processor', function () {
 
         var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry);
 
-        var dummyModel = new ModelResolver(null,{ dummyField: "123"});
+        var dummyModel = new ModelResolver(new PropertyResolver(),{ dummyField: "123"});
         console.log(dummyModel);
         var dummyRules = [
             new RuleLink("required", true),
@@ -42,7 +44,7 @@ describe('Field Error Processor', function () {
 
         var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry);
 
-        var dummyModel = new ModelResolver(null,{} );
+        var dummyModel = new ModelResolver(new PropertyResolver(), {});
         var expectedMessage = "you should have put in some text";
         var dummyField = "";
         var rule = new RuleLink("required", true);
@@ -64,7 +66,7 @@ describe('Field Error Processor', function () {
 
         var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry);
 
-        var dummyModel = new ModelResolver(null,{});
+        var dummyModel = new ModelResolver(new PropertyResolver(),{});
         var expectedMessage = "you should have put in some text";
         var dummyField = "";
         var rule = new RuleLink("required", true);
@@ -88,11 +90,12 @@ describe('Field Error Processor', function () {
 
         var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry);
 
-        var dummyModel = new ModelResolver(null,{ foo: "AA", bar:"BB" });
+        var dummyModel = new ModelResolver(new PropertyResolver(),{ foo: "AA", bar:"BB" });
         var dummyField = "foo";
         var rule = new RuleLink("equal", "bar");
         var expectedMessage = "Should have had foo (AA) == bar (BB)";
-        rule.messageOverride = (m,v,o) => `Should have had ${v} (${m.get(v)}) == ${o} (${m.get(o)})`;
+        rule.messageOverride = (m,v,o) => `Should have had ${v} (${m.resolve(v)}) == ${o} (${m.resolve(o)})`;
+
         var dummyRules = [
             rule
         ];
@@ -114,7 +117,7 @@ describe('Field Error Processor', function () {
 
         var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry);
 
-        var dummyModel = new ModelResolver(null,{ dummyField : "12" });
+        var dummyModel = new ModelResolver(new PropertyResolver(),{ dummyField : "12" });
         var dummyRules = [
             new RuleLink("required", true),
             new RuleLink("maxLength", 2)
@@ -138,7 +141,7 @@ describe('Field Error Processor', function () {
 
         var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry);
 
-        var dummyModel = new ModelResolver(null,{});
+        var dummyModel = new ModelResolver(new PropertyResolver(),{});
         var dummyField = null;
         var dummyRules = [
             new RuleLink("required", true),

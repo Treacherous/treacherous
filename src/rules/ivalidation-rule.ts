@@ -1,7 +1,7 @@
-import {ModelResolver} from "../model-resolver";
+import {IModelResolver} from "../resolvers/imodel-resolver";
 export interface IValidationRule
 {
     ruleName: string;
-    validate(mr:ModelResolver, propertName: string, options?: any): Promise<boolean>;
-    getMessage(mr:ModelResolver, propertName: string, options?: any);
+    validate(modelResolver: IModelResolver, propertyName: string, options?: any): Promise<boolean>;
+    getMessage(modelResolver: IModelResolver, propertyName: string, options?: any): string;
 }

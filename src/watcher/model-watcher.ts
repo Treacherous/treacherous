@@ -1,4 +1,4 @@
-import {PropertyResolver} from "property-resolver";
+import {PropertyResolver, IPropertyResolver} from "property-resolver";
 import {EventHandler} from "event-js";
 import {TypeHelper} from "../helpers/type-helper";
 
@@ -6,7 +6,6 @@ import {Ruleset} from "../rulesets/ruleset";
 import {PropertyWatcher} from "./property-watcher";
 import {PropertyChangedEvent} from "../events/property-changed-event";
 import {IModelWatcher} from "./imodel-watcher";
-import {ModelResolver} from "../model-resolver";
 
 export class ModelWatcher implements IModelWatcher
 {
@@ -19,7 +18,7 @@ export class ModelWatcher implements IModelWatcher
     public scanInterval: any;
     public onPropertyChanged: EventHandler;
 
-    constructor(private propertyResolver = new PropertyResolver()) {
+    constructor(private propertyResolver: IPropertyResolver = new PropertyResolver()) {
         this.onPropertyChanged = new EventHandler(this);
     }
 

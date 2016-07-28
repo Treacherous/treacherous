@@ -21,19 +21,18 @@ import {TypeHelper} from "./helpers/type-helper";
 import {IValidationGroup} from "./ivalidation-group";
 import {IFieldErrorProcessor} from "./processors/ifield-error-processor";
 import {IRuleResolver} from "./rulesets/irule-resolver";
-import {ModelResolver} from "./model-resolver";
-import {validationSettingsDefaults} from "./validation-settings";
-import {IValidationSettings} from "./ivalidation-settings";
+import {ModelResolver} from "./resolvers/model-resolver";
+import {IValidationSettings} from "./settings/ivalidation-settings";
+import {IModelResolver} from "./resolvers/imodel-resolver";
 
 // TODO: This class is WAY to long, needs refactoring
 export class ValidationGroup implements IValidationGroup
 {
+    private activePromises = [];
     public propertyErrors = {};
-    private validationCounter: number;
-    waiting = [];
-    public settings:IValidationSettings;
+    private validationCounter = 0;
     public modelWatcher: IModelWatcher;
-    private modelResolver:ModelResolver;
+    private modelResolver: IModelResolver;
 
     public propertyStateChangedEvent: EventHandler;
     public modelStateChangedEvent: EventHandler;
@@ -42,24 +41,20 @@ export class ValidationGroup implements IValidationGroup
                 private ruleResolver: IRuleResolver = new RuleResolver(),
                 private ruleset: Ruleset,
                 model: any,
-                private settingOverrides: IValidationSettings,
+                private settings: IValidationSettings,
                 public refreshRate = 500)
     {
-        this.settings = Object.assign({}, validationSettingsDefaults, settingOverrides);
-        this.validationCounter = 0;
         this.propertyStateChangedEvent = new EventHandler(this);
         this.modelStateChangedEvent = new EventHandler(this);
-        this.modelResolver = new ModelResolver(this.settings.createPropertyResolver(), model || {});
 
-        if (this.settings.useModelWatcher && this.settings.createModelWatcher) {
-            this.modelWatcher = this.settings.createModelWatcher();
-            this.modelWatcher.setupWatcher(model, ruleset, refreshRate);
-            this.modelWatcher.onPropertyChanged.subscribe(this.onModelChanged);
-        }
+        this.modelResolver = this.settings.createModelResolver(model);
+        this.modelWatcher = this.settings.createModelWatcher();
+        this.modelWatcher.setupWatcher(model, ruleset, refreshRate);
+        this.modelWatcher.onPropertyChanged.subscribe(this.onModelChanged);
     }
 
     private OnCompletion = () => {
-        return new Promise(r=> this.validationCounter ? this.waiting.push(() => r('All Resolved') ) : r('Nothing queued') );
+        return new Promise(r=> this.validationCounter ? this.activePromises.push(() => r('All Resolved') ) : r('Nothing queued') );
     }
 
     private CountedPromise = (p:Promise) => {
@@ -71,7 +66,7 @@ export class ValidationGroup implements IValidationGroup
 
     private decCounter = () => { this.validationCounter--;
         if (!this.validationCounter) {
-            while (this.waiting.length) this.waiting.shift()();
+            while (this.activePromises.length) this.activePromises.shift()();
         }
     }
     private incCounter = () => { this.validationCounter++; }
@@ -144,7 +139,7 @@ export class ValidationGroup implements IValidationGroup
         var currentValue;
         try
         {
-            currentValue = this.modelResolver.get(propertyName);
+            currentValue = this.modelResolver.resolve(propertyName);
         }
         catch(ex)
         {

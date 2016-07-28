@@ -3,16 +3,14 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 __export(require("./exposer"));
-__export(require("./model-resolver"));
 __export(require("./validation-group"));
-__export(require("./validation-settings"));
 __export(require("./events/model-state-changed-event"));
 __export(require("./events/property-changed-event"));
 __export(require("./events/property-state-changed-event"));
 __export(require("./factories/validation-group-factory"));
 __export(require("./helpers/comparer-helper"));
-__export(require("./helpers/property"));
 __export(require("./helpers/type-helper"));
+__export(require("./resolvers/model-resolver"));
 __export(require("./processors/field-error-processor"));
 __export(require("./processors/field-has-error"));
 __export(require("./processors/validation-error"));
@@ -38,5 +36,6 @@ __export(require("./rulesets/rule-link"));
 __export(require("./rulesets/rule-resolver"));
 __export(require("./rulesets/ruleset-builder"));
 __export(require("./rulesets/ruleset"));
+__export(require("./settings/default-validation-settings"));
 __export(require("./watcher/model-watcher"));
 __export(require("./watcher/property-watcher"));

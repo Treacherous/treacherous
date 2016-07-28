@@ -1,7 +1,7 @@
 import {expect} from "chai";
 import {DateValidationRule} from "../../../src/rules/date-validation-rule";
-import {ModelResolver} from "../../../src/model-resolver";
 import {PropertyResolver} from "property-resolver";
+import {ModelResolver} from "../../../src/resolvers/model-resolver";
 
 describe("Validation Rules", function(){
     describe('Date Rule', function () {

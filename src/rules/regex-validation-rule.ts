@@ -1,12 +1,13 @@
 import {IValidationRule} from "./ivalidation-rule";
+import {IModelResolver} from "../resolvers/imodel-resolver";
 
 export class RegexValidationRule implements IValidationRule
 {
     public ruleName = "regex";
 
-    public validate(mr, prop, regexPattern: RegExp): Promise<boolean>
+    public validate(modelResolver: IModelResolver, propertyName: string, regexPattern: RegExp): Promise<boolean>
     {
-        var value = mr.get(prop);
+        var value = modelResolver.resolve(propertyName);
 
         if (value === undefined || value === null || value.length == 0)
         { return Promise.resolve(true); }
@@ -15,7 +16,7 @@ export class RegexValidationRule implements IValidationRule
         return Promise.resolve(matchesPattern);
     }
 
-    public getMessage(mr, prop, regexPattern) {
+    public getMessage(modelResolver: IModelResolver, propertyName: string, regexPattern: RegExp) {
         return `This field does not match the expected format`;
     }
 }

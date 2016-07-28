@@ -3,7 +3,7 @@
   "version": "0.10.0",
   "license": "MIT",
   "dependencies": {
-    "property-resolver": "^0.0.6",
+    "property-resolver": "^0.0.9",
     "event-js": "^0.1.0"
   },
   "main": "dist/commonjs/index.js",

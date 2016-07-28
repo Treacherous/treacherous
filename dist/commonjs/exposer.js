@@ -19,6 +19,7 @@ var step_validation_rule_1 = require("./rules/step-validation-rule");
 var ruleset_builder_1 = require("./rulesets/ruleset-builder");
 var property_resolver_1 = require("property-resolver");
 var rule_resolver_1 = require("./rulesets/rule-resolver");
+var default_validation_settings_1 = require("./settings/default-validation-settings");
 exports.ruleRegistry = new rule_registry_1.RuleRegistry();
 exports.ruleRegistry.registerRule(new date_validation_rule_1.DateValidationRule());
 exports.ruleRegistry.registerRule(new decimal_validation_rule_1.DecimalValidationRule());
@@ -36,18 +37,19 @@ exports.ruleRegistry.registerRule(new required_validation_rule_1.RequiredValidat
 exports.ruleRegistry.registerRule(new step_validation_rule_1.StepValidationRule());
 var fieldErrorProcessor = new field_error_processor_1.FieldErrorProcessor(exports.ruleRegistry);
 var propertyResolver = new property_resolver_1.PropertyResolver();
+var defaultValidationSettings = new default_validation_settings_1.DefaultValidationSettings(propertyResolver);
 var ruleResolver = new rule_resolver_1.RuleResolver();
-var validationGroupFactory = new validation_group_factory_1.ValidationGroupFactory(fieldErrorProcessor, ruleResolver);
+var validationGroupFactory = new validation_group_factory_1.ValidationGroupFactory(fieldErrorProcessor, ruleResolver, defaultValidationSettings);
 function createRuleset() {
     return new ruleset_builder_1.RulesetBuilder().create();
 }
 exports.createRuleset = createRuleset;
-function createGroupWithRules(model, rulesCreator) {
+function createGroupWithRules(model, rulesCreator, validationSettings) {
     var ruleset = rulesCreator(new ruleset_builder_1.RulesetBuilder());
-    return validationGroupFactory.createValidationGroup(model, ruleset);
+    return validationGroupFactory.createValidationGroup(model, ruleset, validationSettings || defaultValidationSettings);
 }
 exports.createGroupWithRules = createGroupWithRules;
-function createGroup(model, ruleset) {
-    return validationGroupFactory.createValidationGroup(model, ruleset);
+function createGroup(model, ruleset, validationSettings) {
+    return validationGroupFactory.createValidationGroup(model, ruleset, validationSettings || defaultValidationSettings);
 }
 exports.createGroup = createGroup;

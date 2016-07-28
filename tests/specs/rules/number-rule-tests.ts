@@ -1,7 +1,7 @@
 import {expect} from "chai";
 import {NumberValidationRule} from "../../../src/rules/number-validation-rule";
 import {PropertyResolver} from "property-resolver";
-import {ModelResolver} from "../../../src/model-resolver";
+import {ModelResolver} from "../../../src/resolvers/model-resolver";
 
 describe("Validation Rules", function(){
     describe('Number Rule', function () {

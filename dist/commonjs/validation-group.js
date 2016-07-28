@@ -14,23 +14,23 @@ var property_state_changed_event_1 = require("./events/property-state-changed-ev
 var model_state_changed_event_1 = require("./events/model-state-changed-event");
 var rule_resolver_1 = require("./rulesets/rule-resolver");
 var type_helper_1 = require("./helpers/type-helper");
-var model_resolver_1 = require("./model-resolver");
-var validation_settings_1 = require("./validation-settings");
+var model_resolver_1 = require("./resolvers/model-resolver");
 // TODO: This class is WAY to long, needs refactoring
 var ValidationGroup = (function () {
-    function ValidationGroup(fieldErrorProcessor, ruleResolver, ruleset, model, settingOverrides, refreshRate) {
+    function ValidationGroup(fieldErrorProcessor, ruleResolver, ruleset, model, settings, refreshRate) {
         var _this = this;
         if (ruleResolver === void 0) { ruleResolver = new rule_resolver_1.RuleResolver(); }
         if (refreshRate === void 0) { refreshRate = 500; }
         this.fieldErrorProcessor = fieldErrorProcessor;
         this.ruleResolver = ruleResolver;
         this.ruleset = ruleset;
-        this.settingOverrides = settingOverrides;
+        this.settings = settings;
         this.refreshRate = refreshRate;
+        this.activePromises = [];
         this.propertyErrors = {};
-        this.waiting = [];
+        this.validationCounter = 0;
         this.OnCompletion = function () {
-            return new Promise(function (r) { return _this.validationCounter ? _this.waiting.push(function () { return r('All Resolved'); }) : r('Nothing queued'); });
+            return new Promise(function (r) { return _this.validationCounter ? _this.activePromises.push(function () { return r('All Resolved'); }) : r('Nothing queued'); });
         };
         this.CountedPromise = function (p) {
             if (!p) {
@@ -45,8 +45,8 @@ var ValidationGroup = (function () {
         this.decCounter = function () {
             _this.validationCounter--;
             if (!_this.validationCounter) {
-                while (_this.waiting.length)
-                    _this.waiting.shift()();
+                while (_this.activePromises.length)
+                    _this.activePromises.shift()();
             }
         };
         this.incCounter = function () { _this.validationCounter++; };
@@ -57,7 +57,7 @@ var ValidationGroup = (function () {
         this.validatePropertyWithRuleLinks = function (propertyName, propertyRules) {
             return _this.CountedPromise(_this.fieldErrorProcessor.checkFieldForErrors(_this.modelResolver, propertyName, propertyRules))
                 .then(function (v) {
-                var hadErrors = _this.hasErrors();
+                var hadErrors = _this.hasErrors;
                 if (!v) {
                     if (_this.propertyErrors[propertyName]) {
                         delete _this.propertyErrors[propertyName];
@@ -95,7 +95,7 @@ var ValidationGroup = (function () {
             var ruleSets = [];
             var currentValue;
             try {
-                currentValue = _this.modelResolver.get(propertyName);
+                currentValue = _this.modelResolver.resolve(propertyName);
             }
             catch (ex) {
                 console.warn("Failed to resolve property " + propertyName + " during validation. Does it exist in your model?");
@@ -146,11 +146,8 @@ var ValidationGroup = (function () {
             }
             return _this;
         };
-        this.hasErrors = function () {
-            return Object.keys(_this.propertyErrors).length > 0;
-        };
         this.changeValidationTarget = function (model) {
-            _this.modelResolver.model = model;
+            _this.modelResolver = new model_resolver_1.ModelResolver(_this.settings.createPropertyResolver(), model || {});
             if (_this.modelWatcher)
                 _this.modelWatcher.changeWatcherTarget(_this.modelResolver.model);
         };
@@ -162,7 +159,7 @@ var ValidationGroup = (function () {
         this.validate = function () {
             return _this.startValidateModel()
                 .OnCompletion()
-                .then(function () { return !_this.hasErrors(); });
+                .then(function () { return !_this.hasErrors; });
         };
         this.getModelErrors = function () {
             return _this.startValidateModel()
@@ -180,20 +177,16 @@ var ValidationGroup = (function () {
             if (_this.modelWatcher)
                 _this.modelWatcher.stopWatching();
         };
-        this.settings = Object.assign({}, validation_settings_1.validationSettingsDefaults, settingOverrides);
-        this.validationCounter = 0;
         this.propertyStateChangedEvent = new event_js_1.EventHandler(this);
         this.modelStateChangedEvent = new event_js_1.EventHandler(this);
-        this.modelResolver = new model_resolver_1.ModelResolver(this.settings.createPropertyResolver(), model || {});
-        if (this.settings.useModelWatcher && this.settings.createModelWatcher) {
-            this.modelWatcher = this.settings.createModelWatcher();
-            this.modelWatcher.setupWatcher(model, ruleset, refreshRate);
-            this.modelWatcher.onPropertyChanged.subscribe(this.onModelChanged);
-        }
+        this.modelResolver = this.settings.createModelResolver(model);
+        this.modelWatcher = this.settings.createModelWatcher();
+        this.modelWatcher.setupWatcher(model, ruleset, refreshRate);
+        this.modelWatcher.onPropertyChanged.subscribe(this.onModelChanged);
     }
     Object.defineProperty(ValidationGroup.prototype, "ValidationState", {
         get: function () {
-            return !this.validationCounter ? (!this.propertyErrors == {} ? 'valid' : 'invalid') : 'calculating';
+            return !this.validationCounter ? (!this.hasErrors ? 'valid' : 'invalid') : 'calculating';
         },
         enumerable: true,
         configurable: true
@@ -204,6 +197,13 @@ var ValidationGroup = (function () {
     ValidationGroup.prototype.isForEach = function (possibleForEach) {
         return possibleForEach.isForEach;
     };
+    Object.defineProperty(ValidationGroup.prototype, "hasErrors", {
+        get: function () {
+            return (Object.keys(this.propertyErrors).length > 0);
+        },
+        enumerable: true,
+        configurable: true
+    });
     return ValidationGroup;
 }());
 exports.ValidationGroup = ValidationGroup;

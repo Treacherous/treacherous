@@ -1,7 +1,7 @@
 import {expect} from "chai";
 import {MinLengthValidationRule} from "../../../src/rules/min-length-validation-rule";
 import {PropertyResolver} from "property-resolver";
-import {ModelResolver} from "../../../src/model-resolver";
+import {ModelResolver} from "../../../src/resolvers/model-resolver";
 
 describe("Validation Rules", function(){
     describe('Min Length Rule', function () {

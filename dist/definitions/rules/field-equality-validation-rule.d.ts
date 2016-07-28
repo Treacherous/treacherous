@@ -1,6 +1,7 @@
 import { IValidationRule } from "./ivalidation-rule";
+import { IModelResolver } from "../resolvers/imodel-resolver";
 export declare class FieldEqualityValidationRule implements IValidationRule {
     ruleName: string;
-    validate(mr: any, prop: any, optionsOrValue: any): Promise<boolean>;
-    getMessage(mr: any, prop: any, optionsOrValue: any): string;
+    validate(modelResolver: IModelResolver, propertyName: string, optionsOrValue: any): Promise<boolean>;
+    getMessage(modelResolver: IModelResolver, propertyName: string, optionsOrValue: any): string;
 }

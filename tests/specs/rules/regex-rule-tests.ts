@@ -1,7 +1,7 @@
 import {expect} from "chai";
 import {RegexValidationRule} from "../../../src/rules/regex-validation-rule";
 import {PropertyResolver} from "property-resolver";
-import {ModelResolver} from "../../../src/model-resolver";
+import {ModelResolver} from "../../../src/resolvers/model-resolver";
 
 describe("Validation Rules", function(){
     describe('Regex Rule', function () {

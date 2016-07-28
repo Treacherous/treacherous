@@ -1,6 +1,7 @@
 import { IValidationRule } from "./ivalidation-rule";
+import { IModelResolver } from "../resolvers/imodel-resolver";
 export declare class StepValidationRule implements IValidationRule {
     ruleName: string;
-    validate(mr: any, prop: any, step: number): Promise<boolean>;
-    getMessage(mr: any, prop: any, step: any): string;
+    validate(modelResolver: IModelResolver, propertyName: string, step: number): Promise<boolean>;
+    getMessage(modelResolver: IModelResolver, propertyName: string, step: any): string;
 }
