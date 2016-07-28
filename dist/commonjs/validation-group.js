@@ -7,6 +7,11 @@
 
  startValidateModel() starts a set of Promises to validate everything in the RuleSet. Returns validationGroup without waiting
  startValidateProperty(prop) starts a set of Promises to validate a single Property. Returns validationGroup without waiting
+
+ injectError(prop, error) manually applies an error to a property. Used for server-side errors reflected on-screen
+ clearErrors(prop) manually clear errors associated with a property. Used clear server-side errors reflected on-screen or support error hiding prior to revalidation on the client (e.g. if fields are validated on blur, and errors hidden on changed)
+
+
  */
 "use strict";
 var event_js_1 = require("event-js");
@@ -15,17 +20,16 @@ var model_state_changed_event_1 = require("./events/model-state-changed-event");
 var rule_resolver_1 = require("./rulesets/rule-resolver");
 var type_helper_1 = require("./helpers/type-helper");
 var model_resolver_1 = require("./model-resolver");
-var validation_settings_1 = require("./validation-settings");
 // TODO: This class is WAY to long, needs refactoring
 var ValidationGroup = (function () {
-    function ValidationGroup(fieldErrorProcessor, ruleResolver, ruleset, model, settingOverrides, refreshRate) {
+    function ValidationGroup(fieldErrorProcessor, ruleResolver, ruleset, model, settings, refreshRate) {
         var _this = this;
         if (ruleResolver === void 0) { ruleResolver = new rule_resolver_1.RuleResolver(); }
         if (refreshRate === void 0) { refreshRate = 500; }
         this.fieldErrorProcessor = fieldErrorProcessor;
         this.ruleResolver = ruleResolver;
         this.ruleset = ruleset;
-        this.settingOverrides = settingOverrides;
+        this.settings = settings;
         this.refreshRate = refreshRate;
         this.propertyErrors = {};
         this.waiting = [];
@@ -56,9 +60,9 @@ var ValidationGroup = (function () {
         // End of the property deep-dive for launching Promises against properties
         this.validatePropertyWithRuleLinks = function (propertyName, propertyRules) {
             return _this.CountedPromise(_this.fieldErrorProcessor.checkFieldForErrors(_this.modelResolver, propertyName, propertyRules))
-                .then(function (v) {
-                var hadErrors = _this.hasErrors();
-                if (!v) {
+                .then(function (isvalid) {
+                var hadErrors = _this.hasErrors;
+                if (!isvalid) {
                     if (_this.propertyErrors[propertyName]) {
                         delete _this.propertyErrors[propertyName];
                         var eventArgs = new property_state_changed_event_1.PropertyStateChangedEvent(propertyName, true);
@@ -70,9 +74,9 @@ var ValidationGroup = (function () {
                     return;
                 }
                 var previousError = _this.propertyErrors[propertyName];
-                _this.propertyErrors[propertyName] = v;
-                if (v != previousError) {
-                    var eventArgs = new property_state_changed_event_1.PropertyStateChangedEvent(propertyName, false, v);
+                _this.propertyErrors[propertyName] = isvalid;
+                if (isvalid != previousError) {
+                    var eventArgs = new property_state_changed_event_1.PropertyStateChangedEvent(propertyName, false, isvalid);
                     _this.propertyStateChangedEvent.publish(eventArgs);
                     if (!hadErrors) {
                         _this.modelStateChangedEvent.publish(new model_state_changed_event_1.ModelStateChangedEvent(false));
@@ -146,11 +150,8 @@ var ValidationGroup = (function () {
             }
             return _this;
         };
-        this.hasErrors = function () {
-            return Object.keys(_this.propertyErrors).length > 0;
-        };
         this.changeValidationTarget = function (model) {
-            _this.modelResolver.model = model;
+            _this.modelResolver = new model_resolver_1.ModelResolver(_this.settings.createPropertyResolver(), model || {});
             if (_this.modelWatcher)
                 _this.modelWatcher.changeWatcherTarget(_this.modelResolver.model);
         };
@@ -159,10 +160,18 @@ var ValidationGroup = (function () {
                 .OnCompletion()
                 .then(function () { return !_this.getPropertyError(propertyname); });
         };
+        this.injectError = function (propertyname, error) {
+            _this.propertyErrors[propertyname].push(error);
+            return _this;
+        };
+        this.clearErrors = function (propertyname) {
+            delete _this.propertyErrors[propertyname];
+            return _this;
+        };
         this.validate = function () {
             return _this.startValidateModel()
                 .OnCompletion()
-                .then(function () { return !_this.hasErrors(); });
+                .then(function () { return !_this.hasErrors; });
         };
         this.getModelErrors = function () {
             return _this.startValidateModel()
@@ -180,12 +189,11 @@ var ValidationGroup = (function () {
             if (_this.modelWatcher)
                 _this.modelWatcher.stopWatching();
         };
-        this.settings = Object.assign({}, validation_settings_1.validationSettingsDefaults, settingOverrides);
         this.validationCounter = 0;
         this.propertyStateChangedEvent = new event_js_1.EventHandler(this);
         this.modelStateChangedEvent = new event_js_1.EventHandler(this);
         this.modelResolver = new model_resolver_1.ModelResolver(this.settings.createPropertyResolver(), model || {});
-        if (this.settings.useModelWatcher && this.settings.createModelWatcher) {
+        if (this.settings.createModelWatcher) {
             this.modelWatcher = this.settings.createModelWatcher();
             this.modelWatcher.setupWatcher(model, ruleset, refreshRate);
             this.modelWatcher.onPropertyChanged.subscribe(this.onModelChanged);
@@ -193,7 +201,7 @@ var ValidationGroup = (function () {
     }
     Object.defineProperty(ValidationGroup.prototype, "ValidationState", {
         get: function () {
-            return !this.validationCounter ? (!this.propertyErrors == {} ? 'valid' : 'invalid') : 'calculating';
+            return !this.validationCounter ? (!this.hasErrors ? 'valid' : 'invalid') : 'calculating';
         },
         enumerable: true,
         configurable: true
@@ -204,6 +212,13 @@ var ValidationGroup = (function () {
     ValidationGroup.prototype.isForEach = function (possibleForEach) {
         return possibleForEach.isForEach;
     };
+    Object.defineProperty(ValidationGroup.prototype, "hasErrors", {
+        get: function () {
+            return (Object.keys(this.propertyErrors).length > 0);
+        },
+        enumerable: true,
+        configurable: true
+    });
     return ValidationGroup;
 }());
 exports.ValidationGroup = ValidationGroup;

@@ -8,5 +8,5 @@ export declare class ValidationGroupFactory implements IValidationGroupFactory {
     private fieldErrorProcessor;
     private ruleResolver;
     constructor(fieldErrorProcessor: IFieldErrorProcessor, ruleResolver: IRuleResolver);
-    createValidationGroup: (model: any, ruleset: Ruleset, options?: IValidationSettings) => IValidationGroup;
+    createValidationGroup: (model: any, ruleset: Ruleset, options: IValidationSettings) => IValidationGroup;
 }

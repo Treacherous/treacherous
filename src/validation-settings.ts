@@ -1,19 +1,16 @@
-import {PropertyResolver} from "property-resolver";
-import {ModelWatcher} from "./watcher/model-watcher";
 import {IModelWatcher} from "./watcher/imodel-watcher";
 import {IPropertyResolver} from "./iproperty-resolver";
 import {IValidationSettings} from "./ivalidation-settings";
+import {SettingsBuilder} from "./settings-builder";
 
 export class ValidationSettings implements IValidationSettings {
-    createModelWatcher:(any?)=>IModelWatcher;
-    createPropertyResolver:(any?)=>IPropertyResolver;
-    useModelWatcher:boolean = true;
+    createModelWatcher:(any?)=>IModelWatcher = null;
+    createPropertyResolver:(any?)=>IPropertyResolver = null;
 
-    constructor(params?:IValidationSettings) {
-        Object.assign(this, params);
-        this.createPropertyResolver = this.createPropertyResolver || (() => new PropertyResolver());
-        this.createModelWatcher = this.createModelWatcher || (() => new ModelWatcher());
+    configure(fn: (builder: SettingsBuilder) => void): ValidationSettings {
+        let builder = new SettingsBuilder(this);
+        fn(builder);
+        return builder.Settings;
     }
 }
 
-export const validationSettingsDefaults = new ValidationSettings();

@@ -1,24 +1,23 @@
 import {expect} from "chai";
 import {FieldErrorProcessor} from "../../src/processors/field-error-processor";
 import {RulesetBuilder} from "../../src/rulesets/ruleset-builder";
-import {ruleRegistry} from "../../src/exposer";
+import {ruleRegistry, DefaultValidationSettings} from "../../src/exposer";
 import {RuleResolver} from "../../src/rulesets/rule-resolver";
 import {ValidationGroup} from "../../src/validation-group";
-import {IValidationSettings} from "../../src/ivalidation-settings";
-import {validationSettingsDefaults} from "../../src/validation-settings";
 
 describe('Validation Group', function () {
 
     var createValidationGroupFor = function(model, ruleset) {
         var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry);
         var ruleResolver = new RuleResolver();
-        return new ValidationGroup(fieldErrorProcessor, ruleResolver, ruleset, model, null, 50);
+        return new ValidationGroup(fieldErrorProcessor, ruleResolver, ruleset, model, DefaultValidationSettings, 50);
     }
 
     var createNonPollingValidationGroupFor = function(model, ruleset) {
         var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry);
         var ruleResolver = new RuleResolver();
-        return new ValidationGroup(fieldErrorProcessor, ruleResolver, ruleset, model, <IValidationSettings>{ useModelWatcher :false });
+        var settings = DefaultValidationSettings.configure(c => c.setModelWatcherFactory(null));
+        return new ValidationGroup(fieldErrorProcessor, ruleResolver, ruleset, model, settings);
     }
 
     var delayedRequiresValid = (retval?:any=true, delay?:number=100) => { return {

@@ -1,14 +1,15 @@
 "use strict";
-var property_resolver_1 = require("property-resolver");
-var model_watcher_1 = require("./watcher/model-watcher");
+var settings_builder_1 = require("./settings-builder");
 var ValidationSettings = (function () {
-    function ValidationSettings(params) {
-        this.useModelWatcher = true;
-        Object.assign(this, params);
-        this.createPropertyResolver = this.createPropertyResolver || (function () { return new property_resolver_1.PropertyResolver(); });
-        this.createModelWatcher = this.createModelWatcher || (function () { return new model_watcher_1.ModelWatcher(); });
+    function ValidationSettings() {
+        this.createModelWatcher = null;
+        this.createPropertyResolver = null;
     }
+    ValidationSettings.prototype.configure = function (fn) {
+        var builder = new settings_builder_1.SettingsBuilder(this);
+        fn(builder);
+        return builder.Settings;
+    };
     return ValidationSettings;
 }());
 exports.ValidationSettings = ValidationSettings;
-exports.validationSettingsDefaults = new ValidationSettings();
