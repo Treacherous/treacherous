@@ -5,31 +5,36 @@ import {ruleRegistry} from "../../src/exposer";
 import {RuleResolver} from "../../src/rulesets/rule-resolver";
 import {ValidationGroup} from "../../src/validation-group";
 import {IValidationSettings} from "../../src/settings/ivalidation-settings";
+import {DefaultValidationSettings} from "../../src/settings/default-validation-settings";
+import {PropertyResolver} from "property-resolver";
+import {IModelResolver} from "../../src/resolvers/imodel-resolver";
 
 describe('Validation Group', function () {
 
     var createValidationGroupFor = function(model, ruleset) {
         var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry);
         var ruleResolver = new RuleResolver();
-        return new ValidationGroup(fieldErrorProcessor, ruleResolver, ruleset, model, null, 50);
+        var validationSettings = new DefaultValidationSettings(new PropertyResolver());
+        return new ValidationGroup(fieldErrorProcessor, ruleResolver, ruleset, model, validationSettings, 50);
     }
 
     var createNonPollingValidationGroupFor = function(model, ruleset) {
         var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry);
         var ruleResolver = new RuleResolver();
-        return new ValidationGroup(fieldErrorProcessor, ruleResolver, ruleset, model, <IValidationSettings>{ useModelWatcher :false });
+        var validationSettings = new DefaultValidationSettings(new PropertyResolver());
+        return new ValidationGroup(fieldErrorProcessor, ruleResolver, ruleset, model, validationSettings);
     }
 
     var delayedRequiresValid = (retval?:any=true, delay?:number=100) => { return {
         ruleName: "delayed",
-        validate: function(mr, prop, options){
+        validate: function(modelResolver: IModelResolver, propertyName: string, options){
             return new Promise(function(resolve, reject){
-                setTimeout(function() { resolve(mr.get(prop) == "valid"); }, 100);
+                setTimeout(function() { resolve(modelResolver.resolve(propertyName) == "valid"); }, 100);
             });
         },
         getMessage: function(value, options) { return "delayed rule: " + value; }
     }};
-
+/*
     it('should not notify if model watcher is not used', function (done) {
         var rulesetBuilder = new RulesetBuilder();
         var ruleset = rulesetBuilder.create()
@@ -53,7 +58,7 @@ describe('Validation Group', function () {
         },600);
 
     });
-
+*/
     it('should correctly get errors', function (done) {
 
         var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
@@ -656,9 +661,9 @@ describe('Validation Group', function () {
         // This basically delays validation so others stack
         var delayedRequiresValid: any = {
             ruleName: "delayed",
-            validate: function(mr, prop, options){
+            validate: function(modelResolver: IModelResolver, prop: string, options){
                 return new Promise(function(resolve, reject){
-                    setTimeout(function() { resolve(mr.get(prop) == "valid"); }, 200);
+                    setTimeout(function() { resolve(modelResolver.resolve(prop) == "valid"); }, 200);
                 });
             },
             getMessage: function(value, options) { return "delayed rule: " + value; }
@@ -753,7 +758,7 @@ describe('Validation Group', function () {
             ruleName: "delayed",
             validate: function(mr, prop, options){
                 return new Promise(function(resolve, reject){
-                    setTimeout(function() { resolve(mr.get(prop) == 10); }, 100);
+                    setTimeout(function() { resolve(mr.resolve(prop) == 10); }, 100);
                 });
             },
             getMessage: function(value, options) { return "delayed rule: " + value; }
