@@ -582,10 +582,6 @@ describe('Validation Group', function () {
         dummyModel.foo.push(10);
     });
 
-
-
-
-
     it('should correctly notify on validation change', function (done) {
 
         var rulesetBuilder = new RulesetBuilder();

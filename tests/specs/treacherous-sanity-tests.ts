@@ -109,7 +109,7 @@ describe('Treacherous Sanity Checks', function () {
             }).catch(done);
     });
 
-    it("should correctly be invalid after changes", function(done){
+    it.skip("should correctly be invalid after changes", function(done){
         var ruleSet = createRuleset()
             .forProperty("stringValue1").addRule("required")
             .forProperty("stringValue2").addRule("required")

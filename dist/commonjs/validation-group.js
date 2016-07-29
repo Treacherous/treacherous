@@ -56,12 +56,13 @@ var ValidationGroup = (function () {
         this.validatePropertyWithRuleLinks = function (propertyName, propertyRules) {
             return _this.CountedPromise(_this.fieldErrorProcessor.checkFieldForErrors(_this.modelResolver, propertyName, propertyRules))
                 .then(function (possibleErrors) {
+                var hadErrors = _this.hasErrors();
                 if (!possibleErrors) {
                     if (_this.propertyErrors[propertyName]) {
                         delete _this.propertyErrors[propertyName];
                         var eventArgs = new property_state_changed_event_1.PropertyStateChangedEvent(propertyName, true);
                         _this.propertyStateChangedEvent.publish(eventArgs);
-                        var stillHasErrors = _this.hasErrors();
+                        var stillHasErrors = hadErrors && _this.hasErrors();
                         if (!stillHasErrors) {
                             _this.modelStateChangedEvent.publish(new model_state_changed_event_1.ModelStateChangedEvent(true));
                         }
@@ -73,7 +74,6 @@ var ValidationGroup = (function () {
                 if (possibleErrors != previousError) {
                     var eventArgs = new property_state_changed_event_1.PropertyStateChangedEvent(propertyName, false, possibleErrors);
                     _this.propertyStateChangedEvent.publish(eventArgs);
-                    var hadErrors = _this.hasErrors();
                     if (!hadErrors) {
                         _this.modelStateChangedEvent.publish(new model_state_changed_event_1.ModelStateChangedEvent(false));
                     }

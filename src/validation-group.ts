@@ -89,13 +89,15 @@ export class ValidationGroup implements IValidationGroup
     private validatePropertyWithRuleLinks = (propertyName: string, propertyRules: Array<RuleLink>): any => {
         return this.CountedPromise(this.fieldErrorProcessor.checkFieldForErrors(this.modelResolver, propertyName, propertyRules))
             .then(possibleErrors => {
+                var hadErrors = this.hasErrors();
+
                 if (!possibleErrors) {
                     if (this.propertyErrors[propertyName]) {
                         delete this.propertyErrors[propertyName];
                         var eventArgs = new PropertyStateChangedEvent(propertyName, true);
                         this.propertyStateChangedEvent.publish(eventArgs);
 
-                        var stillHasErrors = this.hasErrors();
+                        var stillHasErrors = hadErrors && this.hasErrors();
                         if (!stillHasErrors) {
                             this.modelStateChangedEvent.publish(new ModelStateChangedEvent(true));
                         }
@@ -110,7 +112,6 @@ export class ValidationGroup implements IValidationGroup
                     var eventArgs = new PropertyStateChangedEvent(propertyName, false, possibleErrors);
                     this.propertyStateChangedEvent.publish(eventArgs);
 
-                    var hadErrors = this.hasErrors();
                     if (!hadErrors) {
                         this.modelStateChangedEvent.publish(new ModelStateChangedEvent(false));
                     }
