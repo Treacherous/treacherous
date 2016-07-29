@@ -54,14 +54,16 @@ export class ValidationGroup implements IValidationGroup
     }
 
     private OnCompletion = () => {
-        return new Promise(r=> this.validationCounter ? this.activePromises.push(() => r('All Resolved') ) : r('Nothing queued') );
+        return new Promise(resolve => this.validationCounter ? this.activePromises.push(() => resolve() ) : resolve());
     }
 
-    private CountedPromise = (p:Promise) => {
-        if(!p) { return Promise.resolve(undefined); }
-        if(!p.then) { throw new Error("Non-Promise pass in: " + p) }
+    private CountedPromise = (promise: Promise) => {
+        if(!promise) { return Promise.resolve(undefined); }
+        if(!promise.then) { throw new Error("Non-Promise pass in: " + promise) }
+
         this.incCounter();
-        return p.then(r=> { this.decCounter(); return r; }, c=> { this.decCounter(); throw c; } );
+
+        return promise.then(resolve => { this.decCounter(); return resolve; }, reject => { this.decCounter(); throw reject; } );
     }
 
     private decCounter = () => { this.validationCounter--;
@@ -69,11 +71,8 @@ export class ValidationGroup implements IValidationGroup
             while (this.activePromises.length) this.activePromises.shift()();
         }
     }
-    private incCounter = () => { this.validationCounter++; }
 
-    public get ValidationState() {
-        return !this.validationCounter ? (!this.hasErrors ? 'valid' : 'invalid') : 'calculating';
-    }
+    private incCounter = () => { this.validationCounter++; }
 
     private isRuleset(possibleRuleset: any): boolean {
         return (typeof(possibleRuleset.addRule) == "function");
@@ -87,18 +86,19 @@ export class ValidationGroup implements IValidationGroup
         this.startValidateProperty(eventArgs.propertyPath);
     };
 
-    // End of the property deep-dive for launching Promises against properties
     private validatePropertyWithRuleLinks = (propertyName: string, propertyRules: Array<RuleLink>): any => {
         return this.CountedPromise(this.fieldErrorProcessor.checkFieldForErrors(this.modelResolver, propertyName, propertyRules))
-            .then(v => {
-                var hadErrors = this.hasErrors;
+            .then(possibleErrors => {
+                var hadErrors = this.hasErrors();
 
-                if (!v) {
+                if (!possibleErrors) {
                     if (this.propertyErrors[propertyName]) {
                         delete this.propertyErrors[propertyName];
                         var eventArgs = new PropertyStateChangedEvent(propertyName, true);
                         this.propertyStateChangedEvent.publish(eventArgs);
-                        if (hadErrors) {
+
+                        var stillHasErrors = this.hasErrors();
+                        if (!stillHasErrors) {
                             this.modelStateChangedEvent.publish(new ModelStateChangedEvent(true));
                         }
                     }
@@ -106,10 +106,10 @@ export class ValidationGroup implements IValidationGroup
                 }
 
                 var previousError = this.propertyErrors[propertyName];
-                this.propertyErrors[propertyName] = v;
+                this.propertyErrors[propertyName] = possibleErrors;
 
-                if(v != previousError){
-                    var eventArgs = new PropertyStateChangedEvent(propertyName, false, v);
+                if(possibleErrors != previousError){
+                    var eventArgs = new PropertyStateChangedEvent(propertyName, false, possibleErrors);
                     this.propertyStateChangedEvent.publish(eventArgs);
 
                     if (!hadErrors) {
@@ -121,7 +121,6 @@ export class ValidationGroup implements IValidationGroup
             .then(this.OnCompletion)
     };
 
-    // Calls validatePropertyWithRules
     private validatePropertyWithRuleSet = (propertyName: string, ruleset: Ruleset) => {
         var transformedPropertyName;
         for(var childPropertyName in ruleset.rules){
@@ -130,8 +129,6 @@ export class ValidationGroup implements IValidationGroup
         }
     }
 
-
-    // Starts CountedPromises for every rule in the set passed in. Does not wait for completion.
     private validatePropertyWithRules = (propertyName: string, rules: any): ValidationGroup => {
         var ruleLinks = [];
         var ruleSets = [];
@@ -182,8 +179,6 @@ export class ValidationGroup implements IValidationGroup
         return this;
     }
 
-
-
     private startValidateProperty = (propertyName: string) => {
         var rulesForProperty = this.ruleResolver.resolvePropertyRules(propertyName, this.ruleset);
         if(!rulesForProperty) { return this; }
@@ -197,7 +192,7 @@ export class ValidationGroup implements IValidationGroup
         return this;
     };
 
-    public get hasErrors():boolean {
+    public hasErrors(): boolean {
         return (Object.keys(this.propertyErrors).length > 0);
     }
 

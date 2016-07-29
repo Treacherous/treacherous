@@ -109,4 +109,34 @@ describe('Treacherous Sanity Checks', function () {
             }).catch(done);
     });
 
+    it("should correctly be invalid after changes", function(done){
+        var ruleSet = createRuleset()
+            .forProperty("stringValue1").addRule("required")
+            .forProperty("stringValue2").addRule("required")
+            .build();
+
+        var model = {
+            stringValue1: "",
+            stringValue2: ""
+        };
+
+        var isValid;
+        var valGroup = createGroup(model, ruleSet);
+        valGroup.modelStateChangedEvent.subscribe(event => {
+            console.log("changing state:", event);
+            isValid = event.isValid
+        });
+
+        valGroup.propertyStateChangedEvent.subscribe(event => {
+            console.log("changing property:", event);
+        });
+
+        model.stringValue1 = "valid";
+        setTimeout(() => model.stringValue1 = "", 600);
+        setTimeout(() => {
+            console.log("finished with:", isValid);
+            expect(isValid).to.be.false;
+            done();
+        }, 1500);
+    });
 });
