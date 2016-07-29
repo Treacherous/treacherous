@@ -1,5 +1,5 @@
 import { IModelWatcher } from "../watcher/imodel-watcher";
-import { IPropertyResolver } from "property-resolver";
+import { IPropertyResolver } from "../resolvers/iproperty-resolver";
 import { IModelResolver } from "../resolvers/imodel-resolver";
 export interface IValidationSettings {
     createModelWatcher: (args?: any) => IModelWatcher;

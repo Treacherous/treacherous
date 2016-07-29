@@ -1,10 +1,10 @@
 import {IRuleResolver} from "./irule-resolver";
-import {PropertyResolver} from "property-resolver";
+import {IPropertyResolver, PropertyResolver} from "property-resolver";
 import {Ruleset} from "./ruleset";
 
 export class RuleResolver implements IRuleResolver
 {
-    constructor(private propertyResolver = new PropertyResolver())
+    constructor(private propertyResolver: IPropertyResolver = new PropertyResolver())
     {}
 
     public isPropertyRoute = (possiblePropertyRoute: string) => {

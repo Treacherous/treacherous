@@ -8,10 +8,11 @@ import {IValidationSettings} from "../../src/settings/ivalidation-settings";
 import {DefaultValidationSettings} from "../../src/settings/default-validation-settings";
 import {PropertyResolver} from "property-resolver";
 import {IModelResolver} from "../../src/resolvers/imodel-resolver";
+import {IValidationGroup} from "../../src/ivalidation-group";
 
 describe('Validation Group', function () {
 
-    var createValidationGroupFor = function(model, ruleset) {
+    var createValidationGroupFor = function(model, ruleset) : IValidationGroup {
         var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry);
         var ruleResolver = new RuleResolver();
         var validationSettings = new DefaultValidationSettings(new PropertyResolver());
@@ -879,4 +880,29 @@ describe('Validation Group', function () {
                 }).catch(done);
         }, 200);
     });
+
+    it("should delay model errors until model watcher has updated", function(done){
+        var rulesetBuilder = new RulesetBuilder();
+        var ruleset = rulesetBuilder.create()
+            .forProperty("foo")
+            .addRule("required")
+            .build();
+
+        var model = {
+            foo: null
+        };
+
+        var validationGroup = createValidationGroupFor(model, ruleset);
+
+        model.foo = "valid";
+
+        validationGroup.getModelErrors()
+            .then((errors) => {
+                console.log("errors", errors);
+                expect(errors).to.be.empty;
+                done();
+            })
+            .catch(done);
+    });
+
 });

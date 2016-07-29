@@ -1,4 +1,4 @@
-import { IPropertyResolver } from "property-resolver";
+import { IPropertyResolver } from "./iproperty-resolver";
 import { IModelResolver } from "./imodel-resolver";
 export declare class ModelResolver implements IModelResolver {
     private propertyResolver;

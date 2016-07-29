@@ -1,7 +1,7 @@
-import {IPropertyResolver} from "property-resolver";
 import {ModelWatcher} from "../watcher/model-watcher";
 import {IModelWatcher} from "../watcher/imodel-watcher";
 import {IValidationSettings} from "./ivalidation-settings";
+import {IPropertyResolver} from "../resolvers/iproperty-resolver";
 import {IModelResolver} from "../resolvers/imodel-resolver";
 import {ModelResolver} from "../resolvers/model-resolver";
 
