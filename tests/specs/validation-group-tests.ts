@@ -30,6 +30,7 @@ describe('Validation Group', function () {
         ruleName: "delayed",
         validate: function(modelResolver: IModelResolver, propertyName: string, options){
             return new Promise(function(resolve, reject){
+                console.log("validating", modelResolver.resolve(propertyName));
                 setTimeout(function() { resolve(modelResolver.resolve(propertyName) == "valid"); }, delay);
             });
         },
@@ -714,13 +715,16 @@ describe('Validation Group', function () {
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
         validationGroup.validate()
             .then(function(isValid){
+                console.log("isValid", isValid);
                 expect(isValid).to.be.true;
                 validationGroup.release();
                 done();
             }).catch(done);
 
+        console.log("changing");
         dummyModel.foo = "invalid";
         dummyModel.foo = "valid";
+        console.log("changed");
     });
 /*
     it('validation status should cycle between states', function (done) {

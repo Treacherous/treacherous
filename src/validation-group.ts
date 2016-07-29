@@ -57,7 +57,7 @@ export class ValidationGroup implements IValidationGroup
         return new Promise(resolve => this.validationCounter ? this.activePromises.push(() => resolve() ) : resolve());
     }
 
-    private CountedPromise = (promise: Promise) => {
+    private CountedPromise = (promise: Promise<any>) => {
         if(!promise) { return Promise.resolve(undefined); }
         if(!promise.then) { throw new Error("Non-Promise pass in: " + promise) }
 

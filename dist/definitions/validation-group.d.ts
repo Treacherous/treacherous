@@ -23,7 +23,6 @@ export declare class ValidationGroup implements IValidationGroup {
     private CountedPromise;
     private decCounter;
     private incCounter;
-    ValidationState: string;
     private isRuleset(possibleRuleset);
     private isForEach(possibleForEach);
     private onModelChanged;
@@ -32,7 +31,7 @@ export declare class ValidationGroup implements IValidationGroup {
     private validatePropertyWithRules;
     private startValidateProperty;
     startValidateModel: () => this;
-    hasErrors: boolean;
+    hasErrors(): boolean;
     changeValidationTarget: (model: any) => void;
     validateProperty: (propertyname: any) => Promise<boolean>;
     validate: () => Promise<boolean>;
