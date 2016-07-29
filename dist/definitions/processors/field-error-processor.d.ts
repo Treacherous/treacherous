@@ -1,10 +1,10 @@
 import { RuleRegistry } from "../rules/rule-registry";
 import { RuleLink } from "../rulesets/rule-link";
 import { IFieldErrorProcessor } from "./ifield-error-processor";
-import { ModelResolver } from "../model-resolver";
+import { ModelHelper } from "../model-helper";
 export declare class FieldErrorProcessor implements IFieldErrorProcessor {
     ruleRegistry: RuleRegistry;
     constructor(ruleRegistry: RuleRegistry);
-    processRuleLink(mr: ModelResolver, propname: any, ruleLink: RuleLink): Promise<any>;
-    checkFieldForErrors(mr: ModelResolver, propname: any, rules: any): Promise<string>;
+    processRuleLink(modelHelper: ModelHelper, propertyName: string, ruleLink: RuleLink): Promise<any>;
+    checkFieldForErrors(modelHelper: ModelHelper, propertyName: string, rules: any): Promise<string>;
 }

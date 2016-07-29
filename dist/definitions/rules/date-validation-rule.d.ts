@@ -1,7 +1,8 @@
 import { IValidationRule } from "./ivalidation-rule";
+import { ModelHelper } from "../model-helper";
 export declare class DateValidationRule implements IValidationRule {
     ruleName: string;
     private invalidObjectRegex;
-    validate(mr: any, prop: any): Promise<boolean>;
-    getMessage(mr: any, prop: any): string;
+    validate(modelHelper: ModelHelper, propertyName: string): Promise<boolean>;
+    getMessage(modelHelper: ModelHelper, propertyName: string): string;
 }

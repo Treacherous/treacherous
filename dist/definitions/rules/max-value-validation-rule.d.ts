@@ -1,6 +1,7 @@
 import { IValidationRule } from "./ivalidation-rule";
+import { ModelHelper } from "../model-helper";
 export declare class MaxValueValidationRule implements IValidationRule {
     ruleName: string;
-    validate(mr: any, prop: any, maxValue: any): Promise<boolean>;
-    getMessage(mr: any, prop: any, maxValue: any): string;
+    validate(modelHelper: ModelHelper, propertyName: string, maxValue: any): Promise<boolean>;
+    getMessage(modelHelper: ModelHelper, propertyName: string, maxValue: any): string;
 }

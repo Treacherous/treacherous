@@ -1,7 +1,7 @@
 import {expect} from "chai";
 import {FieldErrorProcessor} from "../../src/processors/field-error-processor";
 import {RulesetBuilder} from "../../src/rulesets/ruleset-builder";
-import {ruleRegistry, DefaultValidationSettings} from "../../src/exposer";
+import {ruleRegistry, DefaultValidationSettings, createRuleset, createGroup} from "../../src/exposer";
 import {RuleResolver} from "../../src/rulesets/rule-resolver";
 import {ValidationGroup} from "../../src/validation-group";
 import {ModelHelper} from "../../src/model-helper";
@@ -30,6 +30,72 @@ describe('Validation Group', function () {
         },
         getMessage: function(value, options) { return "delayed rule: " + value; }
     }};
+
+
+    it("should correctly validate dynamic nested arrays", function(done) {
+
+        // product validation rules
+        var productRuleSet = createRuleset()
+            .forProperty("deliveryDate")
+            .addRule("required")
+            .build();
+
+        // order validation rules
+        var orderRuleSet = createRuleset()
+            .forProperty("products")
+            .addRulesetForEach(productRuleSet)
+            .build();
+
+        // invoice validation rules
+        var invoiceRuleSet = createRuleset()
+            .forProperty("orders")
+            .addRulesetForEach(orderRuleSet)
+            .build();
+
+        var dummyProduct1 = {deliveryDate: null};
+        var dummyProduct2 = {deliveryDate: null};
+        var dummyProduct3 = {deliveryDate: null};
+        var dummyProduct4 = {deliveryDate: null};
+
+        var dummyOrder1 = {products: []};
+        var dummyOrder2 = {products: [dummyProduct3, dummyProduct4]};
+
+        var dummyInvoice = {
+            orders: [dummyOrder1, dummyOrder2]
+        };
+
+        var invoiceValidationGroup = createGroup(dummyInvoice, invoiceRuleSet);
+
+        var errorCount = () => Object.keys(invoiceValidationGroup.propertyErrors).length;
+
+        dummyOrder1.products.push(dummyProduct1);
+        dummyOrder1.products.push(dummyProduct2);
+
+        invoiceValidationGroup.validate().then(isvalid => invoiceValidationGroup.getModelErrors()
+            .then(function (errors) {
+                expect(isvalid).to.be.false;
+                expect(errorCount()).to.equal(4);
+
+                dummyInvoice.orders[0].products[1].deliveryDate = new Date();
+
+                invoiceValidationGroup.validate()
+                    .then(function (isvalid) {
+                        expect(isvalid).to.be.false;
+                        expect(errorCount()).to.equal(3);
+
+                        dummyInvoice.orders[0].products[1].deliveryDate = null;
+
+                        invoiceValidationGroup.validate()
+                            .then(isvalid => {
+                                expect(isvalid).to.be.false;
+                                expect(errorCount()).to.equal(4);
+                                done();
+
+                            }).catch(done);
+                    }).catch(done);
+            }).catch(done)
+        ).catch(done);
+    });
 
     it('should not notify if model watcher is not used', function (done) {
         var rulesetBuilder = new RulesetBuilder();

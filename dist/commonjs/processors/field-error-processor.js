@@ -5,10 +5,10 @@ var FieldErrorProcessor = (function () {
         this.ruleRegistry = ruleRegistry;
     }
     // Validates a single property against a model
-    FieldErrorProcessor.prototype.processRuleLink = function (mr, propname, ruleLink) {
+    FieldErrorProcessor.prototype.processRuleLink = function (modelHelper, propertyName, ruleLink) {
         var shouldRuleApply = ruleLink.appliesIf === true
             || ((typeof (ruleLink.appliesIf) === "function")
-                ? (ruleLink.appliesIf)(mr, propname, ruleLink.ruleOptions)
+                ? (ruleLink.appliesIf)(modelHelper, propertyName, ruleLink.ruleOptions)
                 : false);
         if (!shouldRuleApply) {
             return Promise.resolve();
@@ -16,20 +16,20 @@ var FieldErrorProcessor = (function () {
         var validator = this.ruleRegistry.getRuleNamed(ruleLink.ruleName);
         var options = (typeof ruleLink.ruleOptions == "function") ? ruleLink.ruleOptions() : ruleLink.ruleOptions;
         return validator
-            .validate(mr, propname, options)
+            .validate(modelHelper, propertyName, options)
             .then(function (isValid) {
             if (!isValid) {
                 var error;
                 if (ruleLink.messageOverride) {
                     if (typeof (ruleLink.messageOverride) === "function") {
-                        error = (ruleLink.messageOverride)(mr, propname, ruleLink.ruleOptions);
+                        error = (ruleLink.messageOverride)(modelHelper, propertyName, ruleLink.ruleOptions);
                     }
                     else {
                         error = ruleLink.messageOverride;
                     }
                 }
                 else {
-                    error = validator.getMessage(mr, propname, ruleLink.ruleOptions);
+                    error = validator.getMessage(modelHelper, propertyName, ruleLink.ruleOptions);
                 }
                 throw new field_has_error_1.FieldHasError(error);
             }
@@ -38,10 +38,10 @@ var FieldErrorProcessor = (function () {
     };
     // Loops through each rule on a property, adds it to a chain, then calls Promise.all
     // Probably not correct, as they won't fire sequentially? Promises need to be chained
-    FieldErrorProcessor.prototype.checkFieldForErrors = function (mr, propname, rules) {
+    FieldErrorProcessor.prototype.checkFieldForErrors = function (modelHelper, propertyName, rules) {
         var _this = this;
         var ruleCheck = function (ruleLinkOrSet) {
-            return _this.processRuleLink(mr, propname, ruleLinkOrSet);
+            return _this.processRuleLink(modelHelper, propertyName, ruleLinkOrSet);
         };
         var checkEachRule = function (rules) {
             var promises = [];
