@@ -10,8 +10,6 @@
 
  injectError(prop, error) manually applies an error to a property. Used for server-side errors reflected on-screen
  clearErrors(prop) manually clear errors associated with a property. Used clear server-side errors reflected on-screen or support error hiding prior to revalidation on the client (e.g. if fields are validated on blur, and errors hidden on changed)
-
-
  */
 "use strict";
 var event_js_1 = require("event-js");
@@ -19,7 +17,7 @@ var property_state_changed_event_1 = require("./events/property-state-changed-ev
 var model_state_changed_event_1 = require("./events/model-state-changed-event");
 var rule_resolver_1 = require("./rulesets/rule-resolver");
 var type_helper_1 = require("./helpers/type-helper");
-var model_resolver_1 = require("./model-resolver");
+var model_helper_1 = require("./model-helper");
 // TODO: This class is WAY to long, needs refactoring
 var ValidationGroup = (function () {
     function ValidationGroup(fieldErrorProcessor, ruleResolver, ruleset, model, settings, refreshRate) {
@@ -32,9 +30,9 @@ var ValidationGroup = (function () {
         this.settings = settings;
         this.refreshRate = refreshRate;
         this.propertyErrors = {};
-        this.waiting = [];
+        this.activePromises = [];
         this.OnCompletion = function () {
-            return new Promise(function (r) { return _this.validationCounter ? _this.waiting.push(function () { return r('All Resolved'); }) : r('Nothing queued'); });
+            return new Promise(function (r) { return _this.validationCounter ? _this.activePromises.push(function () { return r('All Resolved'); }) : r('Nothing queued'); });
         };
         this.CountedPromise = function (p) {
             if (!p) {
@@ -49,8 +47,8 @@ var ValidationGroup = (function () {
         this.decCounter = function () {
             _this.validationCounter--;
             if (!_this.validationCounter) {
-                while (_this.waiting.length)
-                    _this.waiting.shift()();
+                while (_this.activePromises.length)
+                    _this.activePromises.shift()();
             }
         };
         this.incCounter = function () { _this.validationCounter++; };
@@ -59,9 +57,9 @@ var ValidationGroup = (function () {
         };
         // End of the property deep-dive for launching Promises against properties
         this.validatePropertyWithRuleLinks = function (propertyName, propertyRules) {
-            return _this.CountedPromise(_this.fieldErrorProcessor.checkFieldForErrors(_this.modelResolver, propertyName, propertyRules))
+            return _this.CountedPromise(_this.fieldErrorProcessor.checkFieldForErrors(_this.modelHelper, propertyName, propertyRules))
                 .then(function (isvalid) {
-                var hadErrors = _this.hasErrors;
+                var hadErrors = _this.hasErrors();
                 if (!isvalid) {
                     if (_this.propertyErrors[propertyName]) {
                         delete _this.propertyErrors[propertyName];
@@ -99,7 +97,7 @@ var ValidationGroup = (function () {
             var ruleSets = [];
             var currentValue;
             try {
-                currentValue = _this.modelResolver.get(propertyName);
+                currentValue = _this.modelHelper.resolve(propertyName);
             }
             catch (ex) {
                 console.warn("Failed to resolve property " + propertyName + " during validation. Does it exist in your model?");
@@ -138,7 +136,7 @@ var ValidationGroup = (function () {
             return _this;
         };
         this.startValidateProperty = function (propertyName) {
-            var rulesForProperty = _this.ruleResolver.resolvePropertyRules(propertyName, _this.ruleset);
+            var rulesForProperty = _this.ruleResolver.resolvePropertyRules(_this.modelHelper.decomposePropertyRoute(propertyName), _this.ruleset);
             if (!rulesForProperty) {
                 return _this;
             }
@@ -151,9 +149,9 @@ var ValidationGroup = (function () {
             return _this;
         };
         this.changeValidationTarget = function (model) {
-            _this.modelResolver = new model_resolver_1.ModelResolver(_this.settings.createPropertyResolver(), model || {});
+            _this.modelHelper = new model_helper_1.ModelHelper(_this.settings.createPropertyResolver(), model || {});
             if (_this.modelWatcher)
-                _this.modelWatcher.changeWatcherTarget(_this.modelResolver.model);
+                _this.modelWatcher.changeWatcherTarget(_this.modelHelper.model);
         };
         this.validateProperty = function (propertyname) {
             return _this.startValidateProperty(propertyname)
@@ -171,7 +169,7 @@ var ValidationGroup = (function () {
         this.validate = function () {
             return _this.startValidateModel()
                 .OnCompletion()
-                .then(function () { return !_this.hasErrors; });
+                .then(function () { return !_this.hasErrors(); });
         };
         this.getModelErrors = function () {
             return _this.startValidateModel()
@@ -192,33 +190,25 @@ var ValidationGroup = (function () {
         this.validationCounter = 0;
         this.propertyStateChangedEvent = new event_js_1.EventHandler(this);
         this.modelStateChangedEvent = new event_js_1.EventHandler(this);
-        this.modelResolver = new model_resolver_1.ModelResolver(this.settings.createPropertyResolver(), model || {});
+        this.modelHelper = new model_helper_1.ModelHelper(this.settings.createPropertyResolver(), model || {});
         if (this.settings.createModelWatcher) {
             this.modelWatcher = this.settings.createModelWatcher();
             this.modelWatcher.setupWatcher(model, ruleset, refreshRate);
             this.modelWatcher.onPropertyChanged.subscribe(this.onModelChanged);
         }
     }
-    Object.defineProperty(ValidationGroup.prototype, "ValidationState", {
-        get: function () {
-            return !this.validationCounter ? (!this.hasErrors ? 'valid' : 'invalid') : 'calculating';
-        },
-        enumerable: true,
-        configurable: true
-    });
+    ValidationGroup.prototype.getValidationStatus = function () {
+        return !this.validationCounter ? (!this.hasErrors() ? 'valid' : 'invalid') : 'calculating';
+    };
     ValidationGroup.prototype.isRuleset = function (possibleRuleset) {
         return (typeof (possibleRuleset.addRule) == "function");
     };
     ValidationGroup.prototype.isForEach = function (possibleForEach) {
         return possibleForEach.isForEach;
     };
-    Object.defineProperty(ValidationGroup.prototype, "hasErrors", {
-        get: function () {
-            return (Object.keys(this.propertyErrors).length > 0);
-        },
-        enumerable: true,
-        configurable: true
-    });
+    ValidationGroup.prototype.hasErrors = function () {
+        return (Object.keys(this.propertyErrors).length > 0);
+    };
     return ValidationGroup;
 }());
 exports.ValidationGroup = ValidationGroup;

@@ -1,12 +1,10 @@
 import {IRuleResolver} from "./irule-resolver";
 import {PropertyResolver} from "property-resolver";
 import {Ruleset} from "./ruleset";
+import {IPropertyResolver} from "../iproperty-resolver";
 
 export class RuleResolver implements IRuleResolver
 {
-    constructor(private propertyResolver = new PropertyResolver())
-    {}
-
     public isPropertyRoute = (possiblePropertyRoute: string) => {
         return possiblePropertyRoute.indexOf(".") >= 0;
     }
@@ -15,8 +13,7 @@ export class RuleResolver implements IRuleResolver
         return possibleIndexRoute.indexOf("[") >= 0;
     }
 
-    public resolvePropertyRules = (propertyRoute: string, ruleset: Ruleset) => {
-        var propertyRouteSections = this.propertyResolver.decomposePropertyRoute(propertyRoute);
+    public resolvePropertyRules = (propertyRouteSections: Array<string>, ruleset: Ruleset) => {
         var finalProperty = propertyRouteSections[propertyRouteSections.length-1];
 
         var matchingRules = this.traverseRulesForRoutes(propertyRouteSections, ruleset);

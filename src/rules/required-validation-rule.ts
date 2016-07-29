@@ -1,12 +1,13 @@
 import {IValidationRule} from "./ivalidation-rule";
+import {ModelHelper} from "../model-helper";
 
 export class RequiredValidationRule implements IValidationRule
 {
     public ruleName = "required";
 
-    public validate(mr, prop, isRequired: boolean = true): Promise<boolean>
+    public validate(modelHelper:ModelHelper, propertyName:string, isRequired: boolean = true): Promise<boolean>
     {
-        var value = mr.get(prop);
+        var value = modelHelper.resolve(propertyName);
 
         if (value === undefined || value === null) {
             return Promise.resolve(!isRequired);
@@ -29,8 +30,8 @@ export class RequiredValidationRule implements IValidationRule
         return Promise.resolve((testValue + '').length > 0);
     }
 
-    public getMessage(mr, prop, isRequired) {
-        var value = mr.get(prop);
+    public getMessage(modelHelper:ModelHelper, propertyName:string, isRequired) {
+        var value = modelHelper.resolve(propertyName);
         return "This field is required";
     }
 }

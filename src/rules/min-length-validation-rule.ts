@@ -1,12 +1,13 @@
 import {IValidationRule} from "./ivalidation-rule";
+import {ModelHelper} from "../model-helper";
 
 export class MinLengthValidationRule implements IValidationRule
 {
     public ruleName = "minLength";
 
-    public validate(mr, prop, minLength:any): Promise<boolean>
+    public validate(modelHelper:ModelHelper, propertyName:string, minLength:any): Promise<boolean>
     {
-        var value = mr.get(prop);
+        var value = modelHelper.resolve(propertyName);
         if (value === undefined || value === null || value.length == 0)
         { return Promise.resolve(true); }
 
@@ -16,8 +17,8 @@ export class MinLengthValidationRule implements IValidationRule
         return Promise.resolve(false);
     }
 
-    public getMessage(mr, prop, minLength) {
-        var value = mr.get(prop);
+    public getMessage(modelHelper:ModelHelper, propertyName:string, minLength) {
+        var value = modelHelper.resolve(propertyName);
         return `This field has a length of ${value.length} but should more than ${minLength}`;
     }
 }

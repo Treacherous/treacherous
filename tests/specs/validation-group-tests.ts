@@ -4,6 +4,7 @@ import {RulesetBuilder} from "../../src/rulesets/ruleset-builder";
 import {ruleRegistry, DefaultValidationSettings} from "../../src/exposer";
 import {RuleResolver} from "../../src/rulesets/rule-resolver";
 import {ValidationGroup} from "../../src/validation-group";
+import {ModelHelper} from "../../src/model-helper";
 
 describe('Validation Group', function () {
 
@@ -22,9 +23,9 @@ describe('Validation Group', function () {
 
     var delayedRequiresValid = (retval?:any=true, delay?:number=100) => { return {
         ruleName: "delayed",
-        validate: function(mr, prop, options){
+        validate: function(modelHelper:ModelHelper, propertyName:string, options){
             return new Promise(function(resolve, reject){
-                setTimeout(function() { resolve(mr.get(prop) == "valid"); }, 100);
+                setTimeout(function() { resolve(modelHelper.resolve(propertyName) == "valid"); }, 100);
             });
         },
         getMessage: function(value, options) { return "delayed rule: " + value; }
@@ -54,7 +55,7 @@ describe('Validation Group', function () {
 
     });
 
-    it('should correctly get errors', function (done) {
+    it('should correctly resolve errors', function (done) {
 
         var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
         var rulesetBuilder = new RulesetBuilder(<any>dummyRuleRegistry);
@@ -130,7 +131,7 @@ describe('Validation Group', function () {
     });
 
 
-    it('should correctly get errors in nested objects', function (done) {
+    it('should correctly resolve errors in nested objects', function (done) {
 
         var rulesetBuilder = new RulesetBuilder();
         var elementRuleset = rulesetBuilder.create()
@@ -160,7 +161,7 @@ describe('Validation Group', function () {
             }).catch(done);
     });
 
-    it('should correctly get errors in complex arrays', function (done) {
+    it('should correctly resolve errors in complex arrays', function (done) {
 
         var rulesetBuilder = new RulesetBuilder();
         var elementRuleset = rulesetBuilder.create()
@@ -199,7 +200,7 @@ describe('Validation Group', function () {
 
     });
 
-    it('should correctly get errors in simple arrays', function (done) {
+    it('should correctly resolve errors in simple arrays', function (done) {
 
         var rulesetBuilder = new RulesetBuilder();
         var ruleset = rulesetBuilder.create()
@@ -223,7 +224,7 @@ describe('Validation Group', function () {
             }).catch(done);
     });
 
-    it('should correctly get property error', function (done) {
+    it('should correctly resolve property error', function (done) {
 
         var rulesetBuilder = new RulesetBuilder();
         var ruleset = rulesetBuilder.create()
@@ -248,7 +249,7 @@ describe('Validation Group', function () {
         })
     });
 
-    it('should correctly get nested property error', function (done) {
+    it('should correctly resolve nested property error', function (done) {
 
         var rulesetBuilder = new RulesetBuilder();
         var elementRuleset = rulesetBuilder.create()
@@ -278,7 +279,7 @@ describe('Validation Group', function () {
             }).catch(done) });
     });
 
-    it('should correctly get property error in complex arrays', function (done) {
+    it('should correctly resolve property error in complex arrays', function (done) {
 
         var rulesetBuilder = new RulesetBuilder();
         var elementRuleset = rulesetBuilder.create()
@@ -325,7 +326,7 @@ describe('Validation Group', function () {
     })});
 
 
-    it('should correctly get property error in simple array', function (done) {
+    it('should correctly resolve property error in simple array', function (done) {
 
         var rulesetBuilder = new RulesetBuilder();
         var ruleset = rulesetBuilder.create()
@@ -399,7 +400,7 @@ describe('Validation Group', function () {
             }).catch(done);
     });
 
-    it('should correctly get errors when invalid elements added to arrays', function (done) {
+    it('should correctly resolve errors when invalid elements added to arrays', function (done) {
 
         var rulesetBuilder = new RulesetBuilder();
         var elementRuleset = rulesetBuilder.create()
@@ -656,9 +657,9 @@ describe('Validation Group', function () {
         // This basically delays validation so others stack
         var delayedRequiresValid: any = {
             ruleName: "delayed",
-            validate: function(mr, prop, options){
+            validate: function(modelHelper:ModelHelper, propertyName:string, options){
                 return new Promise(function(resolve, reject){
-                    setTimeout(function() { resolve(mr.get(prop) == "valid"); }, 200);
+                    setTimeout(function() { resolve(modelHelper.resolve(propertyName) == "valid"); }, 200);
                 });
             },
             getMessage: function(value, options) { return "delayed rule: " + value; }
@@ -688,6 +689,8 @@ describe('Validation Group', function () {
         dummyModel.foo = "valid";
     });
 
+
+
     it('should only return valid state when all validation events have finished', function (done) {
 
         ruleRegistry.registerRule(delayedRequiresValid());
@@ -714,6 +717,8 @@ describe('Validation Group', function () {
         dummyModel.foo = "valid";
     });
 
+
+
     it('validation status should cycle between states', function (done) {
 
         ruleRegistry.registerRule(delayedRequiresValid(true, 50));
@@ -730,17 +735,17 @@ describe('Validation Group', function () {
 
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
 
-        expect(validationGroup.ValidationState).equals("valid");
+        expect(validationGroup.getValidationStatus()).equals("valid");
 
         validationGroup.validate()
             .then(function(isValid){
-                expect(validationGroup.ValidationState).equals("valid");
+                expect(validationGroup.getValidationStatus()).equals("valid");
                 expect(isValid).to.be.true;
                 validationGroup.release();
                 done();
             }).catch(done);
 
-        expect(validationGroup.ValidationState).equals("calculating");
+        expect(validationGroup.getValidationStatus()).equals("calculating");
 
         dummyModel.foo = "invalid";
         dummyModel.foo = "valid";
@@ -751,9 +756,9 @@ describe('Validation Group', function () {
 
         var delayedRequires10Rule: any = {
             ruleName: "delayed",
-            validate: function(mr, prop, options){
+            validate: function(modelHelper:ModelHelper, propertyName:string, options){
                 return new Promise(function(resolve, reject){
-                    setTimeout(function() { resolve(mr.get(prop) == 10); }, 100);
+                    setTimeout(function() { resolve(modelHelper.resolve(propertyName) == 10); }, 100);
                 });
             },
             getMessage: function(value, options) { return "delayed rule: " + value; }
@@ -841,7 +846,7 @@ describe('Validation Group', function () {
             }).catch(done);
     });
 
-    it('should correctly report errors with empty models that later on get a schema', function (done) {
+    it('should correctly report errors with empty models that later on resolve a schema', function (done) {
 
         var rulesetBuilder = new RulesetBuilder();
         var ruleset = rulesetBuilder.create()

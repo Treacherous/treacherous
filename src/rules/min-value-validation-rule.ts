@@ -1,12 +1,13 @@
 import {IValidationRule} from "./ivalidation-rule";
+import {ModelHelper} from "../model-helper";
 
 export class MinValueValidationRule implements IValidationRule
 {
     public ruleName = "minValue";
 
-    public validate(mr, prop, minValue): Promise<boolean>
+    public validate(modelHelper:ModelHelper, propertyName:string, minValue): Promise<boolean>
     {
-        var value = mr.get(prop);
+        var value = modelHelper.resolve(propertyName);
         if (value === undefined || value === null || value.length == 0)
         { return Promise.resolve(true); }
 
@@ -16,8 +17,8 @@ export class MinValueValidationRule implements IValidationRule
         return Promise.resolve(false);
     }
 
-    public getMessage(mr, prop, minValue: any) {
-        var value = mr.get(prop);
+    public getMessage(modelHelper:ModelHelper, propertyName:string, minValue: any) {
+        var value = modelHelper.resolve(propertyName);
         return `This field has a value of ${value} but should be greater than or equal to ${minValue}`;
     }
 }

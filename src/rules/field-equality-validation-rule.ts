@@ -1,4 +1,4 @@
-import {ModelResolver} from "../model-resolver";
+import {ModelHelper} from "../model-helper";
 ;
 import {IValidationRule} from "./ivalidation-rule";
 import {TypeHelper} from "../helpers/type-helper";
@@ -9,14 +9,14 @@ export class FieldEqualityValidationRule implements IValidationRule
 {
     public ruleName = "fieldEquality";
 
-    public validate(mr, prop, optionsOrValue): Promise<boolean>
+    public validate(modelHelper:ModelHelper, propertyName:string, optionsOrValue): Promise<boolean>
     {
-        var value = mr.get(prop);
+        var value = modelHelper.resolve(propertyName);
         if (value === undefined || value === null)
         { return Promise.resolve(true); }
 
         var result;
-        var comparison = mr.get(optionsOrValue.value || optionsOrValue);
+        var comparison = modelHelper.resolve(optionsOrValue.value || optionsOrValue);
         var weakEquality = optionsOrValue.weakEquality || false;
 
         if(TypeHelper.isDateType(comparison))
@@ -27,9 +27,9 @@ export class FieldEqualityValidationRule implements IValidationRule
         return Promise.resolve(result);
     }
 
-    public getMessage(mr, prop, optionsOrValue) {
-        var field1 = mr.get(prop);
-        var field2 = mr.get(optionsOrValue.value || optionsOrValue);
-        return `Field ${prop} should be equal to ${optionsOrValue.value || optionsOrValue}`;
+    public getMessage(modelHelper:ModelHelper, propertyName:string, optionsOrValue) {
+        var field1 = modelHelper.resolve(propertyName);
+        var field2 = modelHelper.resolve(optionsOrValue.value || optionsOrValue);
+        return `Field ${propertyName} should be equal to ${optionsOrValue.value || optionsOrValue}`;
     }
 }

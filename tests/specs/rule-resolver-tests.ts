@@ -1,8 +1,11 @@
 import {expect} from "chai";
 import {RulesetBuilder} from "../../src/rulesets/ruleset-builder";
 import {RuleResolver} from "../../src/rulesets/rule-resolver";
+import {PropertyResolver} from "property-resolver";
 
 describe('Rule resolver', function () {
+
+    var propertyResolver = new PropertyResolver();
 
     it('should correctly resolve a property name to a rule', function () {
         var rulesetBuilder = new RulesetBuilder();
@@ -15,7 +18,7 @@ describe('Rule resolver', function () {
         var propertyRoute = "foo";
 
         var ruleResolver = new RuleResolver();
-        var locatedRules = ruleResolver.resolvePropertyRules(propertyRoute, ruleset);
+        var locatedRules = ruleResolver.resolvePropertyRules(propertyResolver.decomposePropertyRoute(propertyRoute), ruleset);
 
         expect(locatedRules).not.to.be.null;
         expect(locatedRules.length).to.equal(1);
@@ -40,7 +43,7 @@ describe('Rule resolver', function () {
         var propertyRoute = "foo.bar";
 
         var ruleResolver = new RuleResolver();
-        var locatedRules = ruleResolver.resolvePropertyRules(propertyRoute, ruleset);
+        var locatedRules = ruleResolver.resolvePropertyRules(propertyResolver.decomposePropertyRoute(propertyRoute), ruleset);
 
         expect(locatedRules).not.to.be.null;
         expect(locatedRules.length).to.equal(2);
@@ -66,7 +69,7 @@ describe('Rule resolver', function () {
         var propertyRoute = "foo.bar[0]";
 
         var ruleResolver = new RuleResolver();
-        var locatedRules = ruleResolver.resolvePropertyRules(propertyRoute, ruleset);
+        var locatedRules = ruleResolver.resolvePropertyRules(propertyResolver.decomposePropertyRoute(propertyRoute), ruleset);
 
         expect(locatedRules).not.to.be.null;
         expect(locatedRules.length).to.equal(1);
@@ -86,7 +89,7 @@ describe('Rule resolver', function () {
         var propertyRoute = "foo[0]";
 
         var ruleResolver = new RuleResolver();
-        var locatedRules = ruleResolver.resolvePropertyRules(propertyRoute, ruleset);
+        var locatedRules = ruleResolver.resolvePropertyRules(propertyResolver.decomposePropertyRoute(propertyRoute), ruleset);
 
         expect(locatedRules).not.to.be.null;
         expect(locatedRules.length).to.equal(1);
@@ -110,7 +113,7 @@ describe('Rule resolver', function () {
         var propertyRoute = "foo[1].bar";
 
         var ruleResolver = new RuleResolver();
-        var locatedRules = ruleResolver.resolvePropertyRules(propertyRoute, ruleset);
+        var locatedRules = ruleResolver.resolvePropertyRules(propertyResolver.decomposePropertyRoute(propertyRoute), ruleset);
 
         expect(locatedRules).not.to.be.null;
         expect(locatedRules.length).to.equal(2);
@@ -141,7 +144,7 @@ describe('Rule resolver', function () {
         var propertyRoute = "foo.bar[2].woo";
 
         var ruleResolver = new RuleResolver();
-        var locatedRules = ruleResolver.resolvePropertyRules(propertyRoute, ruleset);
+        var locatedRules = ruleResolver.resolvePropertyRules(propertyResolver.decomposePropertyRoute(propertyRoute), ruleset);
 
         expect(locatedRules).not.to.be.null;
         expect(locatedRules.length).to.equal(2);

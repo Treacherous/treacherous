@@ -10,8 +10,6 @@
 
  injectError(prop, error) manually applies an error to a property. Used for server-side errors reflected on-screen
  clearErrors(prop) manually clear errors associated with a property. Used clear server-side errors reflected on-screen or support error hiding prior to revalidation on the client (e.g. if fields are validated on blur, and errors hidden on changed)
-
-
  */
 
 import {PropertyChangedEvent} from "./events/property-changed-event";
@@ -26,7 +24,7 @@ import {TypeHelper} from "./helpers/type-helper";
 import {IValidationGroup} from "./ivalidation-group";
 import {IFieldErrorProcessor} from "./processors/ifield-error-processor";
 import {IRuleResolver} from "./rulesets/irule-resolver";
-import {ModelResolver} from "./model-resolver";
+import {ModelHelper} from "./model-helper";
 import {IValidationSettings} from "./ivalidation-settings";
 
 // TODO: This class is WAY to long, needs refactoring
@@ -34,9 +32,9 @@ export class ValidationGroup implements IValidationGroup
 {
     public propertyErrors = {};
     private validationCounter: number;
-    waiting = [];
+    private activePromises = [];
     public modelWatcher: IModelWatcher;
-    private modelResolver:ModelResolver;
+    private modelHelper:ModelHelper;
 
     public propertyStateChangedEvent: EventHandler;
     public modelStateChangedEvent: EventHandler;
@@ -51,7 +49,7 @@ export class ValidationGroup implements IValidationGroup
         this.validationCounter = 0;
         this.propertyStateChangedEvent = new EventHandler(this);
         this.modelStateChangedEvent = new EventHandler(this);
-        this.modelResolver = new ModelResolver(this.settings.createPropertyResolver(), model || {});
+        this.modelHelper = new ModelHelper(this.settings.createPropertyResolver(), model || {});
 
         if (this.settings.createModelWatcher) {
             this.modelWatcher = this.settings.createModelWatcher();
@@ -61,7 +59,7 @@ export class ValidationGroup implements IValidationGroup
     }
 
     private OnCompletion = () => {
-        return new Promise(r=> this.validationCounter ? this.waiting.push(() => r('All Resolved') ) : r('Nothing queued') );
+        return new Promise(r=> this.validationCounter ? this.activePromises.push(() => r('All Resolved') ) : r('Nothing queued') );
     }
 
     private CountedPromise = (p:Promise) => {
@@ -73,13 +71,13 @@ export class ValidationGroup implements IValidationGroup
 
     private decCounter = () => { this.validationCounter--;
         if (!this.validationCounter) {
-            while (this.waiting.length) this.waiting.shift()();
+            while (this.activePromises.length) this.activePromises.shift()();
         }
     }
     private incCounter = () => { this.validationCounter++; }
 
-    public get ValidationState() {
-        return !this.validationCounter ? (!this.hasErrors ? 'valid' : 'invalid') : 'calculating';
+    public getValidationStatus() {
+        return !this.validationCounter ? (!this.hasErrors() ? 'valid' : 'invalid') : 'calculating';
     }
 
     private isRuleset(possibleRuleset: any): boolean {
@@ -96,9 +94,9 @@ export class ValidationGroup implements IValidationGroup
 
     // End of the property deep-dive for launching Promises against properties
     private validatePropertyWithRuleLinks = (propertyName: string, propertyRules: Array<RuleLink>): any => {
-        return this.CountedPromise(this.fieldErrorProcessor.checkFieldForErrors(this.modelResolver, propertyName, propertyRules))
+        return this.CountedPromise(this.fieldErrorProcessor.checkFieldForErrors(this.modelHelper, propertyName, propertyRules))
             .then(isvalid => {
-                var hadErrors = this.hasErrors;
+                var hadErrors = this.hasErrors();
 
                 if (!isvalid) {
                     if (this.propertyErrors[propertyName]) {
@@ -146,7 +144,7 @@ export class ValidationGroup implements IValidationGroup
         var currentValue;
         try
         {
-            currentValue = this.modelResolver.get(propertyName);
+            currentValue = this.modelHelper.resolve(propertyName);
         }
         catch(ex)
         {
@@ -190,7 +188,7 @@ export class ValidationGroup implements IValidationGroup
     }
 
     private startValidateProperty = (propertyName: string) => {
-        var rulesForProperty = this.ruleResolver.resolvePropertyRules(propertyName, this.ruleset);
+        var rulesForProperty = this.ruleResolver.resolvePropertyRules(this.modelHelper.decomposePropertyRoute(propertyName), this.ruleset);
         if(!rulesForProperty) { return this; }
         return this.validatePropertyWithRules(propertyName, rulesForProperty);
     };
@@ -202,14 +200,14 @@ export class ValidationGroup implements IValidationGroup
         return this;
     };
 
-    public get hasErrors():boolean {
+    public hasErrors():boolean {
         return (Object.keys(this.propertyErrors).length > 0);
     }
 
     public changeValidationTarget = (model: any) => {
-        this.modelResolver = new ModelResolver(this.settings.createPropertyResolver(), model || {});
+        this.modelHelper = new ModelHelper(this.settings.createPropertyResolver(), model || {});
         if (this.modelWatcher)
-            this.modelWatcher.changeWatcherTarget(this.modelResolver.model);
+            this.modelWatcher.changeWatcherTarget(this.modelHelper.model);
     }
 
     public validateProperty = (propertyname): Promise<boolean> =>
@@ -235,7 +233,7 @@ export class ValidationGroup implements IValidationGroup
     {
         return this.startValidateModel()
             .OnCompletion()
-            .then(() => { return !this.hasErrors });
+            .then(() => { return !this.hasErrors() });
     }
 
     public getModelErrors = (): Promise<any> =>

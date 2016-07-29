@@ -1,4 +1,5 @@
 import {IValidationRule} from "./ivalidation-rule";
+import {ModelHelper} from "../model-helper";
 
 export class AdvancedRegexValidationRule implements IValidationRule
 {
@@ -19,9 +20,9 @@ export class AdvancedRegexValidationRule implements IValidationRule
         this.message = (typeof message === "function") ? message : (): string => { return <string>message; };
     }
 
-    public validate(mr, prop, regexPattern: RegExp): Promise<boolean>
+    public validate(modelHelper:ModelHelper, propertyName:string, regexPattern: RegExp): Promise<boolean>
     {
-        var value = mr.get(prop);
+        var value = modelHelper.resolve(propertyName);
         if (value === undefined || value === null || value.length == 0)
         { return Promise.resolve(true); }
 
@@ -29,8 +30,8 @@ export class AdvancedRegexValidationRule implements IValidationRule
         return Promise.resolve(matchesPattern);
     }
 
-    public getMessage(mr, prop, regexPattern) {
-        var value = mr.get(prop);
+    public getMessage(modelHelper:ModelHelper, propertyName:string, regexPattern) {
+        var value = modelHelper.resolve(propertyName);
         return this.message(value);
     }
 }

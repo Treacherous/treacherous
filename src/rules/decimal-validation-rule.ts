@@ -1,3 +1,4 @@
+import {ModelHelper} from "../model-helper";
 ;
 import {IValidationRule} from "./ivalidation-rule";
 
@@ -6,9 +7,9 @@ export class DecimalValidationRule implements IValidationRule
     public ruleName = "decimal";
     private decimalRegex = /^-?(?:\d+|\d{1,3}(?:,\d{3})+)?(?:\.\d+)?$/;
 
-    public validate(mr, prop): Promise<boolean>
+    public validate(modelHelper:ModelHelper, propertyName:string): Promise<boolean>
     {
-        var value = mr.get(prop);
+        var value = modelHelper.resolve(propertyName);
         if (value === undefined || value === null)
         { return Promise.resolve(true); }
 
@@ -16,8 +17,8 @@ export class DecimalValidationRule implements IValidationRule
         return Promise.resolve(matchesRegex);
     }
 
-    public getMessage(mr, prop) {
-        var value = mr.get(prop);
+    public getMessage(modelHelper:ModelHelper, propertyName:string) {
+        var value = modelHelper.resolve(propertyName);
         return `This field contains ${value} which is not a decimal value`;
     }
 }

@@ -1,8 +1,8 @@
 import { IPropertyResolver } from "./iproperty-resolver";
-export declare class ModelResolver {
+export declare class ModelHelper {
     private propertyResolver;
     model: any;
     constructor(propertyResolver: IPropertyResolver, model: any);
-    get(propertyName: any): any;
-    option(varOrProperty: any): any;
+    resolve(propertyName: any): any;
+    decomposePropertyRoute(propertyName: any): string[];
 }

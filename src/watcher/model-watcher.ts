@@ -6,7 +6,7 @@ import {Ruleset} from "../rulesets/ruleset";
 import {PropertyWatcher} from "./property-watcher";
 import {PropertyChangedEvent} from "../events/property-changed-event";
 import {IModelWatcher} from "./imodel-watcher";
-import {ModelResolver} from "../model-resolver";
+import {ModelHelper} from "../model-helper";
 
 export class ModelWatcher implements IModelWatcher
 {

@@ -13,9 +13,9 @@ export declare class ValidationGroup implements IValidationGroup {
     refreshRate: number;
     propertyErrors: {};
     private validationCounter;
-    waiting: any[];
+    private activePromises;
     modelWatcher: IModelWatcher;
-    private modelResolver;
+    private modelHelper;
     propertyStateChangedEvent: EventHandler;
     modelStateChangedEvent: EventHandler;
     constructor(fieldErrorProcessor: IFieldErrorProcessor, ruleResolver: IRuleResolver, ruleset: Ruleset, model: any, settings: IValidationSettings, refreshRate?: number);
@@ -23,7 +23,7 @@ export declare class ValidationGroup implements IValidationGroup {
     private CountedPromise;
     private decCounter;
     private incCounter;
-    ValidationState: string;
+    getValidationStatus(): string;
     private isRuleset(possibleRuleset);
     private isForEach(possibleForEach);
     private onModelChanged;
@@ -32,7 +32,7 @@ export declare class ValidationGroup implements IValidationGroup {
     private validatePropertyWithRules;
     private startValidateProperty;
     startValidateModel: () => this;
-    hasErrors: boolean;
+    hasErrors(): boolean;
     changeValidationTarget: (model: any) => void;
     validateProperty: (propertyname: any) => Promise<boolean>;
     injectError: (propertyname: string, error: string) => IValidationGroup;
