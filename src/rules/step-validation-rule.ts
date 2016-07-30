@@ -1,11 +1,13 @@
 import {IValidationRule} from "./ivalidation-rule";
+import {ModelHelper} from "../model-helper";
 
 export class StepValidationRule implements IValidationRule
 {
     public ruleName = "step";
 
-    public validate(value, step: number): Promise<boolean>
+    public validate(modelHelper:ModelHelper, propertyName:string, step: number): Promise<boolean>
     {
+        var value = modelHelper.resolve(propertyName);
         if (value === undefined || value === null)
         { return Promise.resolve(true); }
 
@@ -14,7 +16,8 @@ export class StepValidationRule implements IValidationRule
         return Promise.resolve(matchesStep);
     }
 
-    public getMessage(value, step) {
+    public getMessage(modelHelper:ModelHelper, propertyName:string, step) {
+        var value = modelHelper.resolve(propertyName);
         return `This field has a value of ${value} and should be an increment of ${step}`;
     }
 }

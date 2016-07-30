@@ -2,5 +2,5 @@ import {Ruleset} from "./ruleset";
 
 export interface IRuleResolver
 {
-    resolvePropertyRules(propertyRoute: string, ruleset: Ruleset);
+    resolvePropertyRules(propertyRouteSections: Array<string>, ruleset: Ruleset);
 }

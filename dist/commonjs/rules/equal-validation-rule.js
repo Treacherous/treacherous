@@ -1,12 +1,12 @@
 "use strict";
-;
 var type_helper_1 = require("../helpers/type-helper");
 var comparer_helper_1 = require("../helpers/comparer-helper");
 var EqualValidationRule = (function () {
     function EqualValidationRule() {
         this.ruleName = "equal";
     }
-    EqualValidationRule.prototype.validate = function (value, optionsOrValue) {
+    EqualValidationRule.prototype.validate = function (modelHelper, propertyName, optionsOrValue) {
+        var value = modelHelper.resolve(propertyName);
         if (value === undefined || value === null) {
             return Promise.resolve(true);
         }
@@ -22,7 +22,8 @@ var EqualValidationRule = (function () {
         }
         return Promise.resolve(result);
     };
-    EqualValidationRule.prototype.getMessage = function (value, optionsOrValue) {
+    EqualValidationRule.prototype.getMessage = function (modelHelper, propertyName, optionsOrValue) {
+        var value = modelHelper.resolve(propertyName);
         return "This field is " + value + " but should be equal to " + (optionsOrValue.value || optionsOrValue);
     };
     return EqualValidationRule;

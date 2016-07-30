@@ -4,7 +4,7 @@ import {RequiredValidationRule} from "../../src/rules/required-validation-rule";
 
 describe('Rule registry', function () {
 
-    it('should correctly get rule for name', function () {
+    it('should correctly resolve rule for name', function () {
         var requiredRule = new RequiredValidationRule();
 
         var ruleRegistry = new RuleRegistry();

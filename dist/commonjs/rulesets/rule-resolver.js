@@ -1,18 +1,14 @@
 "use strict";
-var property_resolver_1 = require("property-resolver");
 var RuleResolver = (function () {
-    function RuleResolver(propertyResolver) {
+    function RuleResolver() {
         var _this = this;
-        if (propertyResolver === void 0) { propertyResolver = new property_resolver_1.PropertyResolver(); }
-        this.propertyResolver = propertyResolver;
         this.isPropertyRoute = function (possiblePropertyRoute) {
             return possiblePropertyRoute.indexOf(".") >= 0;
         };
         this.isIndexRoute = function (possibleIndexRoute) {
             return possibleIndexRoute.indexOf("[") >= 0;
         };
-        this.resolvePropertyRules = function (propertyRoute, ruleset) {
-            var propertyRouteSections = _this.propertyResolver.decomposePropertyRoute(propertyRoute);
+        this.resolvePropertyRules = function (propertyRouteSections, ruleset) {
             var finalProperty = propertyRouteSections[propertyRouteSections.length - 1];
             var matchingRules = _this.traverseRulesForRoutes(propertyRouteSections, ruleset);
             if (!matchingRules) {

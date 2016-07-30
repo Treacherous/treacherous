@@ -17,9 +17,10 @@ var regex_validation_rule_1 = require("./rules/regex-validation-rule");
 var required_validation_rule_1 = require("./rules/required-validation-rule");
 var step_validation_rule_1 = require("./rules/step-validation-rule");
 var ruleset_builder_1 = require("./rulesets/ruleset-builder");
-var model_watcher_factory_1 = require("./factories/model-watcher-factory");
 var property_resolver_1 = require("property-resolver");
 var rule_resolver_1 = require("./rulesets/rule-resolver");
+var validation_settings_1 = require("./validation-settings");
+var model_watcher_1 = require("./watcher/model-watcher");
 exports.ruleRegistry = new rule_registry_1.RuleRegistry();
 exports.ruleRegistry.registerRule(new date_validation_rule_1.DateValidationRule());
 exports.ruleRegistry.registerRule(new decimal_validation_rule_1.DecimalValidationRule());
@@ -36,20 +37,22 @@ exports.ruleRegistry.registerRule(new regex_validation_rule_1.RegexValidationRul
 exports.ruleRegistry.registerRule(new required_validation_rule_1.RequiredValidationRule());
 exports.ruleRegistry.registerRule(new step_validation_rule_1.StepValidationRule());
 var fieldErrorProcessor = new field_error_processor_1.FieldErrorProcessor(exports.ruleRegistry);
-var propertyResolver = new property_resolver_1.PropertyResolver();
 var ruleResolver = new rule_resolver_1.RuleResolver();
-var modelWatcherFactory = new model_watcher_factory_1.ModelWatcherFactory(propertyResolver);
-var validationGroupFactory = new validation_group_factory_1.ValidationGroupFactory(fieldErrorProcessor, modelWatcherFactory, propertyResolver, ruleResolver);
+var validationGroupFactory = new validation_group_factory_1.ValidationGroupFactory(fieldErrorProcessor, ruleResolver);
 function createRuleset() {
     return new ruleset_builder_1.RulesetBuilder().create();
 }
 exports.createRuleset = createRuleset;
-function createGroupWithRules(model, rulesCreator) {
+function createGroupWithRules(model, rulesCreator, settings) {
     var ruleset = rulesCreator(new ruleset_builder_1.RulesetBuilder());
-    return validationGroupFactory.createValidationGroup(model, ruleset);
+    return validationGroupFactory.createValidationGroup(model, ruleset, settings || exports.DefaultValidationSettings);
 }
 exports.createGroupWithRules = createGroupWithRules;
-function createGroup(model, ruleset) {
-    return validationGroupFactory.createValidationGroup(model, ruleset);
+function createGroup(model, ruleset, settings) {
+    return validationGroupFactory.createValidationGroup(model, ruleset, settings || exports.DefaultValidationSettings);
 }
 exports.createGroup = createGroup;
+exports.DefaultValidationSettings = new validation_settings_1.ValidationSettings()
+    .configure(function (c) { return c
+    .setModelWatcherFactory(function () { return new model_watcher_1.ModelWatcher(); })
+    .setPropertyResolverFactory(function () { return new property_resolver_1.PropertyResolver(); }); });

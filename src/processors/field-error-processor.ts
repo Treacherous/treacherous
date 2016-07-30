@@ -2,50 +2,54 @@ import {RuleRegistry} from "../rules/rule-registry";
 import {RuleLink} from "../rulesets/rule-link";
 import {FieldHasError} from "./field-has-error";
 import {IFieldErrorProcessor} from "./ifield-error-processor";
+import {ModelHelper} from "../model-helper";
 
 export class FieldErrorProcessor implements IFieldErrorProcessor
 {
     constructor(public ruleRegistry: RuleRegistry){}
 
-    public processRuleLink(model: any, fieldValue: any, ruleLink: RuleLink): Promise<any>{
+    // Validates a single property against a model
+    public processRuleLink(modelHelper:ModelHelper, propertyName:string, ruleLink: RuleLink): Promise<any>{
 
         var shouldRuleApply = ruleLink.appliesIf === true
             || ((typeof(ruleLink.appliesIf) === "function")
-                ? ruleLink.appliesIf(model, fieldValue, ruleLink.ruleOptions)
+                ? (<((modelHelper:ModelHelper, propertyName:string, ruleOptions?: any) => boolean)>(ruleLink.appliesIf))(modelHelper, propertyName, ruleLink.ruleOptions)
                 : false);
 
         if (!shouldRuleApply)
-        { return Promise.resolve(); }
+            { return Promise.resolve(); }
 
         var validator = this.ruleRegistry.getRuleNamed(ruleLink.ruleName);
 
-        var checkIfValid = (isValid) => {
-            if(!isValid) {
-                var error;
-                if(ruleLink.messageOverride)
-                {
-                    if(typeof(ruleLink.messageOverride) === "function")
-                    { error = (<((value: any, ruleOptions?: any) => string)>(ruleLink.messageOverride))(fieldValue, ruleLink.ruleOptions); }
-                    else
-                    { error = ruleLink.messageOverride; }
-                }
-                else
-                { error = validator.getMessage(fieldValue, ruleLink.ruleOptions); }
-
-                throw new FieldHasError(error);
-            }
-            return Promise.resolve();
-        };
+        var options = (typeof ruleLink.ruleOptions == "function") ? ruleLink.ruleOptions() : ruleLink.ruleOptions;
 
         return validator
-            .validate(fieldValue, ruleLink.ruleOptions)
-            .then(checkIfValid);
+            .validate(modelHelper, propertyName, options)
+            .then(isValid => {
+                if(!isValid) {
+                    var error;
+                    if(ruleLink.messageOverride)
+                    {
+                        if(typeof(ruleLink.messageOverride) === "function")
+                        { error = (<((model:any, value: any, ruleOptions?: any) => string)>(ruleLink.messageOverride))(modelHelper, propertyName, ruleLink.ruleOptions); }
+                        else
+                        { error = ruleLink.messageOverride; }
+                    }
+                    else
+                    { error = validator.getMessage(modelHelper, propertyName, ruleLink.ruleOptions); }
+
+                    throw new FieldHasError(error);
+                }
+                return Promise.resolve();
+            });
     }
 
-    public checkFieldForErrors(model: any, fieldValue: any, rules: any): Promise<string>
+    // Loops through each rule on a property, adds it to a chain, then calls Promise.all
+    // Probably not correct, as they won't fire sequentially? Promises need to be chained
+    public checkFieldForErrors(modelHelper:ModelHelper, propertyName:string, rules: any): Promise<string>
     {
         var ruleCheck = (ruleLinkOrSet: any): Promise<any>  => {
-            return this.processRuleLink(model, fieldValue, ruleLinkOrSet);
+            return this.processRuleLink(modelHelper, propertyName, ruleLinkOrSet);
         };
 
         var checkEachRule = (rules: any) => {

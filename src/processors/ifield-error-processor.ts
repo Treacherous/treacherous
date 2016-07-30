@@ -1,7 +1,8 @@
 import {RuleLink} from "../rulesets/rule-link";
+import {ModelHelper} from "../model-helper";
 
 export interface IFieldErrorProcessor
 {    
-    processRuleLink(model: any, fieldValue: any, ruleLink: RuleLink): Promise<any>;
-    checkFieldForErrors(model: any, fieldValue: any, rules: any): Promise<string>;
+    processRuleLink(mr:ModelHelper, propname: string, ruleLink: RuleLink): Promise<any>;
+    checkFieldForErrors(mr:ModelHelper, propname: string, rules: any): Promise<string>;
 }
