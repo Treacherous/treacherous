@@ -11,7 +11,6 @@ var EqualValidationRule = (function () {
             return Promise.resolve(true);
         }
         var result;
-        //var comparison = (typeof optionsOrValue == "function") ? optionsOrValue() : optionsOrValue.value || optionsOrValue;
         var comparison = optionsOrValue.value || optionsOrValue;
         var weakEquality = optionsOrValue.weakEquality || false;
         if (type_helper_1.TypeHelper.isDateType(comparison)) {

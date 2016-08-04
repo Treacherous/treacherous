@@ -4,6 +4,10 @@ export class TypeHelper
         return (typeof value.getMonth === 'function');
     }
 
+    public static isFunctionType(value): boolean {
+        return (typeof value === 'function');
+    }
+
     public static isSimpleType(value): boolean {
         return (typeof value == "string" || typeof value == "number");
     }

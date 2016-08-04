@@ -1,24 +1,36 @@
-import {PropertyResolver} from "property-resolver/index";
 import {IValidationRule} from "./ivalidation-rule";
+import {IModelResolver} from "../resolvers/imodel-resolver";
+import {TypeHelper} from "../helpers/type-helper";
+import {ComparerHelper} from "../helpers/comparer-helper";
 
 export class MatchesValidationRule implements IValidationRule
 {
-    public ruleName = "equal";
+    public ruleName = "matches";
 
-    constructor(private propertyResolver: PropertyResolver){}
+    constructor(){}
 
-    public validate(model, value, fieldToMatch: string): Promise<boolean>
+    public validate(modelResolver: IModelResolver, propertyName: string, optionsOrProperty: any): Promise<boolean>
     {
-        if (fieldToMatch === undefined || fieldToMatch === null)
-        { return Promise.resolve(false); }
+        var fieldToMatch = optionsOrProperty.property || optionsOrProperty;
+        var weakEquality = optionsOrProperty.weakEquality || false;
+        var value = modelResolver.resolve(propertyName);
+        var matchingFieldValue = modelResolver.resolve(fieldToMatch);
 
-        var matchingFieldValue = this.propertyResolver.resolveProperty(model, fieldToMatch);
-        var result = matchingFieldValue === value;
+        var result;
+        if (value === undefined || value === null)
+        { result = (matchingFieldValue === undefined || matchingFieldValue === null); }
+        else if(TypeHelper.isDateType(value))
+        { result = ComparerHelper.dateTimeCompararer(value, matchingFieldValue); }
+        else
+        { result = ComparerHelper.simpleTypeComparer(value, matchingFieldValue, weakEquality); }
+
         return Promise.resolve(result);
     }
 
-    public getMessage(model, value, fieldToMatch: string) {
-        var matchingFieldValue = this.propertyResolver.resolveProperty(model, fieldToMatch);
+    public getMessage(modelResolver: IModelResolver, propertyName: string, optionsOrProperty: any) {
+        var value = modelResolver.resolve(propertyName);
+        var fieldToMatch = optionsOrProperty.property || optionsOrProperty;
+        var matchingFieldValue = modelResolver.resolve(fieldToMatch);
         return `This field is ${value} but should match ${matchingFieldValue}`;
     }
 }

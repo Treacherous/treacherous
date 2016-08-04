@@ -5,6 +5,9 @@ var TypeHelper = (function () {
     TypeHelper.isDateType = function (value) {
         return (typeof value.getMonth === 'function');
     };
+    TypeHelper.isFunctionType = function (value) {
+        return (typeof value === 'function');
+    };
     TypeHelper.isSimpleType = function (value) {
         return (typeof value == "string" || typeof value == "number");
     };
