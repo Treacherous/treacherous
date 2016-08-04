@@ -109,6 +109,7 @@ describe('Treacherous Sanity Checks', function () {
             }).catch(done);
     });
 
+    // TODO: This needs fixing but needs discussion on purely state checks
     it.skip("should correctly be invalid after changes", function(done){
         var ruleSet = createRuleset()
             .forProperty("stringValue1").addRule("required")

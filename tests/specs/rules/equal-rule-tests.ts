@@ -6,34 +6,16 @@ import {ModelResolver} from "../../../src/resolvers/model-resolver";
 describe("Validation Rules", function(){
     describe('Equal Rule', function () {
 
-        /*
-                it('should be valid when the comparitor is a function', function (done) {
-                    var rule = new EqualValidationRule();
-                    rule.validate(10, () => 10).then(function(isValid){
-                        expect(isValid).to.be.true;
-                        done();
-                    }).catch(done);
-                });
+        it('should be valid when the comparitor is a function which equals the value', function (done) {
+            var modelResolver = new ModelResolver(new PropertyResolver(), {});
+            modelResolver.model.a = 10;
 
-                it('should be valid when comparing two model properties', function (done) {
-                    var model = { password1: "Identical",password2: "Identical" }
-                    var options = model;
-
-                    var rule = new EqualValidationRule();
-
-                    rule.validate(model.password1, model.password2).then(function(isValid){
-                        expect(isValid).to.be.true;
-                    }).catch(done);
-
-                    model = { password1: "AlsoIdentical",password2: "AlsoIdentical" }
-
-                    rule.validate(model.password1, model.password2).then(function(isValid){
-                        expect(isValid).to.be.true;
-                        done();
-                    }).catch(done);
-
-                });
-         */
+            var rule = new EqualValidationRule();
+            rule.validate(modelResolver, "a", () => 10).then(function(isValid){
+                expect(isValid).to.be.true;
+                done();
+            }).catch(done);
+        });
 
         it('should be valid when numbers equal', function (done) {
             var modelResolver = new ModelResolver(new PropertyResolver(), {});

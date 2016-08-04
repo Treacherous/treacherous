@@ -20,6 +20,7 @@ var ruleset_builder_1 = require("./rulesets/ruleset-builder");
 var property_resolver_1 = require("property-resolver");
 var rule_resolver_1 = require("./rulesets/rule-resolver");
 var default_validation_settings_1 = require("./settings/default-validation-settings");
+var matches_validation_rule_1 = require("./rules/matches-validation-rule");
 exports.ruleRegistry = new rule_registry_1.RuleRegistry();
 exports.ruleRegistry.registerRule(new date_validation_rule_1.DateValidationRule());
 exports.ruleRegistry.registerRule(new decimal_validation_rule_1.DecimalValidationRule());
@@ -35,6 +36,7 @@ exports.ruleRegistry.registerRule(new number_validation_rule_1.NumberValidationR
 exports.ruleRegistry.registerRule(new regex_validation_rule_1.RegexValidationRule());
 exports.ruleRegistry.registerRule(new required_validation_rule_1.RequiredValidationRule());
 exports.ruleRegistry.registerRule(new step_validation_rule_1.StepValidationRule());
+exports.ruleRegistry.registerRule(new matches_validation_rule_1.MatchesValidationRule());
 var fieldErrorProcessor = new field_error_processor_1.FieldErrorProcessor(exports.ruleRegistry);
 var propertyResolver = new property_resolver_1.PropertyResolver();
 var defaultValidationSettings = new default_validation_settings_1.DefaultValidationSettings(propertyResolver);

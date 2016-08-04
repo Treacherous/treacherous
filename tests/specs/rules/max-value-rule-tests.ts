@@ -6,68 +6,80 @@ import {ModelResolver} from "../../../src/resolvers/model-resolver";
 describe("Validation Rules", function(){
     describe('Max Value Rule', function () {
 
-        var mr = new ModelResolver(new PropertyResolver(), { null:null });
-
-
         it('should be valid when number is <= max length', function (done) {
+            var modelResolver = new ModelResolver(new PropertyResolver(), {});
+            modelResolver.model.validNumber = 10;
+
             var rule = new MaxValueValidationRule();
-            mr.model.validNumber = 10;
-            rule.validate(mr,'validNumber', 10).then(function(isValid){
+            rule.validate(modelResolver,'validNumber', 10).then(function(isValid){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
         });
 
         it('should be valid when string number is <= max value', function (done) {
+            var modelResolver = new ModelResolver(new PropertyResolver(), {});
+            modelResolver.model.validNumberString = "10";
+
             var rule = new MaxValueValidationRule();
-            mr.model.validNumberString = "10";
-            rule.validate(mr,'validNumberString', 10).then(function(isValid){
+            rule.validate(modelResolver,'validNumberString', 10).then(function(isValid){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
         });
 
         it('should be valid when date is <= max date', function (done) {
+            var modelResolver = new ModelResolver(new PropertyResolver(), {});
+            modelResolver.model.validDate = new Date(1990, 1, 1);
+
             var rule = new MaxValueValidationRule();
             var maximumDate = new Date(2000, 1, 1);
-            mr.model.validDate = new Date(1990, 1, 1);
-            rule.validate(mr,'validDate', maximumDate).then(function(isValid){
+            rule.validate(modelResolver,'validDate', maximumDate).then(function(isValid){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
         });
 
         it('should be valid when provided a null value', function (done) {
+            var modelResolver = new ModelResolver(new PropertyResolver(), {});
+            modelResolver.model.a = null;
+
             var rule = new MaxValueValidationRule();
-            rule.validate(mr,'null', 10).then(function(isValid){
+            rule.validate(modelResolver,'a', 10).then(function(isValid){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
         });
 
         it('should be invalid when number is > max value', function (done) {
+            var modelResolver = new ModelResolver(new PropertyResolver(), {});
+            modelResolver.model.invalidNumber = 11;
+
             var rule = new MaxValueValidationRule();
-            mr.model.invalidNumber = 11;
-            rule.validate(mr,'invalidNumber', 10).then(function(isValid){
+            rule.validate(modelResolver,'invalidNumber', 10).then(function(isValid){
                 expect(isValid).to.be.false;
                 done();
             }).catch(done);
         });
 
         it('should be invalid when string number is > max length', function (done) {
+            var modelResolver = new ModelResolver(new PropertyResolver(), {});
+            modelResolver.model.invalidStringNumber = "11";
+
             var rule = new MaxValueValidationRule();
-            mr.model.invalidStringNumber = "11";
-            rule.validate(mr,'invalidStringNumber', 10).then(function(isValid){
+            rule.validate(modelResolver,'invalidStringNumber', 10).then(function(isValid){
                 expect(isValid).to.be.false;
                 done();
             }).catch(done);
         });
 
         it('should be invalid when date is > max date', function (done) {
+            var modelResolver = new ModelResolver(new PropertyResolver(), {});
+            modelResolver.model.invalidDate = new Date(2001, 1, 1);
+
             var rule = new MaxValueValidationRule();
             var maximumDate = new Date(2000, 1, 1);
-            mr.model.invalidDate = new Date(2001, 1, 1);
-            rule.validate(mr,'invalidDate', maximumDate).then(function(isValid){
+            rule.validate(modelResolver,'invalidDate', maximumDate).then(function(isValid){
                 expect(isValid).to.be.false;
                 done();
             }).catch(done);

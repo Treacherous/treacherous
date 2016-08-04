@@ -23,6 +23,7 @@ import {PropertyResolver} from "property-resolver";
 import {RuleResolver} from "./rulesets/rule-resolver";
 import {DefaultValidationSettings} from "./settings/default-validation-settings";
 import {IValidationSettings} from "./settings/ivalidation-settings";
+import {MatchesValidationRule} from "./rules/matches-validation-rule";
 
 export var ruleRegistry = new RuleRegistry();
 ruleRegistry.registerRule(new DateValidationRule());
@@ -39,6 +40,7 @@ ruleRegistry.registerRule(new NumberValidationRule());
 ruleRegistry.registerRule(new RegexValidationRule());
 ruleRegistry.registerRule(new RequiredValidationRule());
 ruleRegistry.registerRule(new StepValidationRule());
+ruleRegistry.registerRule(new MatchesValidationRule());
 
 var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry);
 var propertyResolver = new PropertyResolver();

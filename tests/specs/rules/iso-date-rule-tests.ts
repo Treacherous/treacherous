@@ -6,13 +6,12 @@ import {ModelResolver} from "../../../src/resolvers/model-resolver";
 describe("Validation Rules", function(){
     describe('ISO Date Rule', function () {
 
-        var mr = new ModelResolver(new PropertyResolver(), {});
-
-
         it('should be valid when iso format date is provided', function (done) {
+            var modelResolver = new ModelResolver(new PropertyResolver(), {});
+            modelResolver.model.validDateString = new Date().toISOString();
+
             var rule = new ISODateValidationRule();
-            mr.model.validDateString = new Date().toISOString();
-            rule.validate(mr,'validDateString').then(function(isValid){
+            rule.validate(modelResolver,'validDateString').then(function(isValid){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
@@ -20,18 +19,22 @@ describe("Validation Rules", function(){
 
 
         it('should be valid when provided a null value', function (done) {
+            var modelResolver = new ModelResolver(new PropertyResolver(), {});
+            modelResolver.model.null = null;
+
             var rule = new ISODateValidationRule();
-            mr.model.null = null;
-            rule.validate(mr,'null').then(function(isValid){
+            rule.validate(modelResolver,'null').then(function(isValid){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
         });
 
         it('should be invalid when non date is provided', function (done) {
+            var modelResolver = new ModelResolver(new PropertyResolver(), {});
+            modelResolver.model.invalidDateString = "this isn't a date";
+
             var rule = new ISODateValidationRule();
-            mr.model.invalidDateString = "this isn't a date";
-            rule.validate(mr,'invalidDateString').then(function(isValid){
+            rule.validate(modelResolver,'invalidDateString').then(function(isValid){
                 expect(isValid).to.be.false;
                 done();
             }).catch(done);

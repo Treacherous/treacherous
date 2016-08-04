@@ -13,6 +13,9 @@ var NotEqualValidationRule = (function () {
         var result;
         var comparison = optionsOrValue.value || optionsOrValue;
         var weakEquality = optionsOrValue.weakEquality || false;
+        if (type_helper_1.TypeHelper.isFunctionType(comparison)) {
+            comparison = comparison();
+        }
         if (type_helper_1.TypeHelper.isDateType(comparison)) {
             result = !comparer_helper_1.ComparerHelper.dateTimeCompararer(value, comparison);
         }

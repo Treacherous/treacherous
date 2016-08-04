@@ -17,6 +17,9 @@ export class EqualValidationRule implements IValidationRule
         var comparison = optionsOrValue.value || optionsOrValue;
         var weakEquality = optionsOrValue.weakEquality || false;
 
+        if(TypeHelper.isFunctionType(comparison))
+        { comparison = comparison(); }
+
         if(TypeHelper.isDateType(comparison))
         { result = ComparerHelper.dateTimeCompararer(value, comparison); }
         else
