@@ -3,8 +3,9 @@ var RequiredValidationRule = (function () {
     function RequiredValidationRule() {
         this.ruleName = "required";
     }
-    RequiredValidationRule.prototype.validate = function (value, isRequired) {
+    RequiredValidationRule.prototype.validate = function (modelResolver, propertyName, isRequired) {
         if (isRequired === void 0) { isRequired = true; }
+        var value = modelResolver.resolve(propertyName);
         if (value === undefined || value === null) {
             return Promise.resolve(!isRequired);
         }
@@ -22,7 +23,7 @@ var RequiredValidationRule = (function () {
         }
         return Promise.resolve((testValue + '').length > 0);
     };
-    RequiredValidationRule.prototype.getMessage = function (value, isRequired) {
+    RequiredValidationRule.prototype.getMessage = function (modelResolver, propertyName, isRequired) {
         return "This field is required";
     };
     return RequiredValidationRule;

@@ -41,6 +41,8 @@ describe('Model Watcher', function () {
         }, 250);
     });
 
+
+
     it('should correctly watch model with nested rules', function (done) {
         var dummyModel = {
             bar: [

@@ -1,7 +1,8 @@
+import { IModelResolver } from "../resolvers/imodel-resolver";
 import { IValidationRule } from "./ivalidation-rule";
 export declare class DecimalValidationRule implements IValidationRule {
     ruleName: string;
     private decimalRegex;
-    validate(value: any): Promise<boolean>;
-    getMessage(value: any): string;
+    validate(modelResolver: IModelResolver, propertyName: string): Promise<boolean>;
+    getMessage(modelResolver: IModelResolver, propertyName: string): string;
 }

@@ -1,4 +1,4 @@
-import {PropertyResolver} from "property-resolver";
+import {PropertyResolver, IPropertyResolver} from "property-resolver";
 import {EventHandler} from "event-js";
 import {TypeHelper} from "../helpers/type-helper";
 
@@ -18,7 +18,7 @@ export class ModelWatcher implements IModelWatcher
     public scanInterval: any;
     public onPropertyChanged: EventHandler;
 
-    constructor(private propertyResolver = new PropertyResolver()) {
+    constructor(private propertyResolver: IPropertyResolver = new PropertyResolver()) {
         this.onPropertyChanged = new EventHandler(this);
     }
 
@@ -172,7 +172,9 @@ export class ModelWatcher implements IModelWatcher
             var hasChanged = false;
 
             try
-            { currentValue = this.propertyResolver.resolveProperty(this.model, propertyWatcher.propertyPath); }
+            {
+                currentValue = this.propertyResolver.resolveProperty(this.model, propertyWatcher.propertyPath);
+            }
             catch(ex) { }
 
             if(typeof(currentValue) == "undefined")

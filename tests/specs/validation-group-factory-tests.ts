@@ -1,24 +1,19 @@
-import {use, expect, spy} from "chai";
+import {use, expect} from "chai";
 import * as spies from "chai-spies";
+import {ValidationGroupFactory} from "../../src/factories/validation-group-factory";
+import {Ruleset} from "../../src/rulesets/ruleset";
+import {DefaultValidationSettings} from "../../src/settings/default-validation-settings";
 use(spies);
 
-import {ValidationGroupFactory} from "../../src/factories/validation-group-factory";
-import {ModelWatcherFactory} from "../../src/factories/model-watcher-factory";
-import {PropertyResolver} from "property-resolver";
-import {Ruleset} from "../../src/rulesets/ruleset";
-
-describe('Validation Group', function () {
+describe('Validation Group Factory', function () {
 
     it('should create unique model watchers per group', function () {
 
-        var modelWatcherFactory = new ModelWatcherFactory(new PropertyResolver());
-        var spiedCreationMethod = spy.on(modelWatcherFactory, 'createModelWatcher');
-        var validationGroupFactory = new ValidationGroupFactory(null, modelWatcherFactory, null, null);
-
+        var validationGroupFactory = new ValidationGroupFactory(null, null, new DefaultValidationSettings());
         var dummyRuleset = new Ruleset();
-        validationGroupFactory.createValidationGroup({}, dummyRuleset);
-        validationGroupFactory.createValidationGroup({}, dummyRuleset);
+        var vg1 = validationGroupFactory.createValidationGroup({}, dummyRuleset);
+        var vg2 = validationGroupFactory.createValidationGroup({}, dummyRuleset);
 
-        expect(spiedCreationMethod).to.have.been.called.exactly(2);
+        expect(vg1.modelWatcher).to.not.equal(vg2.modelWatcher);
     });
 });

@@ -1,6 +1,7 @@
 import { IValidationRule } from "./ivalidation-rule";
+import { IModelResolver } from "../resolvers/imodel-resolver";
 export declare class RequiredValidationRule implements IValidationRule {
     ruleName: string;
-    validate(value: any, isRequired?: boolean): Promise<boolean>;
-    getMessage(value: any, isRequired: any): string;
+    validate(modelResolver: IModelResolver, propertyName: string, isRequired?: boolean): Promise<boolean>;
+    getMessage(modelResolver: IModelResolver, propertyName: string, isRequired: any): string;
 }
