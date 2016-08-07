@@ -22,6 +22,10 @@ var ReactiveValidationGroupBuilder = (function () {
             _this.modelResolverFactory = modelResolverFactory;
             return _this;
         };
+        this.withModelWatcherFactory = function (modelWatcherFactory) {
+            _this.modelWatcherFactory = modelWatcherFactory;
+            return _this;
+        };
         this.andValidateOnStart = function () {
             _this.validateOnStart = true;
             return _this;
