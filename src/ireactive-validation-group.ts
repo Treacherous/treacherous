@@ -1,5 +1,10 @@
-export interface IValidationGroup
+import {EventHandler} from "event-js";
+
+export interface IReactiveValidationGroup
 {
+    propertyStateChangedEvent: EventHandler;
+    modelStateChangedEvent: EventHandler;
+
     validate(): Promise<boolean>;
     validateProperty(propertyname): Promise<boolean>
     getModelErrors(): Promise<any>;

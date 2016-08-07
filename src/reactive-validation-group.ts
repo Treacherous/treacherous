@@ -1,28 +1,55 @@
+/*
+ validate() fires validateModel() then waits to ensure every rule has been resolved and returns Promise of true/false
+ validateProperty(prop) calls the rules for a single Property, waits to ensure any pending rules have been resolved, and returns Promise of true/false
+
+ getModelErrors() waits to ensure any pending rules have been resolved and returns Promise of all errors
+ getPropertyError() waits to ensure any pending rules have been resolved and returns single error list for property
+
+ startValidateModel() starts a set of Promises to validate everything in the RuleSet. Returns validationGroup without waiting
+ startValidateProperty(prop) starts a set of Promises to validate a single Property. Returns validationGroup without waiting
+ */
+
+import {PropertyChangedEvent} from "./events/property-changed-event";
+import {EventHandler} from "event-js";
 import {Ruleset} from "./rulesets/ruleset";
+import {PropertyStateChangedEvent} from "./events/property-state-changed-event";
+import {ModelStateChangedEvent} from "./events/model-state-changed-event";
 import {RuleLink} from "./rulesets/rule-link";
 import {RuleResolver} from "./rulesets/rule-resolver";
+import {IModelWatcher} from "./watcher/imodel-watcher";
 import {TypeHelper} from "./helpers/type-helper";
-import {IValidationGroup} from "./ivalidation-group";
 import {IFieldErrorProcessor} from "./processors/ifield-error-processor";
 import {IRuleResolver} from "./rulesets/irule-resolver";
 import {IValidationSettings} from "./settings/ivalidation-settings";
 import {IModelResolver} from "./resolvers/imodel-resolver";
+import {IReactiveValidationGroup} from "./ireactive-validation-group";
 
 // TODO: This class is WAY to long, needs refactoring
-export class ValidationGroup implements IValidationGroup
+export class ReactiveValidationGroup implements IReactiveValidationGroup
 {
     private activePromises = [];
     public propertyErrors = {};
     private validationCounter = 0;
+    public modelWatcher: IModelWatcher;
     private modelResolver: IModelResolver;
+
+    public propertyStateChangedEvent: EventHandler;
+    public modelStateChangedEvent: EventHandler;
 
     constructor(private fieldErrorProcessor: IFieldErrorProcessor,
                 private ruleResolver: IRuleResolver = new RuleResolver(),
                 private ruleset: Ruleset,
                 model: any,
-                private settings: IValidationSettings)
+                private settings: IValidationSettings,
+                public refreshRate = 500)
     {
+        this.propertyStateChangedEvent = new EventHandler(this);
+        this.modelStateChangedEvent = new EventHandler(this);
+
         this.modelResolver = this.settings.createModelResolver(model);
+        this.modelWatcher = this.settings.createModelWatcher();
+        this.modelWatcher.setupWatcher(model, ruleset, refreshRate);
+        this.modelWatcher.onPropertyChanged.subscribe(this.onModelChanged);
     }
 
     private OnCompletion = () => {
@@ -54,19 +81,41 @@ export class ValidationGroup implements IValidationGroup
         return possibleForEach.isForEach;
     }
 
+    private onModelChanged = (eventArgs: PropertyChangedEvent) => {
+        this.startValidateProperty(eventArgs.propertyPath);
+    };
+
     private validatePropertyWithRuleLinks = (propertyName: string, propertyRules: Array<RuleLink>): any => {
         return this.CountedPromise(this.fieldErrorProcessor.checkFieldForErrors(this.modelResolver, propertyName, propertyRules))
             .then(possibleErrors => {
                 var hadErrors = this.hasErrors();
 
                 if (!possibleErrors) {
-                    if (this.propertyErrors[propertyName])
-                    { delete this.propertyErrors[propertyName]; }
+                    if (this.propertyErrors[propertyName]) {
+                        delete this.propertyErrors[propertyName];
+                        var eventArgs = new PropertyStateChangedEvent(propertyName, true);
+                        this.propertyStateChangedEvent.publish(eventArgs);
+
+                        var stillHasErrors = hadErrors && this.hasErrors();
+                        if (!stillHasErrors) {
+                            this.modelStateChangedEvent.publish(new ModelStateChangedEvent(true));
+                        }
+                    }
                     return;
                 }
 
                 var previousError = this.propertyErrors[propertyName];
                 this.propertyErrors[propertyName] = possibleErrors;
+
+                if(possibleErrors != previousError){
+                    var eventArgs = new PropertyStateChangedEvent(propertyName, false, possibleErrors);
+                    this.propertyStateChangedEvent.publish(eventArgs);
+
+                    if (!hadErrors) {
+                        this.modelStateChangedEvent.publish(new ModelStateChangedEvent(false));
+                    }
+                }
+
             })
             .then(this.OnCompletion)
     };
@@ -79,7 +128,7 @@ export class ValidationGroup implements IValidationGroup
         }
     }
 
-    private validatePropertyWithRules = (propertyName: string, rules: any): ValidationGroup => {
+    private validatePropertyWithRules = (propertyName: string, rules: any): ReactiveValidationGroup => {
         var ruleLinks = [];
         var ruleSets = [];
 
@@ -135,20 +184,22 @@ export class ValidationGroup implements IValidationGroup
         return this.validatePropertyWithRules(propertyName, rulesForProperty);
     };
 
-    private startValidateModel = () => {
+    public startValidateModel = () => {
         for(var parameterName in this.ruleset.rules) {
             this.startValidateProperty(parameterName);
         }
         return this;
     };
 
-    private hasErrors(): boolean {
+    public hasErrors(): boolean {
         return (Object.keys(this.propertyErrors).length > 0);
     }
 
     public changeValidationTarget = (model: any) => {
         this.modelResolver = this.settings.createModelResolver(model);
+        this.modelWatcher.changeWatcherTarget(this.modelResolver.model);
     }
+
 
     public validateProperty = (propertyname): Promise<boolean> =>
     {
@@ -178,5 +229,8 @@ export class ValidationGroup implements IValidationGroup
             .then(() => this.propertyErrors[propertyRoute])
     }
 
-    public release = () => {}
+    public release = () => {
+        if (this.modelWatcher)
+            this.modelWatcher.stopWatching();
+    }
 }
