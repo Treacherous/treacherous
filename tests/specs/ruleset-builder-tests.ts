@@ -1,7 +1,7 @@
 import {expect} from "chai";
 import {RuleRegistry} from "../../src/rules/rule-registry";
 import {RuleLink} from "../../src/rulesets/rule-link";
-import {RulesetBuilder} from "../../src/rulesets/ruleset-builder";
+import {RulesetBuilder} from "../../src/builders/ruleset-builder";
 import {Ruleset} from "../../src/rulesets/ruleset";
 
 describe('Ruleset Builder', function () {

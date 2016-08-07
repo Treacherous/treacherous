@@ -1,5 +1,5 @@
 import {use, expect, spy} from "chai";
-import {RulesetBuilder} from "../../src/rulesets/ruleset-builder";
+import {RulesetBuilder} from "../../src/builders/ruleset-builder";
 import {ModelWatcher} from "../../src/watcher/model-watcher";
 import * as spies from "chai-spies";
 use(spies);

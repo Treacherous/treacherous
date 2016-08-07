@@ -1,6 +1,6 @@
-import {Ruleset} from "./ruleset";
-import {RuleLink} from "./rule-link";
-import {ForEachRule} from "./for-each-rule";
+import {Ruleset} from "../rulesets/ruleset";
+import {RuleLink} from "../rulesets/rule-link";
+import {ForEachRule} from "../rulesets/for-each-rule";
 import {RuleRegistry} from "../rules/rule-registry";
 
 export class RulesetBuilder

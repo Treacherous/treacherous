@@ -1,6 +1,7 @@
 import {expect} from "chai";
-import {createRuleset, createGroup, createGroupWithRules, ruleRegistry} from "../../src/exposer";
+import {createRuleset, createGroup} from "../../src/exposer";
 import {Ruleset} from "../../src/rulesets/ruleset";
+import {ruleRegistry} from "../../src/rule-registry-setup";
 
 describe('Treacherous Sanity Checks', function () {
 
@@ -9,15 +10,9 @@ describe('Treacherous Sanity Checks', function () {
         expect(ruleBuilder).is.not.null;
         expect(ruleBuilder.create).to.be.a("function");
 
-        var validationGroup = createGroup({}, new Ruleset());
+        var validationGroup = createGroup().build({}, new Ruleset());
         expect(validationGroup).is.not.null;
         expect(validationGroup.getModelErrors).to.be.a("function");
-
-        var validationGroupExplicitRules = createGroupWithRules({}, function(rulesetBuilder){
-            return rulesetBuilder.create().build();
-        });
-        expect(validationGroupExplicitRules).is.not.null;
-        expect(validationGroupExplicitRules.getModelErrors).to.be.a("function");
     });
 
     it('should correctly generate rules', function() {
@@ -47,7 +42,7 @@ describe('Treacherous Sanity Checks', function () {
             .addRuleForEach("maxValue", 19)
             .build();
 
-        var validationGroup = createGroup(dummyModel, ruleset);
+        var validationGroup = createGroup().build(dummyModel, ruleset);
 
         validationGroup.validate()
             .then(v => validationGroup.getModelErrors())
@@ -93,7 +88,7 @@ describe('Treacherous Sanity Checks', function () {
             orders: [ dummyOrder1, dummyOrder2 ]
         };
 
-        var invoiceValidationGroup = createGroup(dummyInvoice, invoiceRuleSet);
+        var invoiceValidationGroup = createGroup().build(dummyInvoice, invoiceRuleSet);
 
         dummyOrder1.products.push(dummyProduct1);
         dummyOrder1.products.push(dummyProduct2);
@@ -110,7 +105,7 @@ describe('Treacherous Sanity Checks', function () {
     });
 
     // TODO: This needs fixing but needs discussion on purely state checks
-    it.skip("should correctly be invalid after changes", function(done){
+    it.skip("should correctly be invalid after changes when reactive", function(done){
         var ruleSet = createRuleset()
             .forProperty("stringValue1").addRule("required")
             .forProperty("stringValue2").addRule("required")
@@ -122,7 +117,7 @@ describe('Treacherous Sanity Checks', function () {
         };
 
         var isValid;
-        var valGroup = createGroup(model, ruleSet);
+        var valGroup = createGroup().asReactiveGroup().build(model, ruleSet);
         valGroup.modelStateChangedEvent.subscribe(event => {
             console.log("changing state:", event);
             isValid = event.isValid

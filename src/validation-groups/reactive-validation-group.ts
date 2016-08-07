@@ -1,14 +1,14 @@
-import {PropertyChangedEvent} from "./events/property-changed-event";
+import {PropertyChangedEvent} from "../events/property-changed-event";
 import {EventHandler} from "event-js";
-import {Ruleset} from "./rulesets/ruleset";
-import {PropertyStateChangedEvent} from "./events/property-state-changed-event";
-import {ModelStateChangedEvent} from "./events/model-state-changed-event";
-import {RuleLink} from "./rulesets/rule-link";
-import {RuleResolver} from "./rulesets/rule-resolver";
-import {IModelWatcher} from "./watcher/imodel-watcher";
-import {IFieldErrorProcessor} from "./processors/ifield-error-processor";
-import {IRuleResolver} from "./rulesets/irule-resolver";
-import {IValidationSettings} from "./settings/ivalidation-settings";
+import {Ruleset} from "../rulesets/ruleset";
+import {PropertyStateChangedEvent} from "../events/property-state-changed-event";
+import {ModelStateChangedEvent} from "../events/model-state-changed-event";
+import {RuleLink} from "../rulesets/rule-link";
+import {RuleResolver} from "../rulesets/rule-resolver";
+import {IModelWatcher} from "../watcher/imodel-watcher";
+import {IFieldErrorProcessor} from "../processors/ifield-error-processor";
+import {IRuleResolver} from "../rulesets/irule-resolver";
+import {IValidationSettings} from "../settings/ivalidation-settings";
 import {IReactiveValidationGroup} from "./ireactive-validation-group";
 import {ValidationGroup} from "./validation-group";
 
@@ -20,12 +20,12 @@ export class ReactiveValidationGroup extends ValidationGroup implements IReactiv
 
     constructor(fieldErrorProcessor: IFieldErrorProcessor,
                 ruleResolver: IRuleResolver = new RuleResolver(),
-                ruleset: Ruleset,
-                model: any,
                 settings: IValidationSettings,
+                model: any,
+                ruleset: Ruleset,
                 private refreshRate = 500)
     {
-        super(fieldErrorProcessor, ruleResolver, ruleset, model, settings);
+        super(fieldErrorProcessor, ruleResolver, settings, ruleset, model);
 
         this.propertyStateChangedEvent = new EventHandler(this);
         this.modelStateChangedEvent = new EventHandler(this);

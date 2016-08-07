@@ -1,5 +1,5 @@
-import { Ruleset } from "./ruleset";
-import { RuleLink } from "./rule-link";
+import { Ruleset } from "../rulesets/ruleset";
+import { RuleLink } from "../rulesets/rule-link";
 import { RuleRegistry } from "../rules/rule-registry";
 export declare class RulesetBuilder {
     private ruleRegistry;

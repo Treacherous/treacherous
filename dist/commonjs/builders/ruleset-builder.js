@@ -1,7 +1,7 @@
 "use strict";
-var ruleset_1 = require("./ruleset");
-var rule_link_1 = require("./rule-link");
-var for_each_rule_1 = require("./for-each-rule");
+var ruleset_1 = require("../rulesets/ruleset");
+var rule_link_1 = require("../rulesets/rule-link");
+var for_each_rule_1 = require("../rulesets/for-each-rule");
 var RulesetBuilder = (function () {
     function RulesetBuilder(ruleRegistry) {
         var _this = this;

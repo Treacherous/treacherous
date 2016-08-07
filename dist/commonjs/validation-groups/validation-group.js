@@ -1,16 +1,16 @@
 "use strict";
-var rule_resolver_1 = require("./rulesets/rule-resolver");
-var type_helper_1 = require("./helpers/type-helper");
-var promise_counter_1 = require("./promises/promise-counter");
+var rule_resolver_1 = require("../rulesets/rule-resolver");
+var type_helper_1 = require("../helpers/type-helper");
+var promise_counter_1 = require("../promises/promise-counter");
 // TODO: This class is WAY to long, needs refactoring
 var ValidationGroup = (function () {
-    function ValidationGroup(fieldErrorProcessor, ruleResolver, ruleset, model, settings) {
+    function ValidationGroup(fieldErrorProcessor, ruleResolver, settings, model, ruleset) {
         var _this = this;
         if (ruleResolver === void 0) { ruleResolver = new rule_resolver_1.RuleResolver(); }
         this.fieldErrorProcessor = fieldErrorProcessor;
         this.ruleResolver = ruleResolver;
-        this.ruleset = ruleset;
         this.settings = settings;
+        this.ruleset = ruleset;
         this.propertyErrors = {};
         this.validatePropertyWithRuleLinks = function (propertyName, propertyRules) {
             return _this.promiseCounter.countPromise(_this.fieldErrorProcessor.checkFieldForErrors(_this.modelResolver, propertyName, propertyRules))

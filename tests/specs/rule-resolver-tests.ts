@@ -1,5 +1,5 @@
 import {expect} from "chai";
-import {RulesetBuilder} from "../../src/rulesets/ruleset-builder";
+import {RulesetBuilder} from "../../src/builders/ruleset-builder";
 import {RuleResolver} from "../../src/rulesets/rule-resolver";
 
 describe('Rule resolver', function () {

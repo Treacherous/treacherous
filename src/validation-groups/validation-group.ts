@@ -1,13 +1,13 @@
-import {Ruleset} from "./rulesets/ruleset";
-import {RuleLink} from "./rulesets/rule-link";
-import {RuleResolver} from "./rulesets/rule-resolver";
-import {TypeHelper} from "./helpers/type-helper";
+import {Ruleset} from "../rulesets/ruleset";
+import {RuleLink} from "../rulesets/rule-link";
+import {RuleResolver} from "../rulesets/rule-resolver";
+import {TypeHelper} from "../helpers/type-helper";
 import {IValidationGroup} from "./ivalidation-group";
-import {IFieldErrorProcessor} from "./processors/ifield-error-processor";
-import {IRuleResolver} from "./rulesets/irule-resolver";
-import {IValidationSettings} from "./settings/ivalidation-settings";
-import {IModelResolver} from "./resolvers/imodel-resolver";
-import {PromiseCounter} from "./promises/promise-counter";
+import {IFieldErrorProcessor} from "../processors/ifield-error-processor";
+import {IRuleResolver} from "../rulesets/irule-resolver";
+import {IValidationSettings} from "../settings/ivalidation-settings";
+import {IModelResolver} from "../resolvers/imodel-resolver";
+import {PromiseCounter} from "../promises/promise-counter";
 
 // TODO: This class is WAY to long, needs refactoring
 export class ValidationGroup implements IValidationGroup
@@ -18,9 +18,9 @@ export class ValidationGroup implements IValidationGroup
 
     constructor(protected fieldErrorProcessor: IFieldErrorProcessor,
                 protected ruleResolver: IRuleResolver = new RuleResolver(),
-                protected ruleset: Ruleset,
+                protected settings: IValidationSettings,
                 model: any,
-                protected settings: IValidationSettings)
+                protected ruleset: Ruleset)
     {
         this.promiseCounter = new PromiseCounter();
         this.modelResolver = this.settings.createModelResolver(model);
