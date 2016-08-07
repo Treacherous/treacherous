@@ -2,6 +2,10 @@
 
 Wherever possible breaking changes are avoided but in some cases its going to happen.
 
+## 0.11.0
+
+- Removed `isValid` method, replaced with `validate`
+
 ## 0.9.0
 
 - The whole module is now released as a commonjs module rather than different versions.
