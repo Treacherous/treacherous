@@ -14,6 +14,6 @@ describe('Validation Group Factory', function () {
         var vg1 = validationGroupFactory.createValidationGroup({}, dummyRuleset);
         var vg2 = validationGroupFactory.createValidationGroup({}, dummyRuleset);
 
-        expect(vg1.modelWatcher).to.not.equal(vg2.modelWatcher);
+        expect(vg1["modelWatcher"]).to.not.equal(vg2["modelWatcher"]);
     });
 });

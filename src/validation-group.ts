@@ -7,13 +7,13 @@ import {IFieldErrorProcessor} from "./processors/ifield-error-processor";
 import {IRuleResolver} from "./rulesets/irule-resolver";
 import {IValidationSettings} from "./settings/ivalidation-settings";
 import {IModelResolver} from "./resolvers/imodel-resolver";
+import {PromiseCounter} from "./promises/promise-counter";
 
 // TODO: This class is WAY to long, needs refactoring
 export class ValidationGroup implements IValidationGroup
 {
-    private activePromises = [];
     public propertyErrors = {};
-    private validationCounter = 0;
+    private promiseCounter: PromiseCounter;
     private modelResolver: IModelResolver;
 
     constructor(private fieldErrorProcessor: IFieldErrorProcessor,
@@ -22,29 +22,9 @@ export class ValidationGroup implements IValidationGroup
                 model: any,
                 private settings: IValidationSettings)
     {
+        this.promiseCounter = new PromiseCounter();
         this.modelResolver = this.settings.createModelResolver(model);
     }
-
-    private OnCompletion = () => {
-        return new Promise(resolve => this.validationCounter ? this.activePromises.push(() => resolve() ) : resolve());
-    }
-
-    private CountedPromise = (promise: Promise<any>) => {
-        if(!promise) { return Promise.resolve(undefined); }
-        if(!promise.then) { throw new Error("Non-Promise pass in: " + promise) }
-
-        this.incCounter();
-
-        return promise.then(resolve => { this.decCounter(); return resolve; }, reject => { this.decCounter(); throw reject; } );
-    }
-
-    private decCounter = () => { this.validationCounter--;
-        if (!this.validationCounter) {
-            while (this.activePromises.length) this.activePromises.shift()();
-        }
-    }
-
-    private incCounter = () => { this.validationCounter++; }
 
     private isRuleset(possibleRuleset: any): boolean {
         return (typeof(possibleRuleset.addRule) == "function");
@@ -55,9 +35,8 @@ export class ValidationGroup implements IValidationGroup
     }
 
     private validatePropertyWithRuleLinks = (propertyName: string, propertyRules: Array<RuleLink>): any => {
-        return this.CountedPromise(this.fieldErrorProcessor.checkFieldForErrors(this.modelResolver, propertyName, propertyRules))
+        return this.promiseCounter.countPromise(this.fieldErrorProcessor.checkFieldForErrors(this.modelResolver, propertyName, propertyRules))
             .then(possibleErrors => {
-                var hadErrors = this.hasErrors();
 
                 if (!possibleErrors) {
                     if (this.propertyErrors[propertyName])
@@ -65,10 +44,9 @@ export class ValidationGroup implements IValidationGroup
                     return;
                 }
 
-                var previousError = this.propertyErrors[propertyName];
                 this.propertyErrors[propertyName] = possibleErrors;
             })
-            .then(this.OnCompletion)
+            .then(this.promiseCounter.waitForCompletion)
     };
 
     private validatePropertyWithRuleSet = (propertyName: string, ruleset: Ruleset) => {
@@ -124,7 +102,7 @@ export class ValidationGroup implements IValidationGroup
         this.validatePropertyWithRuleLinks(propertyName, ruleLinks);
 
         ruleSets.forEach((ruleSet) => {
-            this.CountedPromise(this.validatePropertyWithRuleSet(propertyName, ruleSet));
+            this.promiseCounter.countPromise(this.validatePropertyWithRuleSet(propertyName, ruleSet));
         });
         return this;
     }
@@ -153,28 +131,28 @@ export class ValidationGroup implements IValidationGroup
     public validateProperty = (propertyname): Promise<boolean> =>
     {
         return this.startValidateProperty(propertyname)
-            .OnCompletion()
+            .promiseCounter.waitForCompletion()
             .then(() => { return !this.getPropertyError(propertyname) });
     }
 
     public validate = (): Promise<boolean> =>
     {
         return this.startValidateModel()
-            .OnCompletion()
+            .promiseCounter.waitForCompletion()
             .then(() => { return !this.hasErrors() });
     }
 
     public getModelErrors = (): Promise<any> =>
     {
         return this.startValidateModel()
-            .OnCompletion()
+            .promiseCounter.waitForCompletion()
             .then(() => {
                 return this.propertyErrors});
     }
 
     public getPropertyError = (propertyRoute: string): Promise<any> => {
         return this
-            .OnCompletion()
+            .promiseCounter.waitForCompletion()
             .then(() => this.propertyErrors[propertyRoute])
     }
 

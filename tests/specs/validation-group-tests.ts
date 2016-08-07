@@ -3,27 +3,26 @@ import {FieldErrorProcessor} from "../../src/processors/field-error-processor";
 import {RulesetBuilder} from "../../src/rulesets/ruleset-builder";
 import {ruleRegistry} from "../../src/exposer";
 import {RuleResolver} from "../../src/rulesets/rule-resolver";
-import {ValidationGroup} from "../../src/validation-group";
-import {IValidationSettings} from "../../src/settings/ivalidation-settings";
 import {DefaultValidationSettings} from "../../src/settings/default-validation-settings";
 import {PropertyResolver} from "property-resolver";
 import {IModelResolver} from "../../src/resolvers/imodel-resolver";
 import {IValidationGroup} from "../../src/ivalidation-group";
+import {ReactiveValidationGroup} from "../../src/reactive-validation-group";
 
-describe('Validation Group', function () {
+describe('Reactive Validation Group', function () {
 
     var createValidationGroupFor = function(model, ruleset) : IValidationGroup {
         var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry);
         var ruleResolver = new RuleResolver();
         var validationSettings = new DefaultValidationSettings(new PropertyResolver());
-        return new ValidationGroup(fieldErrorProcessor, ruleResolver, ruleset, model, validationSettings, 50);
+        return new ReactiveValidationGroup(fieldErrorProcessor, ruleResolver, ruleset, model, validationSettings, 50);
     }
 
     var createNonPollingValidationGroupFor = function(model, ruleset) {
         var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry);
         var ruleResolver = new RuleResolver();
         var validationSettings = new DefaultValidationSettings(new PropertyResolver());
-        return new ValidationGroup(fieldErrorProcessor, ruleResolver, ruleset, model, validationSettings);
+        return new ReactiveValidationGroup(fieldErrorProcessor, ruleResolver, ruleset, model, validationSettings);
     }
 
     var delayedRequiresValid = (retval?:any=true, delay?:number=100) => { return {

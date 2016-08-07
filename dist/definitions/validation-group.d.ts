@@ -8,15 +8,10 @@ export declare class ValidationGroup implements IValidationGroup {
     private ruleResolver;
     private ruleset;
     private settings;
-    private activePromises;
     propertyErrors: {};
-    private validationCounter;
+    private promiseCounter;
     private modelResolver;
     constructor(fieldErrorProcessor: IFieldErrorProcessor, ruleResolver: IRuleResolver, ruleset: Ruleset, model: any, settings: IValidationSettings);
-    private OnCompletion;
-    private CountedPromise;
-    private decCounter;
-    private incCounter;
     private isRuleset(possibleRuleset);
     private isForEach(possibleForEach);
     private validatePropertyWithRuleLinks;

@@ -23,15 +23,15 @@ import {IRuleResolver} from "./rulesets/irule-resolver";
 import {IValidationSettings} from "./settings/ivalidation-settings";
 import {IModelResolver} from "./resolvers/imodel-resolver";
 import {IReactiveValidationGroup} from "./ireactive-validation-group";
+import {PromiseCounter} from "./promises/promise-counter";
 
 // TODO: This class is WAY to long, needs refactoring
 export class ReactiveValidationGroup implements IReactiveValidationGroup
 {
-    private activePromises = [];
     public propertyErrors = {};
-    private validationCounter = 0;
     public modelWatcher: IModelWatcher;
     private modelResolver: IModelResolver;
+    private promiseCounter: PromiseCounter;
 
     public propertyStateChangedEvent: EventHandler;
     public modelStateChangedEvent: EventHandler;
@@ -43,6 +43,7 @@ export class ReactiveValidationGroup implements IReactiveValidationGroup
                 private settings: IValidationSettings,
                 public refreshRate = 500)
     {
+        this.promiseCounter = new PromiseCounter();
         this.propertyStateChangedEvent = new EventHandler(this);
         this.modelStateChangedEvent = new EventHandler(this);
 
@@ -51,27 +52,6 @@ export class ReactiveValidationGroup implements IReactiveValidationGroup
         this.modelWatcher.setupWatcher(model, ruleset, refreshRate);
         this.modelWatcher.onPropertyChanged.subscribe(this.onModelChanged);
     }
-
-    private OnCompletion = () => {
-        return new Promise(resolve => this.validationCounter ? this.activePromises.push(() => resolve() ) : resolve());
-    }
-
-    private CountedPromise = (promise: Promise<any>) => {
-        if(!promise) { return Promise.resolve(undefined); }
-        if(!promise.then) { throw new Error("Non-Promise pass in: " + promise) }
-
-        this.incCounter();
-
-        return promise.then(resolve => { this.decCounter(); return resolve; }, reject => { this.decCounter(); throw reject; } );
-    }
-
-    private decCounter = () => { this.validationCounter--;
-        if (!this.validationCounter) {
-            while (this.activePromises.length) this.activePromises.shift()();
-        }
-    }
-
-    private incCounter = () => { this.validationCounter++; }
 
     private isRuleset(possibleRuleset: any): boolean {
         return (typeof(possibleRuleset.addRule) == "function");
@@ -86,7 +66,7 @@ export class ReactiveValidationGroup implements IReactiveValidationGroup
     };
 
     private validatePropertyWithRuleLinks = (propertyName: string, propertyRules: Array<RuleLink>): any => {
-        return this.CountedPromise(this.fieldErrorProcessor.checkFieldForErrors(this.modelResolver, propertyName, propertyRules))
+        return this.promiseCounter.countPromise(this.fieldErrorProcessor.checkFieldForErrors(this.modelResolver, propertyName, propertyRules))
             .then(possibleErrors => {
                 var hadErrors = this.hasErrors();
 
@@ -117,7 +97,7 @@ export class ReactiveValidationGroup implements IReactiveValidationGroup
                 }
 
             })
-            .then(this.OnCompletion)
+            .then(this.promiseCounter.waitForCompletion)
     };
 
     private validatePropertyWithRuleSet = (propertyName: string, ruleset: Ruleset) => {
@@ -173,7 +153,7 @@ export class ReactiveValidationGroup implements IReactiveValidationGroup
         this.validatePropertyWithRuleLinks(propertyName, ruleLinks);
 
         ruleSets.forEach((ruleSet) => {
-            this.CountedPromise(this.validatePropertyWithRuleSet(propertyName, ruleSet));
+            this.validatePropertyWithRuleSet(propertyName, ruleSet);
         });
         return this;
     }
@@ -204,28 +184,28 @@ export class ReactiveValidationGroup implements IReactiveValidationGroup
     public validateProperty = (propertyname): Promise<boolean> =>
     {
         return this.startValidateProperty(propertyname)
-            .OnCompletion()
+            .promiseCounter.waitForCompletion()
             .then(() => { return !this.getPropertyError(propertyname) });
     }
 
     public validate = (): Promise<boolean> =>
     {
         return this.startValidateModel()
-            .OnCompletion()
+            .promiseCounter.waitForCompletion()
             .then(() => { return !this.hasErrors() });
     }
 
     public getModelErrors = (): Promise<any> =>
     {
         return this.startValidateModel()
-            .OnCompletion()
+            .promiseCounter.waitForCompletion()
             .then(() => {
                 return this.propertyErrors});
     }
 
     public getPropertyError = (propertyRoute: string): Promise<any> => {
         return this
-            .OnCompletion()
+            .promiseCounter.waitForCompletion()
             .then(() => this.propertyErrors[propertyRoute])
     }
 

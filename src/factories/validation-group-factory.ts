@@ -5,12 +5,13 @@ import {IFieldErrorProcessor} from "../processors/ifield-error-processor";
 import {IValidationGroupFactory} from "./ivalidation-group-factory";
 import {IValidationGroup} from "../ivalidation-group";
 import {IValidationSettings} from "../settings/ivalidation-settings";
+import {ReactiveValidationGroup} from "../reactive-validation-group";
 
 export class ValidationGroupFactory implements IValidationGroupFactory
 {
     constructor(private fieldErrorProcessor: IFieldErrorProcessor, private ruleResolver: IRuleResolver, private defaultSettings: IValidationSettings){}
 
     public createValidationGroup = (model: any, ruleset: Ruleset, settings?:IValidationSettings) : IValidationGroup => {
-        return new ValidationGroup(this.fieldErrorProcessor, this.ruleResolver, ruleset, model, settings || this.defaultSettings);
+        return new ReactiveValidationGroup(this.fieldErrorProcessor, this.ruleResolver, ruleset, model, settings || this.defaultSettings);
     }
 }

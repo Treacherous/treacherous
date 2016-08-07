@@ -14,6 +14,7 @@ var property_state_changed_event_1 = require("./events/property-state-changed-ev
 var model_state_changed_event_1 = require("./events/model-state-changed-event");
 var rule_resolver_1 = require("./rulesets/rule-resolver");
 var type_helper_1 = require("./helpers/type-helper");
+var promise_counter_1 = require("./promises/promise-counter");
 // TODO: This class is WAY to long, needs refactoring
 var ReactiveValidationGroup = (function () {
     function ReactiveValidationGroup(fieldErrorProcessor, ruleResolver, ruleset, model, settings, refreshRate) {
@@ -25,35 +26,12 @@ var ReactiveValidationGroup = (function () {
         this.ruleset = ruleset;
         this.settings = settings;
         this.refreshRate = refreshRate;
-        this.activePromises = [];
         this.propertyErrors = {};
-        this.validationCounter = 0;
-        this.OnCompletion = function () {
-            return new Promise(function (resolve) { return _this.validationCounter ? _this.activePromises.push(function () { return resolve(); }) : resolve(); });
-        };
-        this.CountedPromise = function (promise) {
-            if (!promise) {
-                return Promise.resolve(undefined);
-            }
-            if (!promise.then) {
-                throw new Error("Non-Promise pass in: " + promise);
-            }
-            _this.incCounter();
-            return promise.then(function (resolve) { _this.decCounter(); return resolve; }, function (reject) { _this.decCounter(); throw reject; });
-        };
-        this.decCounter = function () {
-            _this.validationCounter--;
-            if (!_this.validationCounter) {
-                while (_this.activePromises.length)
-                    _this.activePromises.shift()();
-            }
-        };
-        this.incCounter = function () { _this.validationCounter++; };
         this.onModelChanged = function (eventArgs) {
             _this.startValidateProperty(eventArgs.propertyPath);
         };
         this.validatePropertyWithRuleLinks = function (propertyName, propertyRules) {
-            return _this.CountedPromise(_this.fieldErrorProcessor.checkFieldForErrors(_this.modelResolver, propertyName, propertyRules))
+            return _this.promiseCounter.countPromise(_this.fieldErrorProcessor.checkFieldForErrors(_this.modelResolver, propertyName, propertyRules))
                 .then(function (possibleErrors) {
                 var hadErrors = _this.hasErrors();
                 if (!possibleErrors) {
@@ -78,7 +56,7 @@ var ReactiveValidationGroup = (function () {
                     }
                 }
             })
-                .then(_this.OnCompletion);
+                .then(_this.promiseCounter.waitForCompletion);
         };
         this.validatePropertyWithRuleSet = function (propertyName, ruleset) {
             var transformedPropertyName;
@@ -126,7 +104,7 @@ var ReactiveValidationGroup = (function () {
             rules.forEach(routeEachRule);
             _this.validatePropertyWithRuleLinks(propertyName, ruleLinks);
             ruleSets.forEach(function (ruleSet) {
-                _this.CountedPromise(_this.validatePropertyWithRuleSet(propertyName, ruleSet));
+                _this.validatePropertyWithRuleSet(propertyName, ruleSet);
             });
             return _this;
         };
@@ -149,30 +127,31 @@ var ReactiveValidationGroup = (function () {
         };
         this.validateProperty = function (propertyname) {
             return _this.startValidateProperty(propertyname)
-                .OnCompletion()
+                .promiseCounter.waitForCompletion()
                 .then(function () { return !_this.getPropertyError(propertyname); });
         };
         this.validate = function () {
             return _this.startValidateModel()
-                .OnCompletion()
+                .promiseCounter.waitForCompletion()
                 .then(function () { return !_this.hasErrors(); });
         };
         this.getModelErrors = function () {
             return _this.startValidateModel()
-                .OnCompletion()
+                .promiseCounter.waitForCompletion()
                 .then(function () {
                 return _this.propertyErrors;
             });
         };
         this.getPropertyError = function (propertyRoute) {
             return _this
-                .OnCompletion()
+                .promiseCounter.waitForCompletion()
                 .then(function () { return _this.propertyErrors[propertyRoute]; });
         };
         this.release = function () {
             if (_this.modelWatcher)
                 _this.modelWatcher.stopWatching();
         };
+        this.promiseCounter = new promise_counter_1.PromiseCounter();
         this.propertyStateChangedEvent = new event_js_1.EventHandler(this);
         this.modelStateChangedEvent = new event_js_1.EventHandler(this);
         this.modelResolver = this.settings.createModelResolver(model);
