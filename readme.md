@@ -17,6 +17,7 @@ each framework/platforms many different validation paradigms or libraries.
 - Fully async validation
 - Separation of rules and validation allowing composable rulesets
 - Supports nested complex objects/arrays
+- Reactive validation, can monitor your model and re-validate automatically
 - Outside in validation, does not augment your models in any way
 - Can be integrated with any front end framework`*`
 - Works in browser or server
@@ -57,9 +58,10 @@ var ruleset = Treacherous.createRuleset()
         .addRule("maxLength", 5)     // The property neds a length <= 5
     .build();
     
-var validationGroup = Treacherous.createGroup(simpleModel, ruleset);
+var validationGroup = Treacherous.createGroup()
+    .build(simpleModel, ruleset);
 
-validationGroup.isValid()
+validationGroup.validate()
     .then(function(isValid){
         console.log(isValid); // should write true
     });
@@ -80,9 +82,10 @@ var ruleset = Treacherous.createRuleset()
         .addRuleForEach("maxValue", 20) // Each element needs a value <= 20
     .build();
     
-var validationGroup = Treacherous.createGroup(simpleModel, ruleset);
+var validationGroup = Treacherous.createGroup()
+    .build(simpleModel, ruleset);
 
-validationGroup.getModelErrors()
+validationGroup.getModelErrors(true) // the true value indicates a full revalidation
     .then(function(errors){
         console.log(errors); // should contain { "foo[2]": "<some error about max value>" }
     });
@@ -99,9 +102,10 @@ Here are a few simple examples to save you trawling the docs.
 
 ### Check current validity
 ```js
-var validationGroup = Treacherous.createGroup(simpleModel, ruleset);
+var validationGroup = Treacherous.createGroup()
+    .build(...);
 
-validationGroup.isValid()
+validationGroup.validate()
     .then(function(isValid){
         // true is valid, false is invalid
     ));
@@ -109,7 +113,8 @@ validationGroup.isValid()
 
 ### Get all errors
 ```js
-var validationGroup = Treacherous.createGroup(...);
+var validationGroup = Treacherous.createGroup()
+    .build(...);
 
 validationGroup.getModelErrors()
     .then(function(propertyErrors){...));
@@ -117,7 +122,8 @@ validationGroup.getModelErrors()
 
 ### Subscribe validation changes
 ```js
-var validationGroup = Treacherous.createGroup(...);
+var validationGroup = Treacherous.createGroup()
+    .build(...);
 
 validationGroup.propertyStateChangedEvent.subscribe(function(propertyValidationChangedEvent){...));
 ```
@@ -142,6 +148,7 @@ The framework comes with built in validators for the following:
 * `regex`       - The value matches the regex pattern
 * `required`    - The value is not a null-like value
 * `step`        - The value conforms to the numeric steps provided
+* `matches`     - The value must match another property in the model
 
 ### Creating custom rules
 

@@ -2,9 +2,17 @@
 
 Wherever possible breaking changes are avoided but in some cases its going to happen.
 
+## 0.12.0
+
+- Removed `IValidationSettings`
+- Changed constructor order/args for `ValidationGroup`
+- Made `createGroup` return a builder not an instance of `IValidationGroup`
+- Removed `createGroupWithRules` from the exposer
+
 ## 0.11.0
 
 - Removed `isValid` method, replaced with `validate`
+- Changed signature of `IValidationRule` to take an `IModelResolver` and property name
 
 ## 0.9.0
 

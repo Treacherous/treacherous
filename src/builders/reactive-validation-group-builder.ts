@@ -38,6 +38,10 @@ export class ReactiveValidationGroupBuilder
         return this;
     }
 
+    public withModelWatcherFactory = (modelWatcherFactory: IModelWatcherFactory): ReactiveValidationGroupBuilder => {
+        this.modelWatcherFactory = modelWatcherFactory;
+        return this;
+    }
 
     public andValidateOnStart = (): ReactiveValidationGroupBuilder =>
     {

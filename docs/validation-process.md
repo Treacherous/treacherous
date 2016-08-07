@@ -14,12 +14,12 @@ However if you want to know more or start tinkering with it more then there is a
 
 - Create Rule Registry
 - Register Rules
-- Create Validation Group Factory
+- Create Validation Group Builder
 - Create Ruleset For Model
 - Create Validation Group For Model + Ruleset
 
 So the first 3 steps (and some more) are done for you by Treacherous and can be seen in [exposer.ts](../src/exposer.ts), however you 
-can easily replace this with your own validation group factories or internal validation processors etc.
+can easily replace this with your own factories or internal validation processors etc.
 
 One of the key things to think about is the 3 core aspects of the validation system:
 
@@ -42,8 +42,8 @@ exposed via the 3 main methods on the `Treacherous` object, but its worth knowin
 
 ### Validation Group Creation
 
-Again in most cases you will just call `createGroup` with the model and rulesets you care about, behind the scenes 
-this is the validation group factory automatically satisfying a lot of the dependencies required for the `ValidationGroup` 
+Again in most cases you will just call `createGroup` then build it with the model and rulesets you care about, behind the scenes 
+this is the validation group builder, which automatically resolves a lot of the dependencies required for the `ValidationGroup` 
 to function.
 
 You can make your own implementation of `IValidationGroup` as long as it satisfies the interface and the tests pass
@@ -59,9 +59,9 @@ at how the other plugins for treacherous work in this area if you want to suppor
 So inside the validation group there are a few components which do some important things:
 
 - FieldErrorProcessor
-- ModelWatcher
 - PropertyResolver
 - RuleResolver
+- ModelWatcher (Only in reactive groups)
 
 As mentioned previously this is the *DEFAULT* ValidationGroup implementation, you are free to make your own, 
 however in most cases you can just swap out the dependent components and solve your problems.

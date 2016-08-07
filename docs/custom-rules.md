@@ -15,16 +15,23 @@ So for example lets make a custom rule for checking if the value is "hello".
 ```
 import * as Promise from "bluebird";
 import {IValidationRule} from "treacherous";
+import {IModelResolver} from "treacherous";
 
 export class HelloValidationRule implements IValidationRule
 {
     public ruleName = "hello";
 
-    public validate(value, optionsOrValue): Promise<boolean>
-    { return Promise.resolve(value == "hello"); }
+    public validate(modelResolver: IModelResolver, propertyName: string, optionsOrValue: any): Promise<boolean>
+    { 
+        var value = modelResolver.resolve(propertyName);
+        return Promise.resolve(value == "hello"); 
+    }
 
-    public getMessage(value, optionsOrValue) 
-    { return `This field is ${value} but should be hello`; }
+    public getMessage(modelResolver: IModelResolver, propertyName: string, optionsOrValue: any) 
+    { 
+        var value = modelResolver.resolve(propertyName);
+        return `This field is ${value} but should be hello`; 
+    }
 }
 ```
 
@@ -34,11 +41,17 @@ function HelloValidationRule()
 {
     this.ruleName = "hello";
 
-    this.validate(value, optionsOrValue)
-    { return Promise.resolve(value == "hello"); }
+    this.validate(modelResolver, propertyName, optionsOrValue)
+    {
+        var value = modelResolver.resolve(propertyName);
+        return Promise.resolve(value == "hello"); 
+    }
 
     this.getMessage(value, optionsOrValue) 
-    { return "This field is " + value + "but should be hello"; }
+    { 
+        var value = modelResolver.resolve(propertyName);
+        return "This field is " + value + "but should be hello"; 
+    }
 }
 ```
 

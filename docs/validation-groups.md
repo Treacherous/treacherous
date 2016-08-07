@@ -1,69 +1,83 @@
 # Validation Groups
 
-A validation group takes a model and ruleset and monitors the model to see if the validation concerns change
-in any way and track errors as well as providing events to notify subscribers of validation changes.
+There are 2 kinds of validation groups available in treacherous, one is reactive and will monitor the 
+model you provide and automatically run validation rules as the values change, the other is a non-reactive 
+validation group which will only trigger rules when you explicitly tell it to.
+
+Both group types share the same methods so if you dont need to automatically react to model changes
+you do not need to use it, however if you do its just extra functionality you get for free.
+
+Whichever type you pick, they both take a model and ruleset and will provide errors by the property route.
 
 ## Creating Validation Groups
 
-There are 2 main ways to create a validation group given the `Treacherous` object:
+The group is exposed by the `Treacherous` object and no matter how you consume it you will always start 
+with `createGroup` and you will end with `build(model, ruleset)`, this will then return back the instance
+for you to use, however you can cusomize how it is built as shown below.
 
-### createGroup(model: any, ruleset: Ruleset)
+### Basic validation group creation
 
-This takes the model and the ruleset to be applied to the model and returns the validation group. This is 
-the most common way of creating a validationGroup and should be seen as the preferred way of usage as this
-enforces you to isolate your ruleset creation logic.
+Most basic setup
 
 ```js
 var ruleset = ...;
 var model = ...;
-var validationGroup = Treacherous.createGroup(model, ruleset);
+var validationGroup = Treacherous.createGroup()
+    .build(model, ruleset);
 ```
 
-### createGroupWithRules(model: any, rulesetGenerator: Function)
+### Reactive validation group creation
 
-This approach allows you to create a group for a model based upon a generator method you provide, this is
-mainly for users who may have a slight deviation on the normal validation rules or just want to inline
-their rules for creation of the group.
+You can also customize how the validation group is created, so if you want a reactive validation group
+you can easily request it:
 
 ```js
+var ruleset = ...;
 var model = ...;
-var validationGroup = Treacherous.createGroupWithRules(model, function(rulesetBuilder){ 
-    return rulesetBuilder
-        .forProperty("foo")
-            .addRule("required")
-        .build();
-});
+var validationGroup = Treacherous.createGroup()
+    .asReactiveGroup()
+    .build(model, ruleset);
 ```
 
-You can also separate out your ruleset logic into its own method and expose it like so:
+### Validate the model on start
+
+By default Treacherous will wait for you to tell it when to validate (unless you are using a reactive group),
+however if you want to tell it to do this just specify it:
 
 ```js
-function createModelRuleset(rulesetBuilder){ 
-    return rulesetBuilder
-        .forProperty("foo")
-            .addRule("required")
-        .build();
-}
-
+var ruleset = ...;
 var model = ...;
-var validationGroup = Treacherous.createGroupWithRules(model, createModelRuleset);
+var validationGroup = Treacherous.createGroup()
+    .andValidateOnStart()
+    .build(model, ruleset);
 ```
+
+### Other builder methods
+
+Here are all the currently available builder methods:
+
+* `andValidateOnStart`          - Validate the model automatically when the group is created
+* `withModelResolverFactory`    - Specify your own implementation of `IModelResolverFactory`
+* `asReactive`                  - Build a `ReactiveValidationGroup` instead of a `ValidationGroup`
+ * `withRefreshRate`            - Specify how fast the reactive monitor should refresh
+ * `withModelWatcherFactory`    - Specify your own implementation of `IModelWatcherFactory`
 
 ---
 
 ## Using Validation Groups
 
-There are a few different ways to get validation information, you can subscribe to events and react 
-to validation concerns as they update, or you can just query the group for all outstanding errors.
+There are a few different ways to get validation information, if you are using a reactive group 
+you can subscribe to events and react to validation concerns as they update, or you can just query 
+the group for all outstanding errors.
 
 This satisfies the 2 main use cases of having a front end reacting to errors as they occur or having 
 a button which triggers validation to see what has changed.
 
 ### Check current validity
 ```js
-var validationGroup = Treacherous.createGroup(simpleModel, ruleset);
+var validationGroup = ...;
 
-validationGroup.isValid()
+validationGroup.validate()
     .then(function(isValid){
         // true is valid, false is invalid
     ));
@@ -71,9 +85,9 @@ validationGroup.isValid()
 
 ### Get current validation errors
 ```js
-var validationGroup = Treacherous.createGroup(simpleModel, ruleset);
+var validationGroup = ...;
 
-validationGroup.getModelErrors()
+validationGroup.getModelErrors(true) // If you don't pass true it wont revalidate and just take current state
     .then(function(propertyErrors){
         /*
             propertyErrors is a json object with the name of the property per error.
@@ -106,9 +120,9 @@ validationGroup.getModelErrors()
 
 ### Get current validation errors for a property
 ```js
-var validationGroup = Treacherous.createGroup(simpleModel, ruleset);
+var validationGroup = ...;
 
-validationGroup.getPropertyError("somePropertyName")
+validationGroup.getPropertyError("somePropertyName", true) // omit true to not force revalidation
     .then(function(propertyError){
         /*
             propertyError is a either a string containing the error or undefined
@@ -117,10 +131,11 @@ validationGroup.getPropertyError("somePropertyName")
 ```
 
 ### Subscribe to per property validation changes
-```js
-var validationGroup = Treacherous.createGroup(simpleModel, ruleset);
 
-validationGroup.propertyStateChangedEvent.subscribe(function(propertyValidationChangedEvent){
+```js
+var reactiveValidationGroup = ...;
+
+reactiveValidationGroup.propertyStateChangedEvent.subscribe(function(propertyValidationChangedEvent){
     /*
         The propertyValidationChangedEvent is of type PropertyValidationChangedEvent
         and contains the following fields:
@@ -140,9 +155,9 @@ validationGroup.propertyStateChangedEvent.subscribe(function(propertyValidationC
 
 ### Subscribe to model validation changes
 ```js
-var validationGroup = Treacherous.createGroup(simpleModel, ruleset);
+var reactiveValidationGroup = Treacherous.createGroup(simpleModel, ruleset);
 
-validationGroup.modelStateChangedEvent.subscribe(function(validationStateChangedEvent){
+reactiveValidationGroup.modelStateChangedEvent.subscribe(function(validationStateChangedEvent){
     /*
         The validationStateChangedEvent is of type ValidationStateChangedEvent
         and contains the following fields:
@@ -169,7 +184,7 @@ same rules, watchers etc will all be used under the hood, and as the scheme matc
 changing from looking at one object to another and should work seamlessly.
 
 ```
-var validationGroup = createGroup({ someProperty: 10}, rulesetForObject);
+var validationGroup = createGroup().build({ someProperty: 10}, rulesetForObject);
 validationGroup.changeValidationTarget({ someProperty: 100 });
 ```
 
