@@ -3,19 +3,18 @@ import {FieldErrorProcessor} from "../../src/processors/field-error-processor";
 import {RulesetBuilder} from "../../src/builders/ruleset-builder";
 import {ruleRegistry} from "../../src/rule-registry-setup";
 import {RuleResolver} from "../../src/rulesets/rule-resolver";
-import {DefaultValidationSettings} from "../../src/settings/default-validation-settings";
-import {PropertyResolver} from "property-resolver";
 import {IModelResolver} from "../../src/resolvers/imodel-resolver";
 import {ValidationGroup} from "../../src/validation-groups/validation-group";
 import {IValidationGroup} from "../../src/validation-groups/ivalidation-group";
+import {ModelResolverFactory} from "../../src/factories/model-resolver-factory";
 
 describe('Validation Group', function () {
 
     var createValidationGroupFor = (model, ruleset) : IValidationGroup => {
         var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry);
         var ruleResolver = new RuleResolver();
-        var validationSettings = new DefaultValidationSettings(new PropertyResolver());
-        return new ValidationGroup(fieldErrorProcessor, ruleResolver, validationSettings, model, ruleset);
+        var modelResolverFactory = new ModelResolverFactory();
+        return new ValidationGroup(fieldErrorProcessor, ruleResolver, modelResolverFactory, model, ruleset);
     }
 
     var delayedRequiresValid = (retval?:any=true, delay?:number=100) => { return {
@@ -42,7 +41,7 @@ describe('Validation Group', function () {
         };
 
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.getModelErrors()
+        validationGroup.getModelErrors(true)
             .then(function(errors){
                 expect(errors).not.to.be.null;
                 expect(errors).to.include.keys("foo");
@@ -68,7 +67,7 @@ describe('Validation Group', function () {
         };
 
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.getModelErrors()
+        validationGroup.getModelErrors(true)
             .then(function(errors){
                 expect(errors).not.to.be.null;
                 expect(errors).to.include.keys("foo");
@@ -161,7 +160,7 @@ describe('Validation Group', function () {
         };
 
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.getModelErrors()
+        validationGroup.getModelErrors(true)
             .then(function(errors){
                 console.log(dummyModel);
                 console.log(errors);
@@ -190,7 +189,7 @@ describe('Validation Group', function () {
         };
 
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.getModelErrors()
+        validationGroup.getModelErrors(true)
             .then(function(errors){
                 expect(errors).not.to.be.null;
                 expect(errors).to.include.keys("foo[2]");
@@ -367,7 +366,7 @@ describe('Validation Group', function () {
         };
 
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.getModelErrors()
+        validationGroup.getModelErrors(true)
             .then(function(errors){
                 console.log(errors);
                 expect(errors).not.to.be.null;
@@ -406,8 +405,8 @@ describe('Validation Group', function () {
         dummyModel.foo.push({ bar: "too long" });
 
         setTimeout(function(){
-            validationGroup.getModelErrors()
-                .then(function(errors){
+            validationGroup.getModelErrors(true)
+                .then((errors) => {
                     console.log(errors);
                     expect(errors).not.to.be.null;
                     expect(errors).to.include.keys("foo[1].bar");
@@ -434,14 +433,15 @@ describe('Validation Group', function () {
         };
 
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.getModelErrors().then(function(errors){
-            expect(errors).not.to.be.null;
-            expect(errors).to.include.keys("foo");
-            expect(errors.foo).to.contain("32");
-            expect(errors.foo).to.contain("15");
-            validationGroup.release();
-            done();
-        }).catch(done);
+        validationGroup.getModelErrors(true)
+            .then((errors) => {
+                expect(errors).not.to.be.null;
+                expect(errors).to.include.keys("foo");
+                expect(errors.foo).to.contain("32");
+                expect(errors.foo).to.contain("15");
+                validationGroup.release();
+                done();
+            }).catch(done);
     });
 
     it('should correctly return promise indicating validity', function (done) {
@@ -457,14 +457,15 @@ describe('Validation Group', function () {
         };
 
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.getModelErrors().then(function(errors){
-            expect(errors).not.to.be.null;
-            expect(errors).to.include.keys("foo");
-            expect(errors.foo).to.contain("32");
-            expect(errors.foo).to.contain("15");
-            validationGroup.release();
-            done();
-        }).catch(done);
+        validationGroup.getModelErrors(true)
+            .then(function(errors){
+                expect(errors).not.to.be.null;
+                expect(errors).to.include.keys("foo");
+                expect(errors.foo).to.contain("32");
+                expect(errors.foo).to.contain("15");
+                validationGroup.release();
+                done();
+            }).catch(done);
     });
 
     it('should only return errors when all validation events have finished', function (done) {
@@ -613,7 +614,7 @@ describe('Validation Group', function () {
 
         var validationGroup = createValidationGroupFor(null, ruleset);
         validationGroup.changeValidationTarget({ foo: "not ok", bar: [ 20, 10 ]  });
-        validationGroup.getModelErrors()
+        validationGroup.getModelErrors(true)
             .then(function(errors){
                 expect(errors).not.to.be.null;
                 expect(errors).to.include.keys("foo");
@@ -644,7 +645,7 @@ describe('Validation Group', function () {
 
         console.log("model updated", changingModel);
         setTimeout(function(){
-            validationGroup.getModelErrors()
+            validationGroup.getModelErrors(true)
                 .then(function(errors){
                     console.log("ended model", changingModel);
                     console.log("errors", errors);

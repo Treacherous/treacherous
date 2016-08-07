@@ -4,43 +4,43 @@ var type_helper_1 = require("../helpers/type-helper");
 var promise_counter_1 = require("../promises/promise-counter");
 // TODO: This class is WAY to long, needs refactoring
 var ValidationGroup = (function () {
-    function ValidationGroup(fieldErrorProcessor, ruleResolver, settings, model, ruleset) {
+    function ValidationGroup(fieldErrorProcessor, ruleResolver, modelResolverFactory, model, ruleset) {
         var _this = this;
         if (ruleResolver === void 0) { ruleResolver = new rule_resolver_1.RuleResolver(); }
         this.fieldErrorProcessor = fieldErrorProcessor;
         this.ruleResolver = ruleResolver;
-        this.settings = settings;
+        this.modelResolverFactory = modelResolverFactory;
         this.ruleset = ruleset;
         this.propertyErrors = {};
-        this.validatePropertyWithRuleLinks = function (propertyName, propertyRules) {
-            return _this.promiseCounter.countPromise(_this.fieldErrorProcessor.checkFieldForErrors(_this.modelResolver, propertyName, propertyRules))
+        this.validatePropertyWithRuleLinks = function (propertyRoute, propertyRules) {
+            return _this.promiseCounter.countPromise(_this.fieldErrorProcessor.checkFieldForErrors(_this.modelResolver, propertyRoute, propertyRules))
                 .then(function (possibleErrors) {
                 if (!possibleErrors) {
-                    if (_this.propertyErrors[propertyName]) {
-                        delete _this.propertyErrors[propertyName];
+                    if (_this.propertyErrors[propertyRoute]) {
+                        delete _this.propertyErrors[propertyRoute];
                     }
                     return;
                 }
-                _this.propertyErrors[propertyName] = possibleErrors;
+                _this.propertyErrors[propertyRoute] = possibleErrors;
             })
                 .then(_this.promiseCounter.waitForCompletion);
         };
-        this.validatePropertyWithRuleSet = function (propertyName, ruleset) {
+        this.validatePropertyWithRuleSet = function (propertyRoute, ruleset) {
             var transformedPropertyName;
             for (var childPropertyName in ruleset.rules) {
-                transformedPropertyName = propertyName + "." + childPropertyName;
+                transformedPropertyName = propertyRoute + "." + childPropertyName;
                 _this.validatePropertyWithRules(transformedPropertyName, ruleset.getRulesForProperty(childPropertyName));
             }
         };
-        this.validatePropertyWithRules = function (propertyName, rules) {
+        this.validatePropertyWithRules = function (propertyRoute, rules) {
             var ruleLinks = [];
             var ruleSets = [];
             var currentValue;
             try {
-                currentValue = _this.modelResolver.resolve(propertyName);
+                currentValue = _this.modelResolver.resolve(propertyRoute);
             }
             catch (ex) {
-                console.warn("Failed to resolve property " + propertyName + " during validation. Does it exist in your model?");
+                console.warn("Failed to resolve property " + propertyRoute + " during validation. Does it exist in your model?");
                 throw (ex);
             }
             var routeEachRule = function (ruleLinkOrSet) {
@@ -48,7 +48,7 @@ var ValidationGroup = (function () {
                     var isCurrentlyAnArray = type_helper_1.TypeHelper.isArrayType(currentValue);
                     if (isCurrentlyAnArray) {
                         currentValue.forEach(function (element, index) {
-                            var childPropertyName = propertyName + "[" + index + "]";
+                            var childPropertyName = propertyRoute + "[" + index + "]";
                             _this.validatePropertyWithRules(childPropertyName, [ruleLinkOrSet.internalRule]);
                         });
                     }
@@ -69,18 +69,18 @@ var ValidationGroup = (function () {
                 }
             };
             rules.forEach(routeEachRule);
-            _this.validatePropertyWithRuleLinks(propertyName, ruleLinks);
+            _this.validatePropertyWithRuleLinks(propertyRoute, ruleLinks);
             ruleSets.forEach(function (ruleSet) {
-                _this.promiseCounter.countPromise(_this.validatePropertyWithRuleSet(propertyName, ruleSet));
+                _this.validatePropertyWithRuleSet(propertyRoute, ruleSet);
             });
             return _this;
         };
-        this.startValidateProperty = function (propertyName) {
-            var rulesForProperty = _this.ruleResolver.resolvePropertyRules(propertyName, _this.ruleset);
+        this.startValidateProperty = function (propertyRoute) {
+            var rulesForProperty = _this.ruleResolver.resolvePropertyRules(propertyRoute, _this.ruleset);
             if (!rulesForProperty) {
                 return _this;
             }
-            return _this.validatePropertyWithRules(propertyName, rulesForProperty);
+            return _this.validatePropertyWithRules(propertyRoute, rulesForProperty);
         };
         this.startValidateModel = function () {
             for (var parameterName in _this.ruleset.rules) {
@@ -89,33 +89,35 @@ var ValidationGroup = (function () {
             return _this;
         };
         this.changeValidationTarget = function (model) {
-            _this.modelResolver = _this.settings.createModelResolver(model);
+            _this.modelResolver = _this.modelResolverFactory.createModelResolver(model);
         };
-        this.validateProperty = function (propertyname) {
-            return _this.startValidateProperty(propertyname)
+        this.validateProperty = function (propertyRoute) {
+            return _this.startValidateProperty(propertyRoute)
                 .promiseCounter.waitForCompletion()
-                .then(function () { return !_this.getPropertyError(propertyname); });
+                .then(function () { return !_this.propertyErrors[propertyRoute]; });
         };
         this.validate = function () {
             return _this.startValidateModel()
                 .promiseCounter.waitForCompletion()
                 .then(function () { return !_this.hasErrors(); });
         };
-        this.getModelErrors = function () {
-            return _this.startValidateModel()
-                .promiseCounter.waitForCompletion()
-                .then(function () {
-                return _this.propertyErrors;
-            });
+        this.getModelErrors = function (revalidate) {
+            if (revalidate === void 0) { revalidate = false; }
+            var promise = revalidate ?
+                _this.startValidateModel().promiseCounter.waitForCompletion() :
+                _this.promiseCounter.waitForCompletion();
+            return promise.then(function () { return _this.propertyErrors; });
         };
-        this.getPropertyError = function (propertyRoute) {
-            return _this
-                .promiseCounter.waitForCompletion()
-                .then(function () { return _this.propertyErrors[propertyRoute]; });
+        this.getPropertyError = function (propertyRoute, revalidate) {
+            if (revalidate === void 0) { revalidate = false; }
+            var promise = revalidate ?
+                _this.startValidateProperty(propertyRoute).promiseCounter.waitForCompletion() :
+                _this.promiseCounter.waitForCompletion();
+            return promise.then(function () { return _this.propertyErrors[propertyRoute]; });
         };
         this.release = function () { };
         this.promiseCounter = new promise_counter_1.PromiseCounter();
-        this.modelResolver = this.settings.createModelResolver(model);
+        this.modelResolver = this.modelResolverFactory.createModelResolver(model);
     }
     ValidationGroup.prototype.isRuleset = function (possibleRuleset) {
         return (typeof (possibleRuleset.addRule) == "function");

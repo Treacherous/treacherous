@@ -1,25 +1,29 @@
 import {Ruleset} from "../rulesets/ruleset";
 import {FieldErrorProcessor} from "../processors/field-error-processor";
 import {RuleResolver} from "../rulesets/rule-resolver";
-import {IValidationSettings} from "../settings/ivalidation-settings";
 import {IReactiveValidationGroup} from "../validation-groups/ireactive-validation-group";
 import {ReactiveValidationGroup} from "../validation-groups/reactive-validation-group";
+import {IModelResolverFactory} from "../factories/imodel-resolver-factory";
+import {IModelWatcherFactory} from "../factories/imodel-watcher-factory";
+import {ModelWatcherFactory} from "../factories/model-watcher-factory";
+import {ModelResolverFactory} from "../factories/model-resolver-factory";
 
 export class ReactiveValidationGroupBuilder
 {
     private refreshRate: number;
-    private validationSettings: IValidationSettings;
     private validateOnStart: boolean;
+    private modelWatcherFactory: IModelWatcherFactory;
+    private modelResolverFactory: IModelResolverFactory;
 
     constructor(private fieldErrorProcessor: FieldErrorProcessor,
-                private ruleResolver: RuleResolver,
-                private defaultValidationSettings: IValidationSettings) {}
+                private ruleResolver: RuleResolver) {}
 
     public create = (): ReactiveValidationGroupBuilder =>
     {
         this.refreshRate = 500;
         this.validateOnStart = false;
-        this.validationSettings = this.defaultValidationSettings;
+        this.modelWatcherFactory = new ModelWatcherFactory();
+        this.modelResolverFactory = new ModelResolverFactory();
         return this;
     }
 
@@ -29,10 +33,11 @@ export class ReactiveValidationGroupBuilder
         return this;
     }
 
-    public withValidationSettings = (validationSettings: IValidationSettings): ReactiveValidationGroupBuilder => {
-        this.validationSettings = validationSettings;
+    public withModelResolverFactory = (modelResolverFactory: IModelResolverFactory): ReactiveValidationGroupBuilder => {
+        this.modelResolverFactory = modelResolverFactory;
         return this;
     }
+
 
     public andValidateOnStart = (): ReactiveValidationGroupBuilder =>
     {
@@ -42,7 +47,9 @@ export class ReactiveValidationGroupBuilder
 
     public build = (model: any, ruleset: Ruleset): IReactiveValidationGroup =>
     {
-        var validationGroup = new ReactiveValidationGroup(this.fieldErrorProcessor, this.ruleResolver, this.validationSettings, model, ruleset, this.refreshRate);
+        var validationGroup = new ReactiveValidationGroup(this.fieldErrorProcessor,
+            this.ruleResolver, this.modelResolverFactory, this.modelWatcherFactory,
+            model, ruleset, this.refreshRate);
 
         if(this.validateOnStart)
         { validationGroup.validate(); }

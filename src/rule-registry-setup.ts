@@ -16,19 +16,23 @@ import {RequiredValidationRule} from "./rules/required-validation-rule"
 import {StepValidationRule} from "./rules/step-validation-rule"
 import {MatchesValidationRule} from "./rules/matches-validation-rule";
 
-export var ruleRegistry = new RuleRegistry();
-ruleRegistry.registerRule(new DateValidationRule());
-ruleRegistry.registerRule(new DecimalValidationRule());
-ruleRegistry.registerRule(new EmailValidationRule());
-ruleRegistry.registerRule(new EqualValidationRule());
-ruleRegistry.registerRule(new ISODateValidationRule());
-ruleRegistry.registerRule(new MaxLengthValidationRule());
-ruleRegistry.registerRule(new MaxValueValidationRule());
-ruleRegistry.registerRule(new MinLengthValidationRule());
-ruleRegistry.registerRule(new MinValueValidationRule());
-ruleRegistry.registerRule(new NotEqualValidationRule());
-ruleRegistry.registerRule(new NumberValidationRule());
-ruleRegistry.registerRule(new RegexValidationRule());
-ruleRegistry.registerRule(new RequiredValidationRule());
-ruleRegistry.registerRule(new StepValidationRule());
-ruleRegistry.registerRule(new MatchesValidationRule());
+export var ruleRegistry;
+
+if(!ruleRegistry) {
+    ruleRegistry = new RuleRegistry();
+    ruleRegistry.registerRule(new DateValidationRule());
+    ruleRegistry.registerRule(new DecimalValidationRule());
+    ruleRegistry.registerRule(new EmailValidationRule());
+    ruleRegistry.registerRule(new EqualValidationRule());
+    ruleRegistry.registerRule(new ISODateValidationRule());
+    ruleRegistry.registerRule(new MaxLengthValidationRule());
+    ruleRegistry.registerRule(new MaxValueValidationRule());
+    ruleRegistry.registerRule(new MinLengthValidationRule());
+    ruleRegistry.registerRule(new MinValueValidationRule());
+    ruleRegistry.registerRule(new NotEqualValidationRule());
+    ruleRegistry.registerRule(new NumberValidationRule());
+    ruleRegistry.registerRule(new RegexValidationRule());
+    ruleRegistry.registerRule(new RequiredValidationRule());
+    ruleRegistry.registerRule(new StepValidationRule());
+    ruleRegistry.registerRule(new MatchesValidationRule());
+}

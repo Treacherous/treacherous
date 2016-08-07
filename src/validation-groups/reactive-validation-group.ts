@@ -8,9 +8,10 @@ import {RuleResolver} from "../rulesets/rule-resolver";
 import {IModelWatcher} from "../watcher/imodel-watcher";
 import {IFieldErrorProcessor} from "../processors/ifield-error-processor";
 import {IRuleResolver} from "../rulesets/irule-resolver";
-import {IValidationSettings} from "../settings/ivalidation-settings";
 import {IReactiveValidationGroup} from "./ireactive-validation-group";
 import {ValidationGroup} from "./validation-group";
+import {IModelResolverFactory} from "../factories/imodel-resolver-factory";
+import {IModelWatcherFactory} from "../factories/imodel-watcher-factory";
 
 export class ReactiveValidationGroup extends ValidationGroup implements IReactiveValidationGroup
 {
@@ -20,17 +21,18 @@ export class ReactiveValidationGroup extends ValidationGroup implements IReactiv
 
     constructor(fieldErrorProcessor: IFieldErrorProcessor,
                 ruleResolver: IRuleResolver = new RuleResolver(),
-                settings: IValidationSettings,
+                modelResolverFactory: IModelResolverFactory,
+                private modelWatcherFactory: IModelWatcherFactory,
                 model: any,
                 ruleset: Ruleset,
                 private refreshRate = 500)
     {
-        super(fieldErrorProcessor, ruleResolver, settings, ruleset, model);
+        super(fieldErrorProcessor, ruleResolver, modelResolverFactory, model, ruleset);
 
         this.propertyStateChangedEvent = new EventHandler(this);
         this.modelStateChangedEvent = new EventHandler(this);
 
-        this.modelWatcher = this.settings.createModelWatcher();
+        this.modelWatcher = this.modelWatcherFactory.createModelWatcher();
         this.modelWatcher.setupWatcher(model, ruleset, refreshRate);
         this.modelWatcher.onPropertyChanged.subscribe(this.onModelChanged);
     }

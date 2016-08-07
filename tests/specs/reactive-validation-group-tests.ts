@@ -3,20 +3,22 @@ import {PropertyResolver} from "property-resolver";
 import {FieldErrorProcessor} from "../../src/processors/field-error-processor";
 import {RulesetBuilder} from "../../src/builders/ruleset-builder";
 import {RuleResolver} from "../../src/rulesets/rule-resolver";
-import {DefaultValidationSettings} from "../../src/settings/default-validation-settings";
 import {ReactiveValidationGroup} from "../../src/validation-groups/reactive-validation-group";
 import {IReactiveValidationGroup} from "../../src/validation-groups/ireactive-validation-group";
 import {ruleRegistry} from "../../src/rule-registry-setup";
+import {ModelResolverFactory} from "../../src/factories/model-resolver-factory";
+import {ModelWatcherFactory} from "../../src/factories/model-watcher-factory";
 
 describe('Reactive Validation Group', function () {
 
     var createValidationGroupFor = (model, ruleset) : IReactiveValidationGroup => {
         var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry);
         var ruleResolver = new RuleResolver();
-        var validationSettings = new DefaultValidationSettings(new PropertyResolver());
-        return new ReactiveValidationGroup(fieldErrorProcessor, ruleResolver, validationSettings, model, ruleset, 50);
+        var modelResolverFactory = new ModelResolverFactory();
+        var modelWatcherFactory = new ModelWatcherFactory();
+        return new ReactiveValidationGroup(fieldErrorProcessor, ruleResolver, modelResolverFactory, modelWatcherFactory, model, ruleset, 50);
     }
-/*
+
     it('should correctly notify on property validation change', function (done) {
 
         var rulesetBuilder = new RulesetBuilder();
@@ -145,7 +147,7 @@ describe('Reactive Validation Group', function () {
 
         dummyModel.foo.push(10);
     });
-*/
+
     it('should correctly notify on validation change', function (done) {
 
         var rulesetBuilder = new RulesetBuilder();

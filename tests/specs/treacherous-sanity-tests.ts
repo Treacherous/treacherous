@@ -93,7 +93,7 @@ describe('Treacherous Sanity Checks', function () {
         dummyOrder1.products.push(dummyProduct1);
         dummyOrder1.products.push(dummyProduct2);
 
-        invoiceValidationGroup.getModelErrors()
+        invoiceValidationGroup.getModelErrors(true)
             .then(function(errors){
                 console.log("errors", errors);
                 expect(errors).to.include.keys("orders[0].products[0].deliveryDate");
