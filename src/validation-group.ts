@@ -12,29 +12,29 @@ import {PromiseCounter} from "./promises/promise-counter";
 // TODO: This class is WAY to long, needs refactoring
 export class ValidationGroup implements IValidationGroup
 {
-    public propertyErrors = {};
-    private promiseCounter: PromiseCounter;
-    private modelResolver: IModelResolver;
+    protected propertyErrors = {};
+    protected promiseCounter: PromiseCounter;
+    protected modelResolver: IModelResolver;
 
-    constructor(private fieldErrorProcessor: IFieldErrorProcessor,
-                private ruleResolver: IRuleResolver = new RuleResolver(),
-                private ruleset: Ruleset,
+    constructor(protected fieldErrorProcessor: IFieldErrorProcessor,
+                protected ruleResolver: IRuleResolver = new RuleResolver(),
+                protected ruleset: Ruleset,
                 model: any,
-                private settings: IValidationSettings)
+                protected settings: IValidationSettings)
     {
         this.promiseCounter = new PromiseCounter();
         this.modelResolver = this.settings.createModelResolver(model);
     }
 
-    private isRuleset(possibleRuleset: any): boolean {
+    protected isRuleset(possibleRuleset: any): boolean {
         return (typeof(possibleRuleset.addRule) == "function");
     }
 
-    private isForEach(possibleForEach: any): boolean {
+    protected isForEach(possibleForEach: any): boolean {
         return possibleForEach.isForEach;
     }
 
-    private validatePropertyWithRuleLinks = (propertyName: string, propertyRules: Array<RuleLink>): any => {
+    protected validatePropertyWithRuleLinks = (propertyName: string, propertyRules: Array<RuleLink>): any => {
         return this.promiseCounter.countPromise(this.fieldErrorProcessor.checkFieldForErrors(this.modelResolver, propertyName, propertyRules))
             .then(possibleErrors => {
 
@@ -49,7 +49,7 @@ export class ValidationGroup implements IValidationGroup
             .then(this.promiseCounter.waitForCompletion)
     };
 
-    private validatePropertyWithRuleSet = (propertyName: string, ruleset: Ruleset) => {
+    protected validatePropertyWithRuleSet = (propertyName: string, ruleset: Ruleset) => {
         var transformedPropertyName;
         for(var childPropertyName in ruleset.rules){
             transformedPropertyName = `${propertyName}.${childPropertyName}`;
@@ -57,7 +57,7 @@ export class ValidationGroup implements IValidationGroup
         }
     }
 
-    private validatePropertyWithRules = (propertyName: string, rules: any): ValidationGroup => {
+    protected validatePropertyWithRules = (propertyName: string, rules: any): ValidationGroup => {
         var ruleLinks = [];
         var ruleSets = [];
 
@@ -107,20 +107,20 @@ export class ValidationGroup implements IValidationGroup
         return this;
     }
 
-    private startValidateProperty = (propertyName: string) => {
+    protected startValidateProperty = (propertyName: string) => {
         var rulesForProperty = this.ruleResolver.resolvePropertyRules(propertyName, this.ruleset);
         if(!rulesForProperty) { return this; }
         return this.validatePropertyWithRules(propertyName, rulesForProperty);
     };
 
-    private startValidateModel = () => {
+    protected startValidateModel = () => {
         for(var parameterName in this.ruleset.rules) {
             this.startValidateProperty(parameterName);
         }
         return this;
     };
 
-    private hasErrors(): boolean {
+    protected hasErrors(): boolean {
         return (Object.keys(this.propertyErrors).length > 0);
     }
 

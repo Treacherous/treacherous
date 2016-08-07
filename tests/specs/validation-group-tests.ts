@@ -6,23 +6,16 @@ import {RuleResolver} from "../../src/rulesets/rule-resolver";
 import {DefaultValidationSettings} from "../../src/settings/default-validation-settings";
 import {PropertyResolver} from "property-resolver";
 import {IModelResolver} from "../../src/resolvers/imodel-resolver";
-import {IValidationGroup} from "../../src/ivalidation-group";
 import {ReactiveValidationGroup} from "../../src/reactive-validation-group";
+import {IReactiveValidationGroup} from "../../src/ireactive-validation-group";
 
 describe('Reactive Validation Group', function () {
 
-    var createValidationGroupFor = function(model, ruleset) : IValidationGroup {
+    var createValidationGroupFor = (model, ruleset) : IReactiveValidationGroup => {
         var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry);
         var ruleResolver = new RuleResolver();
         var validationSettings = new DefaultValidationSettings(new PropertyResolver());
         return new ReactiveValidationGroup(fieldErrorProcessor, ruleResolver, ruleset, model, validationSettings, 50);
-    }
-
-    var createNonPollingValidationGroupFor = function(model, ruleset) {
-        var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry);
-        var ruleResolver = new RuleResolver();
-        var validationSettings = new DefaultValidationSettings(new PropertyResolver());
-        return new ReactiveValidationGroup(fieldErrorProcessor, ruleResolver, ruleset, model, validationSettings);
     }
 
     var delayedRequiresValid = (retval?:any=true, delay?:number=100) => { return {
@@ -35,31 +28,7 @@ describe('Reactive Validation Group', function () {
         },
         getMessage: function(value, options) { return "delayed rule: " + value; }
     }};
-/*
-    it('should not notify if model watcher is not used', function (done) {
-        var rulesetBuilder = new RulesetBuilder();
-        var ruleset = rulesetBuilder.create()
-            .forProperty("foo")
-            .addRule("maxLength", 15)
-            .build();
 
-        var dummyModel = {
-            foo: "hello"
-        };
-
-        setTimeout(function(){
-            dummyModel.foo = "this is now no longer valid";
-        }, 100);
-
-        var validationGroup = createNonPollingValidationGroupFor(dummyModel, ruleset);
-        //var validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        setTimeout(function() {
-            expect(validationGroup.propertyErrors).to.be.empty;
-            done();
-        },600);
-
-    });
-*/
     it('should correctly get errors', function (done) {
 
         var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
@@ -347,7 +316,7 @@ describe('Reactive Validation Group', function () {
         validationGroup.validate().then(v => {
             validationGroup.validateProperty("foo[2]")
             .then(v => {
-                console.log(validationGroup.propertyErrors);
+                console.log(validationGroup["propertyErrors"]);
                 return validationGroup.getPropertyError("foo[2]")
             })
             .then(function(error){
@@ -566,7 +535,7 @@ describe('Reactive Validation Group', function () {
         };
 
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        console.log(validationGroup.modelWatcher)
+        console.log(validationGroup["modelWatcher"])
 
         validationGroup.propertyStateChangedEvent.subscribe(function(args){
             console.log("triggered", args);
@@ -721,39 +690,6 @@ describe('Reactive Validation Group', function () {
         dummyModel.foo = "valid";
         console.log("changed");
     });
-/*
-    it('validation status should cycle between states', function (done) {
-
-        ruleRegistry.registerRule(delayedRequiresValid(true, 50));
-
-        var rulesetBuilder = new RulesetBuilder();
-        var ruleset = rulesetBuilder.create()
-            .forProperty("foo")
-            .addRule("delayed")
-            .build();
-
-        var dummyModel = {
-            foo: "invalid"
-        };
-
-        var validationGroup = createValidationGroupFor(dummyModel, ruleset);
-
-        expect(validationGroup.ValidationState).equals("valid");
-
-        validationGroup.validate()
-            .then(function(isValid){
-                expect(validationGroup.ValidationState).equals("valid");
-                expect(isValid).to.be.true;
-                validationGroup.release();
-                done();
-            }).catch(done);
-
-        expect(validationGroup.ValidationState).equals("calculating");
-
-        dummyModel.foo = "invalid";
-        dummyModel.foo = "valid";
-    });
-*/
 
     it('should correctly delay error requests until validation has finished', function (done) {
 
