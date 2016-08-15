@@ -2,30 +2,44 @@ import {Ruleset} from "../rulesets/ruleset";
 import {RuleLink} from "../rulesets/rule-link";
 import {ForEachRule} from "../rulesets/for-each-rule";
 import {RuleRegistry} from "../rules/rule-registry";
+import {TypeHelper} from "../helpers/type-helper";
 
-export class RulesetBuilder
+export class RulesetBuilder<T>
 {
-    private internalRuleset: Ruleset;
-    public currentProperty: string;
-    public currentRule:RuleLink;
+    protected internalRuleset: Ruleset;
+    protected currentProperty: string;
+    protected currentRule:RuleLink;
 
     constructor(private ruleRegistry?: RuleRegistry) {}
 
-    public create = (): RulesetBuilder =>
+    protected extractPropertyName(predicate: (model: T) => any) : string {
+        var regex = /.*\.([\w]*);/;
+        var predicateString = predicate.toString();
+        return regex.exec(predicateString)[1];
+    }
+
+    public create = (): RulesetBuilder<T> =>
     {
         this.internalRuleset = new Ruleset();
         this.currentProperty = null;
         return this;
     }
 
-    public forProperty = (propertyName: string): RulesetBuilder =>
+    public forProperty = (propertyNameOrPredicate: ((model: T) => any) | string): RulesetBuilder<T> =>
     {
-        this.currentProperty = propertyName;
+        var endProperty = propertyNameOrPredicate;
+        if(TypeHelper.isFunctionType(endProperty))
+        {
+            endProperty = this.extractPropertyName(<any>propertyNameOrPredicate);
+            if(!endProperty) { throw new Error(`cannot resolve property from: ${propertyNameOrPredicate}`); }
+        }
+
+        this.currentProperty = <string>endProperty;
         this.currentRule = null;
         return this;
     }
 
-    public addRule = (rule: string, ruleOptions?: any): RulesetBuilder =>
+    public addRule = (rule: string, ruleOptions?: any): RulesetBuilder<T> =>
     {
         if(rule == null || typeof(rule) == "undefined" || rule.length == 0)
         { throw new Error("A rule name is required"); }
@@ -40,7 +54,7 @@ export class RulesetBuilder
         return this;
     }
 
-    public withMessage = (messageOverride: ((value: any, ruleOptions?: any) => string) | string): RulesetBuilder =>
+    public withMessage = (messageOverride: ((value: any, ruleOptions?: any) => string) | string): RulesetBuilder<T> =>
     {
         if(!this.currentRule)
         { throw new Error("A message override must precede an addRule call in the chain"); }
@@ -49,7 +63,7 @@ export class RulesetBuilder
         return this;
     }
 
-    public appliesIf = (appliesFunction: ((model: any, value: any, ruleOptions?: any) => boolean) | boolean): RulesetBuilder =>
+    public appliesIf = (appliesFunction: ((model: any, value: any, ruleOptions?: any) => boolean) | boolean): RulesetBuilder<T> =>
     {
         if(!this.currentRule)
         { throw new Error("An appliesIf function must precede an addRule call in the chain"); }
@@ -57,7 +71,7 @@ export class RulesetBuilder
         return this;
     }
 
-    public addRuleForEach = (rule: string, ruleOptions?: any): RulesetBuilder =>
+    public addRuleForEach = (rule: string, ruleOptions?: any): RulesetBuilder<T> =>
     {
         if(rule == null || typeof(rule) == "undefined" || rule.length == 0)
         { throw new Error("A rule name is required"); }
@@ -75,7 +89,7 @@ export class RulesetBuilder
         return this;
     }
 
-    public addRuleset = (ruleset: Ruleset): RulesetBuilder =>
+    public addRuleset = (ruleset: Ruleset): RulesetBuilder<T> =>
     {
         if(!this.currentProperty)
         { throw new Error("A property must precede any rule calls in the chain"); }
@@ -84,7 +98,7 @@ export class RulesetBuilder
         return this;
     }
 
-    public addRulesetForEach = (ruleset: Ruleset): RulesetBuilder =>
+    public addRulesetForEach = (ruleset: Ruleset): RulesetBuilder<T> =>
     {
         if(!this.currentProperty)
         { throw new Error("A property must precede any rule calls in the chain"); }

@@ -6,6 +6,32 @@ import {Ruleset} from "../../src/rulesets/ruleset";
 
 describe('Ruleset Builder', function () {
 
+    it('should correctly resolve property predicates to property names', function () {
+        class DummyModel
+        {
+            public property1: string;
+            public property2: number;
+        }
+
+        var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
+        var rulesetBuilder = new RulesetBuilder<DummyModel>(<any>dummyRuleRegistry);
+
+        var ruleset: any = rulesetBuilder.create()
+            .forProperty(x => x.property1)
+            .addRule("required", true)
+            .forProperty(x => x.property2)
+            .addRule("required", true)
+            .build();
+
+        expect(ruleset).not.to.be.null;
+        expect(ruleset.rules).to.include.keys("property1");
+        expect(ruleset.rules.property1.length).to.equal(1);
+        expect(ruleset.rules.property1[0]).to.eql(new RuleLink("required", true));
+        expect(ruleset.rules).to.include.keys("property2");
+        expect(ruleset.rules.property2.length).to.equal(1);
+        expect(ruleset.rules.property2[0]).to.eql(new RuleLink("required", true));
+    });
+
     it('should correctly add rules to the ruleset', function () {
         var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
         var rulesetBuilder = new RulesetBuilder(<any>dummyRuleRegistry);

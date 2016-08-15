@@ -104,8 +104,7 @@ describe('Treacherous Sanity Checks', function () {
             }).catch(done);
     });
 
-    // TODO: This needs fixing but needs discussion on purely state checks
-    it.skip("should correctly be invalid after changes when reactive", function(done){
+    it("should correctly be invalid after changes when reactive and validate on startup", function(done){
         var ruleSet = createRuleset()
             .forProperty("stringValue1").addRule("required")
             .forProperty("stringValue2").addRule("required")
@@ -117,7 +116,7 @@ describe('Treacherous Sanity Checks', function () {
         };
 
         var isValid;
-        var valGroup = createGroup().asReactiveGroup().build(model, ruleSet);
+        var valGroup = createGroup().asReactiveGroup().andValidateOnStart().build(model, ruleSet);
         valGroup.modelStateChangedEvent.subscribe(event => {
             console.log("changing state:", event);
             isValid = event.isValid

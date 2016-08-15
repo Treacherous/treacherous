@@ -10,9 +10,10 @@ are very lightweight objects with no logic.
 
 When creating a ruleset there are the following methods:
 
-### forProperty(propertyName: string)
+### forProperty = (propertyNameOrPredicate: ((model: T) => any) | string): RulesetBuilder<T>
 
-This takes a string which should be the property name that you wish to apply rules to.
+This takes a string which should be the property name that you wish to apply rules to or a predicate which 
+links to the property, although this is mainly just for typescript users.
 
 ### addRule(ruleType: string, ruleArgs?: any)
 
@@ -65,6 +66,15 @@ var ruleset = Treacherous.createRuleset()
 So the above example is basically setting up a ruleset where it expects a property called `foo` and that property
 should have a `maxLength` of 5. You can easily add multiple rules or nested rules to properties allowing for a 
 very flexible and composite approach to ruleset building and management.
+
+## Simplest Example With Typescript Intellisense
+
+```ts
+var ruleset = Treacherous.createRuleset<SomeModel>()
+    .addProperty(x => x.SomeProperty)
+    .addRule("required")
+    .build();
+```
 
 ## More Complex Example
 

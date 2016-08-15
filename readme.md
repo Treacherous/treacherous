@@ -128,6 +128,18 @@ var validationGroup = Treacherous.createGroup()
 validationGroup.propertyStateChangedEvent.subscribe(function(propertyValidationChangedEvent){...));
 ```
 
+## Typescript users
+
+As typescript users you can get some nicer features and intellisense so you can create typed rules allowing 
+you to use lambda style property location like so:
+
+```ts
+var ruleset = Treacherous.createRuleset<SomeModel>()
+    .addProperty(x => x.SomeProperty)
+    .addRule("required")
+    .build();
+```
+
 ---
 
 ## Validation rules

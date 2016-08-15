@@ -2,6 +2,7 @@
 var ruleset_1 = require("../rulesets/ruleset");
 var rule_link_1 = require("../rulesets/rule-link");
 var for_each_rule_1 = require("../rulesets/for-each-rule");
+var type_helper_1 = require("../helpers/type-helper");
 var RulesetBuilder = (function () {
     function RulesetBuilder(ruleRegistry) {
         var _this = this;
@@ -11,8 +12,15 @@ var RulesetBuilder = (function () {
             _this.currentProperty = null;
             return _this;
         };
-        this.forProperty = function (propertyName) {
-            _this.currentProperty = propertyName;
+        this.forProperty = function (propertyNameOrPredicate) {
+            var endProperty = propertyNameOrPredicate;
+            if (type_helper_1.TypeHelper.isFunctionType(endProperty)) {
+                endProperty = _this.extractPropertyName(propertyNameOrPredicate);
+                if (!endProperty) {
+                    throw new Error("cannot resolve property from: " + propertyNameOrPredicate);
+                }
+            }
+            _this.currentProperty = endProperty;
             _this.currentRule = null;
             return _this;
         };
@@ -76,6 +84,11 @@ var RulesetBuilder = (function () {
             return _this.internalRuleset;
         };
     }
+    RulesetBuilder.prototype.extractPropertyName = function (predicate) {
+        var regex = /.*\.([\w]*);/;
+        var predicateString = predicate.toString();
+        return regex.exec(predicateString)[1];
+    };
     return RulesetBuilder;
 }());
 exports.RulesetBuilder = RulesetBuilder;
