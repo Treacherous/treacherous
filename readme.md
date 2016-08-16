@@ -17,7 +17,7 @@ each framework/platforms many different validation paradigms or libraries.
 - Fully async validation
 - Separation of rules and validation allowing composable rulesets
 - Supports nested complex objects/arrays
-- Reactive validation, can monitor your model and re-validate automatically
+- Optional Reactive validation, can monitor your model and re-validate automatically
 - Outside in validation, does not augment your models in any way
 - Can be integrated with any front end framework`*`
 - Works in browser or server
@@ -34,9 +34,10 @@ Just do an `npm install treacherous`
 
 ### In browser
 
-As this is distributed as a commonjs module it is recommended that you consume it via your existing module 
+As this is distributed as a umd module it is recommended that you consume it via your existing module 
 loader, or in the scenario where you do not have one it is recommended that you use webpack to just package 
-it up as a UMD module to consume.
+it up as a UMD module to consume with a global name, this may automatically happen when typescript 2.0 provides 
+this functionality for UMD modules out of the box.
 
 ---
 
