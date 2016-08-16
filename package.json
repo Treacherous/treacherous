@@ -1,12 +1,12 @@
 {
   "name": "treacherous",
-  "version": "0.12.2",
+  "version": "0.12.3",
   "license": "MIT",
   "dependencies": {
     "property-resolver": "^0.0.9",
     "event-js": "^0.1.0"
   },
-  "main": "dist/umd/index.js",
+  "main": "dist/commonjs/index.js",
   "typings": "index.d.ts",
   "bugs": {
     "url": "https://github.com/grofit/treacherous/issues"

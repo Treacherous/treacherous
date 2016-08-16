@@ -28,13 +28,15 @@ each framework/platforms many different validation paradigms or libraries.
 
 ## Installing
 
+By default the module is exposed as a `commonjs` module, however the dist folder also contains support for `amd` and `system` module types.
+
 ### Via NPM
 
 Just do an `npm install treacherous`
 
 ### In browser
 
-As this is distributed as a umd module it is recommended that you consume it via your existing module 
+As this is distributed as a commonjs module it is recommended that you consume it via your existing module 
 loader, or in the scenario where you do not have one it is recommended that you use webpack to just package 
 it up as a UMD module to consume with a global name, this may automatically happen when typescript 2.0 provides 
 this functionality for UMD modules out of the box.

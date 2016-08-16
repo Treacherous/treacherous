@@ -25,7 +25,8 @@ var compileFor = function(moduleType, withTypings) {
 
 gulp.task('compile', ["clean", "generate-exports"], function() {
     return merge([
-        compileFor("umd", true),
+        compileFor("commonjs", true),
+        compileFor("amd"),
         compileFor("system")
     ]);
 });
