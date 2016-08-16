@@ -1,4 +1,4 @@
-System.register(["./exposer", "./rule-registry-setup", "./builders/reactive-validation-group-builder", "./builders/ruleset-builder", "./builders/validation-group-builder", "./events/model-state-changed-event", "./events/property-changed-event", "./events/property-state-changed-event", "./helpers/comparer-helper", "./helpers/type-helper", "./factories/model-resolver-factory", "./factories/model-watcher-factory", "./processors/field-error-processor", "./processors/field-has-error", "./processors/validation-error", "./promises/promise-counter", "./resolvers/model-resolver", "./rules/advanced-regex-rule", "./rules/date-validation-rule", "./rules/decimal-validation-rule", "./rules/email-validation-rule", "./rules/equal-validation-rule", "./rules/iso-date-validation-rule", "./rules/matches-validation-rule", "./rules/max-length-validation-rule", "./rules/max-value-validation-rule", "./rules/min-length-validation-rule", "./rules/min-value-validation-rule", "./rules/not-equal-validation-rule", "./rules/number-validation-rule", "./rules/regex-validation-rule", "./rules/required-validation-rule", "./rules/rule-registry", "./rules/step-validation-rule", "./rulesets/for-each-rule", "./rulesets/rule-link", "./rulesets/rule-resolver", "./rulesets/ruleset", "./validation-groups/reactive-validation-group", "./validation-groups/validation-group", "./watcher/model-watcher", "./watcher/property-watcher"], function(exports_1, context_1) {
+System.register(["./exposer", "./rule-registry-setup", "./builders/reactive-validation-group-builder", "./builders/ruleset-builder", "./builders/validation-group-builder", "./events/model-state-changed-event", "./events/property-changed-event", "./events/property-state-changed-event", "./factories/model-resolver-factory", "./factories/model-watcher-factory", "./helpers/comparer-helper", "./helpers/type-helper", "./processors/field-error-processor", "./processors/field-has-error", "./processors/validation-error", "./promises/promise-counter", "./resolvers/model-resolver", "./rules/advanced-regex-rule", "./rules/date-validation-rule", "./rules/decimal-validation-rule", "./rules/email-validation-rule", "./rules/equal-validation-rule", "./rules/iso-date-validation-rule", "./rules/matches-validation-rule", "./rules/max-length-validation-rule", "./rules/max-value-validation-rule", "./rules/min-length-validation-rule", "./rules/min-value-validation-rule", "./rules/not-equal-validation-rule", "./rules/number-validation-rule", "./rules/regex-validation-rule", "./rules/required-validation-rule", "./rules/rule-registry", "./rules/step-validation-rule", "./rulesets/for-each-rule", "./rulesets/rule-link", "./rulesets/rule-resolver", "./rulesets/ruleset", "./validation-groups/reactive-validation-group", "./validation-groups/validation-group", "./watcher/model-watcher", "./watcher/property-watcher"], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     function exportStar_1(m) {
@@ -34,17 +34,17 @@ System.register(["./exposer", "./rule-registry-setup", "./builders/reactive-vali
             function (property_state_changed_event_1_1) {
                 exportStar_1(property_state_changed_event_1_1);
             },
-            function (comparer_helper_1_1) {
-                exportStar_1(comparer_helper_1_1);
-            },
-            function (type_helper_1_1) {
-                exportStar_1(type_helper_1_1);
-            },
             function (model_resolver_factory_1_1) {
                 exportStar_1(model_resolver_factory_1_1);
             },
             function (model_watcher_factory_1_1) {
                 exportStar_1(model_watcher_factory_1_1);
+            },
+            function (comparer_helper_1_1) {
+                exportStar_1(comparer_helper_1_1);
+            },
+            function (type_helper_1_1) {
+                exportStar_1(type_helper_1_1);
             },
             function (field_error_processor_1_1) {
                 exportStar_1(field_error_processor_1_1);

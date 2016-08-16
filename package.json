@@ -1,10 +1,10 @@
 {
   "name": "treacherous",
-  "version": "0.12.3",
+  "version": "0.12.4",
   "license": "MIT",
   "dependencies": {
-    "property-resolver": "^0.0.9",
-    "event-js": "^0.1.0"
+    "property-resolver": "0.0.*",
+    "event-js": "0.1.*"
   },
   "main": "dist/commonjs/index.js",
   "typings": "index.d.ts",
