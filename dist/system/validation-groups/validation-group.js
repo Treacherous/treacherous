@@ -26,7 +26,7 @@ System.register(["../rulesets/rule-resolver", "../helpers/type-helper", "../prom
                     this.ruleset = ruleset;
                     this.propertyErrors = {};
                     this.validatePropertyWithRuleLinks = function (propertyRoute, propertyRules) {
-                        return _this.promiseCounter.countPromise(_this.fieldErrorProcessor.checkFieldForErrors(_this.modelResolver, propertyRoute, propertyRules))
+                        return _this.promiseCounter.countPromise(_this.fieldErrorProcessor.checkFieldForErrors(_this.modelResolver, propertyRoute, propertyRules)
                             .then(function (possibleErrors) {
                             if (!possibleErrors) {
                                 if (_this.propertyErrors[propertyRoute]) {
@@ -35,7 +35,7 @@ System.register(["../rulesets/rule-resolver", "../helpers/type-helper", "../prom
                                 return;
                             }
                             _this.propertyErrors[propertyRoute] = possibleErrors;
-                        })
+                        }))
                             .then(_this.promiseCounter.waitForCompletion);
                     };
                     this.validatePropertyWithRuleSet = function (propertyRoute, ruleset) {

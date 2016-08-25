@@ -11,7 +11,7 @@ define(["require", "exports", "../rulesets/rule-resolver", "../helpers/type-help
             this.ruleset = ruleset;
             this.propertyErrors = {};
             this.validatePropertyWithRuleLinks = function (propertyRoute, propertyRules) {
-                return _this.promiseCounter.countPromise(_this.fieldErrorProcessor.checkFieldForErrors(_this.modelResolver, propertyRoute, propertyRules))
+                return _this.promiseCounter.countPromise(_this.fieldErrorProcessor.checkFieldForErrors(_this.modelResolver, propertyRoute, propertyRules)
                     .then(function (possibleErrors) {
                     if (!possibleErrors) {
                         if (_this.propertyErrors[propertyRoute]) {
@@ -20,7 +20,7 @@ define(["require", "exports", "../rulesets/rule-resolver", "../helpers/type-help
                         return;
                     }
                     _this.propertyErrors[propertyRoute] = possibleErrors;
-                })
+                }))
                     .then(_this.promiseCounter.waitForCompletion);
             };
             this.validatePropertyWithRuleSet = function (propertyRoute, ruleset) {

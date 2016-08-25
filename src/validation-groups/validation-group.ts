@@ -35,7 +35,8 @@ export class ValidationGroup implements IValidationGroup
     }
 
     protected validatePropertyWithRuleLinks = (propertyRoute: string, propertyRules: Array<RuleLink>): any => {
-        return this.promiseCounter.countPromise(this.fieldErrorProcessor.checkFieldForErrors(this.modelResolver, propertyRoute, propertyRules))
+        return this.promiseCounter.countPromise(
+            this.fieldErrorProcessor.checkFieldForErrors(this.modelResolver, propertyRoute, propertyRules)
             .then(possibleErrors => {
 
                 if (!possibleErrors) {
@@ -45,7 +46,7 @@ export class ValidationGroup implements IValidationGroup
                 }
 
                 this.propertyErrors[propertyRoute] = possibleErrors;
-            })
+            }))
             .then(this.promiseCounter.waitForCompletion)
     };
 
