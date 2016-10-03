@@ -38,9 +38,14 @@ module.exports = function(config) {
         autoWatch: false,
 
         // start these browsers
-        browsers: ['PhantomJS'],
+        browsers: ['Firefox'],
 
         // Continuous Integration mode
-        singleRun: true
+        singleRun: true,
+
+        phantomjsLauncher: {
+            // Have phantomjs exit if a ResourceError is encountered (useful if karma exits without killing phantom)
+            exitOnResourceError: true
+        }
     });
 };

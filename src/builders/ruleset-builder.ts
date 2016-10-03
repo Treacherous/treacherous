@@ -18,6 +18,19 @@ export class RulesetBuilder<T>
         return regex.exec(predicateString)[1];
     }
 
+    protected verifyExistingProperty = () => {
+        if(!this.currentProperty)
+        { throw new Error("A property must precede any rule calls in the chain"); }
+    }
+
+    protected verifyRuleNameIsValid = (rule) => {
+        if(rule == null || typeof(rule) == "undefined" || rule.length == 0)
+        { throw new Error("A rule name is required"); }
+
+        if(this.ruleRegistry && !this.ruleRegistry.hasRuleNamed(rule))
+        { throw new Error(`The rule [${rule}] has not been registered`); }
+    }
+
     public create = (): RulesetBuilder<T> =>
     {
         this.internalRuleset = new Ruleset();
@@ -41,46 +54,30 @@ export class RulesetBuilder<T>
 
     public addRule = (rule: string, ruleOptions?: any): RulesetBuilder<T> =>
     {
-        if(rule == null || typeof(rule) == "undefined" || rule.length == 0)
-        { throw new Error("A rule name is required"); }
-        
-        if(this.ruleRegistry && !this.ruleRegistry.hasRuleNamed(rule))
-        { throw new Error(`The rule [${rule}] has not been registered`); }
-
-        if(!this.currentProperty)
-        { throw new Error("A property must precede any rule calls in the chain"); }
-
+        this.verifyRuleNameIsValid(rule);
+        this.verifyExistingProperty();
         this.internalRuleset.addRule(this.currentProperty, this.currentRule=new RuleLink(rule, ruleOptions));
         return this;
     }
 
     public withMessage = (messageOverride: ((value: any, ruleOptions?: any) => string) | string): RulesetBuilder<T> =>
     {
-        if(!this.currentRule)
-        { throw new Error("A message override must precede an addRule call in the chain"); }
-
+        this.verifyExistingProperty();
         this.currentRule.messageOverride = messageOverride;
         return this;
     }
 
     public appliesIf = (appliesFunction: ((model: any, value: any, ruleOptions?: any) => boolean) | boolean): RulesetBuilder<T> =>
     {
-        if(!this.currentRule)
-        { throw new Error("An appliesIf function must precede an addRule call in the chain"); }
+        this.verifyExistingProperty();
         this.currentRule.appliesIf = appliesFunction;
         return this;
     }
 
     public addRuleForEach = (rule: string, ruleOptions?: any): RulesetBuilder<T> =>
     {
-        if(rule == null || typeof(rule) == "undefined" || rule.length == 0)
-        { throw new Error("A rule name is required"); }
-
-        if(this.ruleRegistry && !this.ruleRegistry.hasRuleNamed(rule))
-        { throw new Error(`The rule [${rule}] has not been registered`); }
-
-        if(!this.currentProperty)
-        { throw new Error("A property must precede any rule calls in the chain"); }
+        this.verifyRuleNameIsValid(rule);
+        this.verifyExistingProperty();
 
         var ruleLink = new RuleLink(rule, ruleOptions);
         this.currentRule = ruleLink;
@@ -91,8 +88,7 @@ export class RulesetBuilder<T>
 
     public addRuleset = (ruleset: Ruleset): RulesetBuilder<T> =>
     {
-        if(!this.currentProperty)
-        { throw new Error("A property must precede any rule calls in the chain"); }
+        this.verifyExistingProperty();
 
         this.internalRuleset.addRuleset(this.currentProperty, ruleset);
         return this;
@@ -100,8 +96,7 @@ export class RulesetBuilder<T>
 
     public addRulesetForEach = (ruleset: Ruleset): RulesetBuilder<T> =>
     {
-        if(!this.currentProperty)
-        { throw new Error("A property must precede any rule calls in the chain"); }
+        this.verifyExistingProperty();
 
         this.internalRuleset.addRuleset(this.currentProperty, new ForEachRule<Ruleset>(ruleset));
         return this;

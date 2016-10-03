@@ -8,6 +8,8 @@ export declare class RulesetBuilder<T> {
     protected currentRule: RuleLink;
     constructor(ruleRegistry?: RuleRegistry);
     protected extractPropertyName(predicate: (model: T) => any): string;
+    protected verifyExistingProperty: () => void;
+    protected verifyRuleNameIsValid: (rule: any) => void;
     create: () => RulesetBuilder<T>;
     forProperty: (propertyNameOrPredicate: ((model: T) => any) | string) => RulesetBuilder<T>;
     addRule: (rule: string, ruleOptions?: any) => RulesetBuilder<T>;

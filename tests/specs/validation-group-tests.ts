@@ -17,7 +17,7 @@ describe('Validation Group', function () {
         return new ValidationGroup(fieldErrorProcessor, ruleResolver, modelResolverFactory, model, ruleset);
     }
 
-    var delayedRequiresValid = (retval?:any=true, delay?:number=100) => { return {
+    var delayedRequiresValid = (retval?:any = true, delay?:number = 100) => { return {
         ruleName: "delayed",
         validate: function(modelResolver: IModelResolver, propertyName: string, options){
             return new Promise(function(resolve, reject){
