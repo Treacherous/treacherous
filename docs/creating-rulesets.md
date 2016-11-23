@@ -40,6 +40,16 @@ the arrays.
 This is for use with arrays and specifies that each element within the array should be subject to the ruleset
 provided, so this allows for complex repeatable rules with very little effort.
 
+### withMessage(messageOverride: ((value: any, ruleOptions?: any) => string) | string)
+
+This allows you to override the default message for the rule, so you can provide a string or a function which would
+generate a string for you, which would be evaulated instead of getting the default rule message.
+
+### appliesIf(appliesFunction: ((model: any, value: any, ruleOptions?: any) => boolean) | boolean)
+
+This allows you to specify that a rule should only apply if a given predicate is met, you can either pass in a 
+truthy value or a function which will be run and evaluated at point of rule evaluation to see if this rule is needed.
+
 ### build()
 
 This method builds the configured ruleset for use within the validation group object or other rulesets. Behind 
