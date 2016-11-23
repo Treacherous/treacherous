@@ -3,6 +3,7 @@ import {RuleLink} from "../rulesets/rule-link";
 import {ForEachRule} from "../rulesets/for-each-rule";
 import {RuleRegistry} from "../rules/rule-registry";
 import {TypeHelper} from "../helpers/type-helper";
+import {IModelResolver} from "../resolvers/imodel-resolver";
 
 export class RulesetBuilder<T>
 {
@@ -67,7 +68,7 @@ export class RulesetBuilder<T>
         return this;
     }
 
-    public appliesIf = (appliesFunction: ((model: any, value: any, ruleOptions?: any) => boolean) | boolean): RulesetBuilder<T> =>
+    public appliesIf = (appliesFunction: ((modelResolver: IModelResolver, value: any, ruleOptions?: any) => boolean) | boolean): RulesetBuilder<T> =>
     {
         this.verifyExistingProperty();
         this.currentRule.appliesIf = appliesFunction;

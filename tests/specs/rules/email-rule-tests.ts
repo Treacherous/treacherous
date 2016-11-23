@@ -17,13 +17,23 @@ describe("Validation Rules", function(){
             }).catch(done);
         });
 
-
         it('should be valid when provided a null value', function (done) {
             var modelResolver = new ModelResolver(new PropertyResolver(), {});
             modelResolver.model.null = null;
 
             var rule = new EmailValidationRule();
             rule.validate(modelResolver,'null').then(function(isValid){
+                expect(isValid).to.be.true;
+                done();
+            }).catch(done);
+        });
+
+        it('should be valid when provided an empty string', function (done) {
+            var modelResolver = new ModelResolver(new PropertyResolver(), {});
+            modelResolver.model.someString = "";
+
+            var rule = new EmailValidationRule();
+            rule.validate(modelResolver, 'someString').then(function(isValid){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);

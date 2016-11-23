@@ -17,7 +17,7 @@ export class FieldErrorProcessor implements IFieldErrorProcessor
                 : false);
 
         if (!shouldRuleApply)
-            { return Promise.resolve(); }
+        { return Promise.resolve(); }
 
         var validator = this.ruleRegistry.getRuleNamed(ruleLink.ruleName);
 

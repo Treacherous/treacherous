@@ -9,7 +9,7 @@ export class EmailValidationRule implements IValidationRule
     public validate(modelResolver: IModelResolver, propertyName: string): Promise<boolean>
     {
         var value = modelResolver.resolve(propertyName);
-        if (value === undefined || value === null)
+        if (value === undefined || value === null || value === "")
         { return Promise.resolve(true); }
 
         var matchesRegex = this.emailRegex.test(value);

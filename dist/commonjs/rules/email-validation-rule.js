@@ -6,7 +6,7 @@ var EmailValidationRule = (function () {
     }
     EmailValidationRule.prototype.validate = function (modelResolver, propertyName) {
         var value = modelResolver.resolve(propertyName);
-        if (value === undefined || value === null) {
+        if (value === undefined || value === null || value === "") {
             return Promise.resolve(true);
         }
         var matchesRegex = this.emailRegex.test(value);

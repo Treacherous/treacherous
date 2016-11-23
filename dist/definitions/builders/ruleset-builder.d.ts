@@ -1,6 +1,7 @@
 import { Ruleset } from "../rulesets/ruleset";
 import { RuleLink } from "../rulesets/rule-link";
 import { RuleRegistry } from "../rules/rule-registry";
+import { IModelResolver } from "../resolvers/imodel-resolver";
 export declare class RulesetBuilder<T> {
     private ruleRegistry;
     protected internalRuleset: Ruleset;
@@ -14,7 +15,7 @@ export declare class RulesetBuilder<T> {
     forProperty: (propertyNameOrPredicate: ((model: T) => any) | string) => RulesetBuilder<T>;
     addRule: (rule: string, ruleOptions?: any) => RulesetBuilder<T>;
     withMessage: (messageOverride: ((value: any, ruleOptions?: any) => string) | string) => RulesetBuilder<T>;
-    appliesIf: (appliesFunction: ((model: any, value: any, ruleOptions?: any) => boolean) | boolean) => RulesetBuilder<T>;
+    appliesIf: (appliesFunction: ((modelResolver: IModelResolver, value: any, ruleOptions?: any) => boolean) | boolean) => RulesetBuilder<T>;
     addRuleForEach: (rule: string, ruleOptions?: any) => RulesetBuilder<T>;
     addRuleset: (ruleset: Ruleset) => RulesetBuilder<T>;
     addRulesetForEach: (ruleset: Ruleset) => RulesetBuilder<T>;

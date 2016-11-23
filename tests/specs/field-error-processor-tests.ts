@@ -9,6 +9,7 @@ import * as spies from "chai-spies";
 import {EqualValidationRule} from "../../src/rules/equal-validation-rule";
 import {ModelResolver} from "../../src/resolvers/model-resolver";
 import {PropertyResolver} from "property-resolver";
+import {IModelResolver} from "../../src/resolvers/imodel-resolver";
 
 use(spies);
 
@@ -152,6 +153,29 @@ describe('Field Error Processor', function () {
             .checkFieldForErrors(dummyModel, dummyField, dummyRules)
             .then(function(error){
                 expect(error).not.to.be.null;
+                expect(spiedValidationMethod).to.not.have.been.called;
+                done();
+            }).catch(done);
+    });
+
+    it('should only run rule if appliesIf is undefined or returns truthy', function (done) {
+        var ruleRegistry = new RuleRegistry();
+
+        var requiredValidationRule = new RequiredValidationRule();
+        var spiedValidationMethod = spy.on(requiredValidationRule, 'validate');
+        ruleRegistry.registerRule(requiredValidationRule);
+
+        var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry);
+
+        var dummyModel = new ModelResolver(new PropertyResolver(),{ shouldRun: false });
+        var dummyField = null;
+
+        var requireRule = new RuleLink("required", true);
+        requireRule.appliesIf = (modelResolver: IModelResolver) => { return modelResolver.resolve("shouldRun"); };;
+
+        fieldErrorProcessor
+            .processRuleLink(dummyModel, dummyField, requireRule)
+            .then(function(){
                 expect(spiedValidationMethod).to.not.have.been.called;
                 done();
             }).catch(done);
