@@ -1,4 +1,4 @@
-define(["require", "exports", "../rulesets/rule-resolver", "../helpers/type-helper", "../promises/promise-counter"], function (require, exports, rule_resolver_1, type_helper_1, promise_counter_1) {
+define(["require", "exports", "../rulesets/rule-resolver", "../helpers/type-helper", "../promises/promise-counter", "../events/property-state-changed-event", "../events/model-state-changed-event"], function (require, exports, rule_resolver_1, type_helper_1, promise_counter_1, property_state_changed_event_1, model_state_changed_event_1) {
     "use strict";
     // TODO: This class is WAY to long, needs refactoring
     var ValidationGroup = (function () {
@@ -10,17 +10,32 @@ define(["require", "exports", "../rulesets/rule-resolver", "../helpers/type-help
             this.modelResolverFactory = modelResolverFactory;
             this.ruleset = ruleset;
             this.propertyErrors = {};
-            this.validatePropertyWithRuleLinks = function (propertyRoute, propertyRules) {
-                return _this.promiseCounter.countPromise(_this.fieldErrorProcessor.checkFieldForErrors(_this.modelResolver, propertyRoute, propertyRules)
+            this.validatePropertyWithRuleLinks = function (propertyName, propertyRules) {
+                return _this.promiseCounter.countPromise(_this.fieldErrorProcessor.checkFieldForErrors(_this.modelResolver, propertyName, propertyRules))
                     .then(function (possibleErrors) {
+                    var hadErrors = _this.hasErrors();
                     if (!possibleErrors) {
-                        if (_this.propertyErrors[propertyRoute]) {
-                            delete _this.propertyErrors[propertyRoute];
+                        if (_this.propertyErrors[propertyName]) {
+                            delete _this.propertyErrors[propertyName];
+                            var eventArgs = new property_state_changed_event_1.PropertyStateChangedEvent(propertyName, true);
+                            _this.propertyStateChangedEvent.publish(eventArgs);
+                            var stillHasErrors = hadErrors && _this.hasErrors();
+                            if (!stillHasErrors) {
+                                _this.modelStateChangedEvent.publish(new model_state_changed_event_1.ModelStateChangedEvent(true));
+                            }
                         }
                         return;
                     }
-                    _this.propertyErrors[propertyRoute] = possibleErrors;
-                }))
+                    var previousError = _this.propertyErrors[propertyName];
+                    _this.propertyErrors[propertyName] = possibleErrors;
+                    if (possibleErrors != previousError) {
+                        var eventArgs = new property_state_changed_event_1.PropertyStateChangedEvent(propertyName, false, possibleErrors);
+                        _this.propertyStateChangedEvent.publish(eventArgs);
+                        if (!hadErrors) {
+                            _this.modelStateChangedEvent.publish(new model_state_changed_event_1.ModelStateChangedEvent(false));
+                        }
+                    }
+                })
                     .then(_this.promiseCounter.waitForCompletion);
             };
             this.validatePropertyWithRuleSet = function (propertyRoute, ruleset) {

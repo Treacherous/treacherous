@@ -15,7 +15,7 @@ each framework/platforms many different validation paradigms or libraries.
 ## Features / Benefits
 
 - Fully async validation
-- Separation of rules and validation allowing composable rulesets
+- Separation of rules and validation allowing composable rule sets
 - Supports nested complex objects/arrays
 - Optional Reactive validation, can monitor your model and re-validate automatically
 - Outside in validation, does not augment your models in any way

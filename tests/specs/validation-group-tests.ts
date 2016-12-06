@@ -17,7 +17,7 @@ describe('Validation Group', function () {
         return new ValidationGroup(fieldErrorProcessor, ruleResolver, modelResolverFactory, model, ruleset);
     }
 
-    var delayedRequiresValid = (retval?:any = true, delay?:number = 100) => { return {
+    var delayedRequiresValid = (retval:any = true, delay:number = 100) => { return {
         ruleName: "delayed",
         validate: function(modelResolver: IModelResolver, propertyName: string, options){
             return new Promise(function(resolve, reject){
@@ -51,7 +51,7 @@ describe('Validation Group', function () {
 
     });
 
-    it('should apply appliesId rules correctly for TRUE', function (done) {
+    it('should apply appliesIf rules correctly for TRUE', function (done) {
 
         var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
         var rulesetBuilder = new RulesetBuilder(<any>dummyRuleRegistry);
@@ -77,7 +77,7 @@ describe('Validation Group', function () {
     });
 
 
-    it('should apply appliesId rules correctly for FALSE', function (done) {
+    it('should apply appliesIf rules correctly for FALSE', function (done) {
 
         var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
         var rulesetBuilder = new RulesetBuilder(<any>dummyRuleRegistry);
@@ -684,6 +684,54 @@ describe('Validation Group', function () {
                 done();
             })
             .catch(done);
+    });
+
+    it('should correctly notify on property validation change', function (done) {
+
+        var rulesetBuilder = new RulesetBuilder();
+        var ruleset = rulesetBuilder.create()
+            .forProperty("foo")
+            .addRule("maxLength", 15)
+            .build();
+
+        var dummyModel = {
+            foo: "hello"
+        };
+
+        var validationGroup = createValidationGroupFor(dummyModel, ruleset);
+        validationGroup.propertyStateChangedEvent.subscribe(function(args){
+            expect(args.isValid).to.be.false;
+            expect(args.error).contains("15");
+            expect(args.property).to.equal("foo");
+            validationGroup.release();
+            done();
+        });
+
+        dummyModel.foo = "this is now no longer valid";
+        validationGroup.getPropertyError("foo", true);
+    });
+
+    it('should correctly notify on model validation change', function (done) {
+
+        var rulesetBuilder = new RulesetBuilder();
+        var ruleset = rulesetBuilder.create()
+            .forProperty("foo")
+            .addRule("maxLength", 15)
+            .build();
+
+        var dummyModel = {
+            foo: "hello"
+        };
+
+        var validationGroup = createValidationGroupFor(dummyModel, ruleset);
+        validationGroup.modelStateChangedEvent.subscribe(function(args){
+            expect(args.isValid).to.be.false;
+            validationGroup.release();
+            done();
+        });
+
+        dummyModel.foo = "this is now no longer valid";
+        validationGroup.getPropertyError("foo", true);
     });
 
 });

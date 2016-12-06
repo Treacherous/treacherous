@@ -173,6 +173,16 @@ reactiveValidationGroup.modelStateChangedEvent.subscribe(function(validationStat
 ));
 ```
 
+### Reactive vs Non-Reactive
+
+The only difference is that the reactive validation group will use a built in model watcher to monitor the
+properties with rules applied. This is for people who are using Treacherous without any MVVM backed
+observables.
+
+You can access the events on property/model state changes without having a reactive validation group
+however those events would only be flagged when the properties/model are explicitly revalidated,
+however with reactive validation groups these changes would automatically be triggered.
+
 ### Hot swapping model
 
 So if you need to for some reason entirely replace the model you are observing with another instance but 

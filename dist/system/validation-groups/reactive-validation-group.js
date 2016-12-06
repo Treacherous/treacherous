@@ -1,4 +1,4 @@
-System.register(["event-js", "../events/property-state-changed-event", "../events/model-state-changed-event", "../rulesets/rule-resolver", "./validation-group"], function(exports_1, context_1) {
+System.register(["event-js", "../rulesets/rule-resolver", "./validation-group"], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __extends = (this && this.__extends) || function (d, b) {
@@ -6,18 +6,12 @@ System.register(["event-js", "../events/property-state-changed-event", "../event
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
-    var event_js_1, property_state_changed_event_1, model_state_changed_event_1, rule_resolver_1, validation_group_1;
+    var event_js_1, rule_resolver_1, validation_group_1;
     var ReactiveValidationGroup;
     return {
         setters:[
             function (event_js_1_1) {
                 event_js_1 = event_js_1_1;
-            },
-            function (property_state_changed_event_1_1) {
-                property_state_changed_event_1 = property_state_changed_event_1_1;
-            },
-            function (model_state_changed_event_1_1) {
-                model_state_changed_event_1 = model_state_changed_event_1_1;
             },
             function (rule_resolver_1_1) {
                 rule_resolver_1 = rule_resolver_1_1;
@@ -37,34 +31,6 @@ System.register(["event-js", "../events/property-state-changed-event", "../event
                     this.refreshRate = refreshRate;
                     this.onModelChanged = function (eventArgs) {
                         _this.startValidateProperty(eventArgs.propertyPath);
-                    };
-                    this.validatePropertyWithRuleLinks = function (propertyName, propertyRules) {
-                        return _this.promiseCounter.countPromise(_this.fieldErrorProcessor.checkFieldForErrors(_this.modelResolver, propertyName, propertyRules))
-                            .then(function (possibleErrors) {
-                            var hadErrors = _this.hasErrors();
-                            if (!possibleErrors) {
-                                if (_this.propertyErrors[propertyName]) {
-                                    delete _this.propertyErrors[propertyName];
-                                    var eventArgs = new property_state_changed_event_1.PropertyStateChangedEvent(propertyName, true);
-                                    _this.propertyStateChangedEvent.publish(eventArgs);
-                                    var stillHasErrors = hadErrors && _this.hasErrors();
-                                    if (!stillHasErrors) {
-                                        _this.modelStateChangedEvent.publish(new model_state_changed_event_1.ModelStateChangedEvent(true));
-                                    }
-                                }
-                                return;
-                            }
-                            var previousError = _this.propertyErrors[propertyName];
-                            _this.propertyErrors[propertyName] = possibleErrors;
-                            if (possibleErrors != previousError) {
-                                var eventArgs = new property_state_changed_event_1.PropertyStateChangedEvent(propertyName, false, possibleErrors);
-                                _this.propertyStateChangedEvent.publish(eventArgs);
-                                if (!hadErrors) {
-                                    _this.modelStateChangedEvent.publish(new model_state_changed_event_1.ModelStateChangedEvent(false));
-                                }
-                            }
-                        })
-                            .then(_this.promiseCounter.waitForCompletion);
                     };
                     this.release = function () {
                         if (_this.modelWatcher)

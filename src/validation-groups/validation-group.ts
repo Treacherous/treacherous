@@ -8,10 +8,16 @@ import {IRuleResolver} from "../rulesets/irule-resolver";
 import {IModelResolver} from "../resolvers/imodel-resolver";
 import {PromiseCounter} from "../promises/promise-counter";
 import {IModelResolverFactory} from "../factories/imodel-resolver-factory";
+import {PropertyStateChangedEvent} from "../events/property-state-changed-event";
+import {ModelStateChangedEvent} from "../events/model-state-changed-event";
+import {EventHandler} from "event-js";
 
 // TODO: This class is WAY to long, needs refactoring
 export class ValidationGroup implements IValidationGroup
 {
+    public propertyStateChangedEvent: EventHandler;
+    public modelStateChangedEvent: EventHandler;
+
     protected propertyErrors = {};
     protected promiseCounter: PromiseCounter;
     protected modelResolver: IModelResolver;
@@ -34,19 +40,38 @@ export class ValidationGroup implements IValidationGroup
         return possibleForEach.isForEach;
     }
 
-    protected validatePropertyWithRuleLinks = (propertyRoute: string, propertyRules: Array<RuleLink>): any => {
-        return this.promiseCounter.countPromise(
-            this.fieldErrorProcessor.checkFieldForErrors(this.modelResolver, propertyRoute, propertyRules)
+    protected validatePropertyWithRuleLinks = (propertyName: string, propertyRules: Array<RuleLink>): any => {
+        return this.promiseCounter.countPromise(this.fieldErrorProcessor.checkFieldForErrors(this.modelResolver, propertyName, propertyRules))
             .then(possibleErrors => {
+                var hadErrors = this.hasErrors();
 
                 if (!possibleErrors) {
-                    if (this.propertyErrors[propertyRoute])
-                    { delete this.propertyErrors[propertyRoute]; }
+                    if (this.propertyErrors[propertyName]) {
+                        delete this.propertyErrors[propertyName];
+                        var eventArgs = new PropertyStateChangedEvent(propertyName, true);
+                        this.propertyStateChangedEvent.publish(eventArgs);
+
+                        var stillHasErrors = hadErrors && this.hasErrors();
+                        if (!stillHasErrors) {
+                            this.modelStateChangedEvent.publish(new ModelStateChangedEvent(true));
+                        }
+                    }
                     return;
                 }
 
-                this.propertyErrors[propertyRoute] = possibleErrors;
-            }))
+                var previousError = this.propertyErrors[propertyName];
+                this.propertyErrors[propertyName] = possibleErrors;
+
+                if(possibleErrors != previousError){
+                    var eventArgs = new PropertyStateChangedEvent(propertyName, false, possibleErrors);
+                    this.propertyStateChangedEvent.publish(eventArgs);
+
+                    if (!hadErrors) {
+                        this.modelStateChangedEvent.publish(new ModelStateChangedEvent(false));
+                    }
+                }
+
+            })
             .then(this.promiseCounter.waitForCompletion)
     };
 
