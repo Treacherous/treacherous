@@ -4,7 +4,8 @@ var type_helper_1 = require("../helpers/type-helper");
 var promise_counter_1 = require("../promises/promise-counter");
 var property_state_changed_event_1 = require("../events/property-state-changed-event");
 var model_state_changed_event_1 = require("../events/model-state-changed-event");
-// TODO: This class is WAY to long, needs refactoring
+var event_js_1 = require("event-js");
+// TODO: This class could be simplified
 var ValidationGroup = (function () {
     function ValidationGroup(fieldErrorProcessor, ruleResolver, modelResolverFactory, model, ruleset) {
         var _this = this;
@@ -133,6 +134,8 @@ var ValidationGroup = (function () {
             return promise.then(function () { return _this.propertyErrors[propertyRoute]; });
         };
         this.release = function () { };
+        this.propertyStateChangedEvent = new event_js_1.EventHandler(this);
+        this.modelStateChangedEvent = new event_js_1.EventHandler(this);
         this.promiseCounter = new promise_counter_1.PromiseCounter();
         this.modelResolver = this.modelResolverFactory.createModelResolver(model);
     }

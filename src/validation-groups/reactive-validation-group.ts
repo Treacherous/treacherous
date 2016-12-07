@@ -1,5 +1,4 @@
 import {PropertyChangedEvent} from "../events/property-changed-event";
-import {EventHandler} from "event-js";
 import {Ruleset} from "../rulesets/ruleset";
 import {RuleResolver} from "../rulesets/rule-resolver";
 import {IModelWatcher} from "../watcher/imodel-watcher";
@@ -23,9 +22,6 @@ export class ReactiveValidationGroup extends ValidationGroup implements IReactiv
                 private refreshRate = 500)
     {
         super(fieldErrorProcessor, ruleResolver, modelResolverFactory, model, ruleset);
-
-        this.propertyStateChangedEvent = new EventHandler(this);
-        this.modelStateChangedEvent = new EventHandler(this);
 
         this.modelWatcher = this.modelWatcherFactory.createModelWatcher();
         this.modelWatcher.setupWatcher(model, ruleset, refreshRate);

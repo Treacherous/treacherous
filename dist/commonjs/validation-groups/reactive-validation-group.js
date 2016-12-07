@@ -4,7 +4,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var event_js_1 = require("event-js");
 var rule_resolver_1 = require("../rulesets/rule-resolver");
 var validation_group_1 = require("./validation-group");
 var ReactiveValidationGroup = (function (_super) {
@@ -23,8 +22,6 @@ var ReactiveValidationGroup = (function (_super) {
             if (_this.modelWatcher)
                 _this.modelWatcher.stopWatching();
         };
-        this.propertyStateChangedEvent = new event_js_1.EventHandler(this);
-        this.modelStateChangedEvent = new event_js_1.EventHandler(this);
         this.modelWatcher = this.modelWatcherFactory.createModelWatcher();
         this.modelWatcher.setupWatcher(model, ruleset, refreshRate);
         this.modelWatcher.onPropertyChanged.subscribe(this.onModelChanged);

@@ -12,7 +12,7 @@ import {PropertyStateChangedEvent} from "../events/property-state-changed-event"
 import {ModelStateChangedEvent} from "../events/model-state-changed-event";
 import {EventHandler} from "event-js";
 
-// TODO: This class is WAY to long, needs refactoring
+// TODO: This class could be simplified
 export class ValidationGroup implements IValidationGroup
 {
     public propertyStateChangedEvent: EventHandler;
@@ -28,6 +28,10 @@ export class ValidationGroup implements IValidationGroup
                 model: any,
                 protected ruleset: Ruleset)
     {
+
+        this.propertyStateChangedEvent = new EventHandler(this);
+        this.modelStateChangedEvent = new EventHandler(this);
+
         this.promiseCounter = new PromiseCounter();
         this.modelResolver = this.modelResolverFactory.createModelResolver(model);
     }

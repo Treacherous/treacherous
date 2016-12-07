@@ -1,4 +1,4 @@
-System.register(["event-js", "../rulesets/rule-resolver", "./validation-group"], function(exports_1, context_1) {
+System.register(["../rulesets/rule-resolver", "./validation-group"], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __extends = (this && this.__extends) || function (d, b) {
@@ -6,13 +6,10 @@ System.register(["event-js", "../rulesets/rule-resolver", "./validation-group"],
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
-    var event_js_1, rule_resolver_1, validation_group_1;
+    var rule_resolver_1, validation_group_1;
     var ReactiveValidationGroup;
     return {
         setters:[
-            function (event_js_1_1) {
-                event_js_1 = event_js_1_1;
-            },
             function (rule_resolver_1_1) {
                 rule_resolver_1 = rule_resolver_1_1;
             },
@@ -36,8 +33,6 @@ System.register(["event-js", "../rulesets/rule-resolver", "./validation-group"],
                         if (_this.modelWatcher)
                             _this.modelWatcher.stopWatching();
                     };
-                    this.propertyStateChangedEvent = new event_js_1.EventHandler(this);
-                    this.modelStateChangedEvent = new event_js_1.EventHandler(this);
                     this.modelWatcher = this.modelWatcherFactory.createModelWatcher();
                     this.modelWatcher.setupWatcher(model, ruleset, refreshRate);
                     this.modelWatcher.onPropertyChanged.subscribe(this.onModelChanged);

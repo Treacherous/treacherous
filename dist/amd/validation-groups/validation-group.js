@@ -1,6 +1,6 @@
-define(["require", "exports", "../rulesets/rule-resolver", "../helpers/type-helper", "../promises/promise-counter", "../events/property-state-changed-event", "../events/model-state-changed-event"], function (require, exports, rule_resolver_1, type_helper_1, promise_counter_1, property_state_changed_event_1, model_state_changed_event_1) {
+define(["require", "exports", "../rulesets/rule-resolver", "../helpers/type-helper", "../promises/promise-counter", "../events/property-state-changed-event", "../events/model-state-changed-event", "event-js"], function (require, exports, rule_resolver_1, type_helper_1, promise_counter_1, property_state_changed_event_1, model_state_changed_event_1, event_js_1) {
     "use strict";
-    // TODO: This class is WAY to long, needs refactoring
+    // TODO: This class could be simplified
     var ValidationGroup = (function () {
         function ValidationGroup(fieldErrorProcessor, ruleResolver, modelResolverFactory, model, ruleset) {
             var _this = this;
@@ -129,6 +129,8 @@ define(["require", "exports", "../rulesets/rule-resolver", "../helpers/type-help
                 return promise.then(function () { return _this.propertyErrors[propertyRoute]; });
             };
             this.release = function () { };
+            this.propertyStateChangedEvent = new event_js_1.EventHandler(this);
+            this.modelStateChangedEvent = new event_js_1.EventHandler(this);
             this.promiseCounter = new promise_counter_1.PromiseCounter();
             this.modelResolver = this.modelResolverFactory.createModelResolver(model);
         }

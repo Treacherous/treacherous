@@ -1,7 +1,7 @@
-System.register(["../rulesets/rule-resolver", "../helpers/type-helper", "../promises/promise-counter", "../events/property-state-changed-event", "../events/model-state-changed-event"], function(exports_1, context_1) {
+System.register(["../rulesets/rule-resolver", "../helpers/type-helper", "../promises/promise-counter", "../events/property-state-changed-event", "../events/model-state-changed-event", "event-js"], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
-    var rule_resolver_1, type_helper_1, promise_counter_1, property_state_changed_event_1, model_state_changed_event_1;
+    var rule_resolver_1, type_helper_1, promise_counter_1, property_state_changed_event_1, model_state_changed_event_1, event_js_1;
     var ValidationGroup;
     return {
         setters:[
@@ -19,9 +19,12 @@ System.register(["../rulesets/rule-resolver", "../helpers/type-helper", "../prom
             },
             function (model_state_changed_event_1_1) {
                 model_state_changed_event_1 = model_state_changed_event_1_1;
+            },
+            function (event_js_1_1) {
+                event_js_1 = event_js_1_1;
             }],
         execute: function() {
-            // TODO: This class is WAY to long, needs refactoring
+            // TODO: This class could be simplified
             ValidationGroup = (function () {
                 function ValidationGroup(fieldErrorProcessor, ruleResolver, modelResolverFactory, model, ruleset) {
                     var _this = this;
@@ -150,6 +153,8 @@ System.register(["../rulesets/rule-resolver", "../helpers/type-helper", "../prom
                         return promise.then(function () { return _this.propertyErrors[propertyRoute]; });
                     };
                     this.release = function () { };
+                    this.propertyStateChangedEvent = new event_js_1.EventHandler(this);
+                    this.modelStateChangedEvent = new event_js_1.EventHandler(this);
                     this.promiseCounter = new promise_counter_1.PromiseCounter();
                     this.modelResolver = this.modelResolverFactory.createModelResolver(model);
                 }
