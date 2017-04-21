@@ -10,7 +10,7 @@ var compileFor = function(moduleType, withTypings) {
             module: moduleType,
             target: "es5",
             moduleResolution: "node",
-            declarationFiles: true
+            lib: ["es2016", "dom"]
         }));
 
     if(withTypings) {

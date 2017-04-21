@@ -4,7 +4,8 @@
     "target": "es5",
     "moduleResolution": "node",
     "experimentalDecorators": true,
-    "sourceMap": false
+    "sourceMap": false,
+    "lib": ["es2016", "dom"]
   },
   "exclude": [
     "node_modules"
