@@ -52,10 +52,10 @@ export class ValidationGroup implements IValidationGroup
                 if (!possibleErrors) {
                     if (this.propertyErrors[propertyName]) {
                         delete this.propertyErrors[propertyName];
-                        var eventArgs = new PropertyStateChangedEvent(propertyName, true);
+                        let eventArgs = new PropertyStateChangedEvent(propertyName, true);
                         this.propertyStateChangedEvent.publish(eventArgs);
 
-                        var stillHasErrors = hadErrors && this.hasErrors();
+                        let stillHasErrors = hadErrors && this.hasErrors();
                         if (!stillHasErrors) {
                             this.modelStateChangedEvent.publish(new ModelStateChangedEvent(true));
                         }
@@ -74,7 +74,6 @@ export class ValidationGroup implements IValidationGroup
                         this.modelStateChangedEvent.publish(new ModelStateChangedEvent(false));
                     }
                 }
-
             })
             .then(this.promiseCounter.waitForCompletion)
     };
@@ -87,7 +86,7 @@ export class ValidationGroup implements IValidationGroup
         }
     }
 
-    protected validatePropertyWithRules = (propertyRoute: string, rules: any): ValidationGroup => {
+    protected validatePropertyWithRules = (propertyRoute: string, rules: any) => {
         let ruleLinks = [];
         let ruleSets = [];
 
@@ -134,7 +133,6 @@ export class ValidationGroup implements IValidationGroup
         ruleSets.forEach((ruleSet) => {
             this.validatePropertyWithRuleSet(propertyRoute, ruleSet);
         });
-        return this;
     }
 
     protected startValidateProperty = (propertyRoute: string) => {
@@ -169,7 +167,6 @@ export class ValidationGroup implements IValidationGroup
     {
         await this.startValidateModel();
         await this.promiseCounter.waitForCompletion();
-
         return !this.hasErrors();
     }
 

@@ -127,12 +127,11 @@ var ValidationGroup = (function () {
             ruleSets.forEach(function (ruleSet) {
                 _this.validatePropertyWithRuleSet(propertyRoute, ruleSet);
             });
-            return _this;
         };
         this.startValidateProperty = function (propertyRoute) {
             var rulesForProperty = _this.ruleResolver.resolvePropertyRules(propertyRoute, _this.ruleset);
             if (!rulesForProperty) {
-                return _this;
+                return;
             }
             return _this.validatePropertyWithRules(propertyRoute, rulesForProperty);
         };
@@ -140,7 +139,6 @@ var ValidationGroup = (function () {
             for (var parameterName in _this.ruleset.rules) {
                 _this.startValidateProperty(parameterName);
             }
-            return _this;
         };
         this.changeValidationTarget = function (model) {
             _this.modelResolver = _this.modelResolverFactory.createModelResolver(model);
@@ -148,9 +146,11 @@ var ValidationGroup = (function () {
         this.validateProperty = function (propertyRoute) { return __awaiter(_this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.startValidateProperty(propertyRoute)
-                            .promiseCounter.waitForCompletion()];
+                    case 0: return [4 /*yield*/, this.startValidateProperty(propertyRoute)];
                     case 1:
+                        _a.sent();
+                        return [4 /*yield*/, this.promiseCounter.waitForCompletion()];
+                    case 2:
                         _a.sent();
                         return [2 /*return*/, !this.propertyErrors[propertyRoute]];
                 }
@@ -159,8 +159,11 @@ var ValidationGroup = (function () {
         this.validate = function () { return __awaiter(_this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.startValidateModel().promiseCounter.waitForCompletion()];
+                    case 0: return [4 /*yield*/, this.startValidateModel()];
                     case 1:
+                        _a.sent();
+                        return [4 /*yield*/, this.promiseCounter.waitForCompletion()];
+                    case 2:
                         _a.sent();
                         return [2 /*return*/, !this.hasErrors()];
                 }
@@ -171,11 +174,15 @@ var ValidationGroup = (function () {
             return __awaiter(_this, void 0, void 0, function () {
                 return __generator(this, function (_a) {
                     switch (_a.label) {
-                        case 0: return [4 /*yield*/, revalidate];
+                        case 0:
+                            if (!revalidate) return [3 /*break*/, 2];
+                            return [4 /*yield*/, this.startValidateModel()];
                         case 1:
-                            (_a.sent()) ?
-                                this.startValidateModel().promiseCounter.waitForCompletion() :
-                                this.promiseCounter.waitForCompletion();
+                            _a.sent();
+                            _a.label = 2;
+                        case 2: return [4 /*yield*/, this.promiseCounter.waitForCompletion()];
+                        case 3:
+                            _a.sent();
                             return [2 /*return*/, this.propertyErrors];
                     }
                 });
@@ -186,11 +193,15 @@ var ValidationGroup = (function () {
             return __awaiter(_this, void 0, void 0, function () {
                 return __generator(this, function (_a) {
                     switch (_a.label) {
-                        case 0: return [4 /*yield*/, revalidate];
+                        case 0:
+                            if (!revalidate) return [3 /*break*/, 2];
+                            return [4 /*yield*/, this.startValidateProperty(propertyRoute)];
                         case 1:
-                            (_a.sent()) ?
-                                this.startValidateProperty(propertyRoute).promiseCounter.waitForCompletion() :
-                                this.promiseCounter.waitForCompletion();
+                            _a.sent();
+                            _a.label = 2;
+                        case 2: return [4 /*yield*/, this.promiseCounter.waitForCompletion()];
+                        case 3:
+                            _a.sent();
                             return [2 /*return*/, this.propertyErrors[propertyRoute]];
                     }
                 });

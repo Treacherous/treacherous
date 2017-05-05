@@ -22,9 +22,9 @@ export declare class ValidationGroup implements IValidationGroup {
     protected isForEach(possibleForEach: any): boolean;
     protected validatePropertyWithRuleLinks: (propertyName: string, propertyRules: RuleLink[]) => any;
     protected validatePropertyWithRuleSet: (propertyRoute: string, ruleset: Ruleset) => void;
-    protected validatePropertyWithRules: (propertyRoute: string, rules: any) => ValidationGroup;
-    protected startValidateProperty: (propertyRoute: string) => ValidationGroup;
-    protected startValidateModel: () => this;
+    protected validatePropertyWithRules: (propertyRoute: string, rules: any) => void;
+    protected startValidateProperty: (propertyRoute: string) => void;
+    protected startValidateModel: () => void;
     protected hasErrors(): boolean;
     changeValidationTarget: (model: any) => void;
     validateProperty: (propertyRoute: any) => Promise<boolean>;

@@ -1,43 +1,34 @@
 export class PromiseCounter
 {
-    private activePromises = [];
+    private promiseCallbacks = [];
     private validationCounter = 0;
 
     public waitForCompletion = async() : Promise<any> => {
-        var resolver = (resolve) => {
-            this.validationCounter ? this.activePromises.push(() => resolve() ) : resolve()
-        };
+        if(!this.validationCounter) { return; }
 
+        let resolver = (resolve) => {
+            this.promiseCallbacks.push(() => resolve());
+        };
         return new Promise(resolver);
     }
 
     public countPromise = async(promise: Promise<any>) => {
-        if(!promise) { return Promise.resolve(undefined); }
+        if(!promise) { return; }
         if(!promise.then) { throw new Error("Non-Promise pass in: " + promise) }
 
         this.incrementCounter();
-
-        var resolver = (resolve) => {
-            this.decrementCounter();
-            return resolve;
-        }
-
-        var rejecter = (reject) => {
-            this.decrementCounter();
-            throw reject;
-        };
-
-        return promise.then(resolver, rejecter);
+        let result = await promise;
+        this.decrementCounter();
+        return result;
     }
 
-    private decrementCounter = () => { this.validationCounter--;
-        if (!this.validationCounter) {
-            while (this.activePromises.length) {
-                this.activePromises.shift()();
-            }
-        }
+    private decrementCounter = () => {
+        this.validationCounter--;
+        if(this.validationCounter) { return; }
+
+        while (this.promiseCallbacks.length)
+        { this.promiseCallbacks.shift()(); }
     }
 
     private incrementCounter = () => { this.validationCounter++; }
-
 }
