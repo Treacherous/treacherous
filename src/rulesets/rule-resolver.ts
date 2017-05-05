@@ -16,24 +16,21 @@ export class RuleResolver implements IRuleResolver
     }
 
     public resolvePropertyRules = (propertyRoute: string, ruleset: Ruleset) => {
-        var propertyRouteSections = this.propertyResolver.decomposePropertyRoute(propertyRoute);
-        var finalProperty = propertyRouteSections[propertyRouteSections.length-1];
+        let propertyRouteSections = this.propertyResolver.decomposePropertyRoute(propertyRoute);
+        let finalProperty = propertyRouteSections[propertyRouteSections.length-1];
 
-        var matchingRules = this.traverseRulesForRoutes(propertyRouteSections, ruleset);
+        let matchingRules = this.traverseRulesForRoutes(propertyRouteSections, ruleset);
         if(!matchingRules) { return null; }
 
         if(matchingRules.getRulesForProperty)
-        {
-            var outputRules = matchingRules.getRulesForProperty(finalProperty);
-            return outputRules;
-        }
+        { return matchingRules.getRulesForProperty(finalProperty); }
 
         return matchingRules;
     }
 
     private getMatchingRuleForProperty = (property: string, rules: Array<any>) => {
-        var currentRule;
-        for(var i=0; i<rules.length; i++){
+        let currentRule;
+        for(let i=0; i<rules.length; i++){
             currentRule = rules[i];
             if(currentRule.isForEach) { currentRule = currentRule.internalRule; }
             if(!currentRule.getRulesForProperty) { continue; }
@@ -45,9 +42,9 @@ export class RuleResolver implements IRuleResolver
     }
 
     private traverseRulesForRoutes = (propertyRouteSections: Array<string>, ruleset: any): any => {
-        var currentProperty = propertyRouteSections.shift();
+        let currentProperty = propertyRouteSections.shift();
 
-        var childRules = ruleset;
+        let childRules = ruleset;
         if(ruleset.rules)
         { childRules = childRules.rules[currentProperty]; }
 
@@ -57,14 +54,14 @@ export class RuleResolver implements IRuleResolver
         if(propertyRouteSections.length == 0)
         { return childRules; }
 
-        var nextProperty = propertyRouteSections[0];
+        let nextProperty = propertyRouteSections[0];
         if(!nextProperty)
         { return ruleset; }
 
         if (this.isIndexRoute(nextProperty)) {
             propertyRouteSections.shift();
 
-            var applicableRules = [];
+            let applicableRules = [];
             childRules.forEach((internalRules) => {
                if(internalRules.isForEach) {
                    applicableRules.push(internalRules.internalRule);
@@ -73,10 +70,10 @@ export class RuleResolver implements IRuleResolver
 
             if(propertyRouteSections.length > 0)
             {
-                var totalRules = [];
+                let totalRules = [];
                 applicableRules.forEach((applicableRule) => {
-                    var currentRouteSection = propertyRouteSections.slice();
-                    var outputRules = this.traverseRulesForRoutes(currentRouteSection, applicableRule);
+                    let currentRouteSection = propertyRouteSections.slice();
+                    let outputRules = this.traverseRulesForRoutes(currentRouteSection, applicableRule);
                     outputRules.forEach((outputRule) => {
                         totalRules.push(outputRule);
                     });
@@ -89,7 +86,7 @@ export class RuleResolver implements IRuleResolver
         if(propertyRouteSections.length == 0)
         { return childRules; }
 
-        var nextChildRule = this.getMatchingRuleForProperty(nextProperty, childRules);
+        let nextChildRule = this.getMatchingRuleForProperty(nextProperty, childRules);
 
         if(propertyRouteSections.length > 0)
         { return this.traverseRulesForRoutes(propertyRouteSections, nextChildRule); }

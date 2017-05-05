@@ -6,18 +6,18 @@ export class DateValidationRule implements IValidationRule
     public ruleName = "date";
     private invalidObjectRegex = /Invalid|NaN/;
 
-    public validate(modelResolver: IModelResolver, propertyName: string): Promise<boolean>
+    public async validate(modelResolver: IModelResolver, propertyName: string): Promise<boolean>
     {
-        var value = modelResolver.resolve(propertyName);
-        if (value === undefined || value === null)
-        { return Promise.resolve(true); }
+        let value = modelResolver.resolve(propertyName);
 
-        var matchesRegex = !this.invalidObjectRegex.test(<any>new Date(value));
-        return Promise.resolve(matchesRegex);
+        if (value === undefined || value === null)
+        { return true; }
+
+        return !this.invalidObjectRegex.test(<any>new Date(value));
     }
 
     public getMessage(modelResolver: IModelResolver, propertyName: string) {
-        var value = modelResolver.resolve(propertyName);
+        let value = modelResolver.resolve(propertyName);
         return `This field contains "${value}" which is not a valid date`;
     }
 }

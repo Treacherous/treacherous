@@ -7,9 +7,8 @@ export class Ruleset
 
     private createPropertyEntryIfNeeded = (property: string): void =>
     {
-        if(!this.rules[property]) {
-            this.rules[property] = [];
-        }
+        if(!this.rules[property])
+        { this.rules[property] = []; }
     }
 
     public addRule = (property: string, ruleLink: RuleLink | ForEachRule<RuleLink>): void => {

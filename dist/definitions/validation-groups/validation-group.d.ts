@@ -1,0 +1,35 @@
+import { Ruleset } from "../rulesets/ruleset";
+import { RuleLink } from "../rulesets/rule-link";
+import { IValidationGroup } from "./ivalidation-group";
+import { IFieldErrorProcessor } from "../processors/ifield-error-processor";
+import { IRuleResolver } from "../rulesets/irule-resolver";
+import { IModelResolver } from "../resolvers/imodel-resolver";
+import { PromiseCounter } from "../promises/promise-counter";
+import { IModelResolverFactory } from "../factories/imodel-resolver-factory";
+import { EventHandler } from "event-js";
+export declare class ValidationGroup implements IValidationGroup {
+    protected fieldErrorProcessor: IFieldErrorProcessor;
+    protected ruleResolver: IRuleResolver;
+    protected modelResolverFactory: IModelResolverFactory;
+    protected ruleset: Ruleset;
+    propertyStateChangedEvent: EventHandler;
+    modelStateChangedEvent: EventHandler;
+    protected propertyErrors: {};
+    protected promiseCounter: PromiseCounter;
+    protected modelResolver: IModelResolver;
+    constructor(fieldErrorProcessor: IFieldErrorProcessor, ruleResolver: IRuleResolver, modelResolverFactory: IModelResolverFactory, model: any, ruleset: Ruleset);
+    protected isRuleset(possibleRuleset: any): boolean;
+    protected isForEach(possibleForEach: any): boolean;
+    protected validatePropertyWithRuleLinks: (propertyName: string, propertyRules: RuleLink[]) => any;
+    protected validatePropertyWithRuleSet: (propertyRoute: string, ruleset: Ruleset) => void;
+    protected validatePropertyWithRules: (propertyRoute: string, rules: any) => ValidationGroup;
+    protected startValidateProperty: (propertyRoute: string) => ValidationGroup;
+    protected startValidateModel: () => this;
+    protected hasErrors(): boolean;
+    changeValidationTarget: (model: any) => void;
+    validateProperty: (propertyRoute: any) => Promise<boolean>;
+    validate: () => Promise<boolean>;
+    getModelErrors: (revalidate?: boolean) => Promise<any>;
+    getPropertyError: (propertyRoute: string, revalidate?: boolean) => Promise<any>;
+    release: () => void;
+}

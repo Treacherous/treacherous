@@ -22,7 +22,7 @@ module.exports = function(config) {
 
         frameworks: ['mocha'],
 
-        // test result reporter
+        // test result reportergulp
         reporters: ['progress'],
 
         // web server port

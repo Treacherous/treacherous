@@ -3,8 +3,6 @@
     "module": "commonjs",
     "target": "es5",
     "moduleResolution": "node",
-    "experimentalDecorators": true,
-    "sourceMap": false,
     "lib": ["es2016", "dom"]
   },
   "exclude": [

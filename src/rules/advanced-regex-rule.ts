@@ -20,18 +20,18 @@ export class AdvancedRegexValidationRule implements IValidationRule
         this.message = (typeof message === "function") ? message : (): string => { return <string>message; };
     }
 
-    public validate(modelResolver: IModelResolver, propertyName: string, regexPattern: RegExp): Promise<boolean>
+    public async validate(modelResolver: IModelResolver, propertyName: string, regexPattern: RegExp): Promise<boolean>
     {
-        var value = modelResolver.resolve(propertyName);
-        if (value === undefined || value === null || value.length == 0)
-        { return Promise.resolve(true); }
+        let value = modelResolver.resolve(propertyName);
 
-        var matchesPattern = value.toString().match(this.expression) !== null;
-        return Promise.resolve(matchesPattern);
+        if (value === undefined || value === null || value.length == 0)
+        { return true; }
+
+        return value.toString().match(this.expression) !== null;
     }
 
     public getMessage(modelResolver: IModelResolver, propertyName: string, regexPattern: RegExp) {
-        var value = modelResolver.resolve(propertyName);
+        let value = modelResolver.resolve(propertyName);
         return this.message(value);
     }
 }

@@ -9,28 +9,26 @@ export class MatchesValidationRule implements IValidationRule
 
     constructor(){}
 
-    public validate(modelResolver: IModelResolver, propertyName: string, optionsOrProperty: any): Promise<boolean>
+    public async validate(modelResolver: IModelResolver, propertyName: string, optionsOrProperty: any): Promise<boolean>
     {
-        var fieldToMatch = optionsOrProperty.property || optionsOrProperty;
-        var weakEquality = optionsOrProperty.weakEquality || false;
-        var value = modelResolver.resolve(propertyName);
-        var matchingFieldValue = modelResolver.resolve(fieldToMatch);
+        let fieldToMatch = optionsOrProperty.property || optionsOrProperty;
+        let weakEquality = optionsOrProperty.weakEquality || false;
+        let value = modelResolver.resolve(propertyName);
+        let matchingFieldValue = modelResolver.resolve(fieldToMatch);
 
-        var result;
         if (value === undefined || value === null)
-        { result = (matchingFieldValue === undefined || matchingFieldValue === null); }
+        { return (matchingFieldValue === undefined || matchingFieldValue === null); }
         else if(TypeHelper.isDateType(value))
-        { result = ComparerHelper.dateTimeCompararer(value, matchingFieldValue); }
+        { return ComparerHelper.dateTimeCompararer(value, matchingFieldValue); }
         else
-        { result = ComparerHelper.simpleTypeComparer(value, matchingFieldValue, weakEquality); }
-
-        return Promise.resolve(result);
+        { return ComparerHelper.simpleTypeComparer(value, matchingFieldValue, weakEquality); }
     }
 
     public getMessage(modelResolver: IModelResolver, propertyName: string, optionsOrProperty: any) {
-        var value = modelResolver.resolve(propertyName);
-        var fieldToMatch = optionsOrProperty.property || optionsOrProperty;
-        var matchingFieldValue = modelResolver.resolve(fieldToMatch);
+        let value = modelResolver.resolve(propertyName);
+        let fieldToMatch = optionsOrProperty.property || optionsOrProperty;
+        let matchingFieldValue = modelResolver.resolve(fieldToMatch);
+
         return `This field is ${value} but should match ${matchingFieldValue}`;
     }
 }

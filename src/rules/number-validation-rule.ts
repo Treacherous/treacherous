@@ -6,18 +6,17 @@ export class NumberValidationRule implements IValidationRule
     public ruleName = "number";
     private numberRegex = /^\d+$/;
 
-    public validate(modelResolver: IModelResolver, propertyName: string): Promise<boolean>
+    public async validate(modelResolver: IModelResolver, propertyName: string): Promise<boolean>
     {
-        var value = modelResolver.resolve(propertyName);
+        let value = modelResolver.resolve(propertyName);
         if (value === undefined || value === null)
-        { return Promise.resolve(true); }
+        { return true; }
 
-        var matchesRegex = this.numberRegex.test(value);
-        return Promise.resolve(matchesRegex);
+        return this.numberRegex.test(value);
     }
 
     public getMessage(modelResolver: IModelResolver, propertyName: string) {
-        var value = modelResolver.resolve(propertyName);
+        let value = modelResolver.resolve(propertyName);
         return `This field contains ${value} which is not a numeric value`;
     }
 }

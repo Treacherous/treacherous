@@ -5,15 +5,14 @@ export class RegexValidationRule implements IValidationRule
 {
     public ruleName = "regex";
 
-    public validate(modelResolver: IModelResolver, propertyName: string, regexPattern: RegExp): Promise<boolean>
+    public async validate(modelResolver: IModelResolver, propertyName: string, regexPattern: RegExp): Promise<boolean>
     {
-        var value = modelResolver.resolve(propertyName);
+        let value = modelResolver.resolve(propertyName);
 
         if (value === undefined || value === null || value.length == 0)
-        { return Promise.resolve(true); }
+        { return true; }
 
-        var matchesPattern = value.toString().match(regexPattern) !== null;
-        return Promise.resolve(matchesPattern);
+        return value.toString().match(regexPattern) !== null;
     }
 
     public getMessage(modelResolver: IModelResolver, propertyName: string, regexPattern: RegExp) {

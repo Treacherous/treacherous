@@ -7,30 +7,27 @@ export class NotEqualValidationRule implements IValidationRule
 {
     public ruleName = "notEqual";
 
-    public validate(modelResolver: IModelResolver, propertyName: string, optionsOrValue: any): Promise<boolean>
+    public async validate(modelResolver: IModelResolver, propertyName: string, optionsOrValue: any): Promise<boolean>
     {
-        var value = modelResolver.resolve(propertyName);
+        let value = modelResolver.resolve(propertyName);
 
         if (value === undefined || value === null)
-        { return Promise.resolve(true); }
+        { return true; }
 
-        var result;
-        var comparison = optionsOrValue.value || optionsOrValue;
-        var weakEquality = optionsOrValue.weakEquality || false;
+        let comparison = optionsOrValue.value || optionsOrValue;
+        let weakEquality = optionsOrValue.weakEquality || false;
 
         if(TypeHelper.isFunctionType(comparison))
         { comparison = comparison(); }
 
         if(TypeHelper.isDateType(comparison))
-        { result = !ComparerHelper.dateTimeCompararer(value, comparison); }
+        { return !ComparerHelper.dateTimeCompararer(value, comparison); }
         else
-        { result = !ComparerHelper.simpleTypeComparer(value, comparison, weakEquality); }
-
-        return Promise.resolve(result);
+        { return !ComparerHelper.simpleTypeComparer(value, comparison, weakEquality); }
     }
 
     public getMessage(modelResolver: IModelResolver, propertyName: string, optionsOrValue: any) {
-        var value = modelResolver.resolve(propertyName);
+        let value = modelResolver.resolve(propertyName);
         return `This field is ${value} but should not be equal to ${optionsOrValue.value || optionsOrValue}`;
     }
 }

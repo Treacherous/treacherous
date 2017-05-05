@@ -5,21 +5,18 @@ export class MaxLengthValidationRule implements IValidationRule
 {
     public ruleName = "maxLength";
 
-    public validate(modelResolver: IModelResolver, propertyName: string, maxLength: number): Promise<boolean>
+    public async validate(modelResolver: IModelResolver, propertyName: string, maxLength: number): Promise<boolean>
     {
-        var value = modelResolver.resolve(propertyName);
+        let value = modelResolver.resolve(propertyName);
 
         if (value === undefined || value === null || value.length == 0)
-        { return Promise.resolve(true); }
+        { return true; }
 
-        if(value.length <= maxLength)
-        { return Promise.resolve(true); }
-
-        return Promise.resolve(false);
+        return value.length <= maxLength;
     }
 
     public getMessage(modelResolver: IModelResolver, propertyName: string, maxLength) {
-        var value = modelResolver.resolve(propertyName);
+        let value = modelResolver.resolve(propertyName);
         return `This field has a length of ${value.length} but should contain no more than ${maxLength}`;
     }
 }
