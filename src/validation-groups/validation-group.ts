@@ -44,38 +44,41 @@ export class ValidationGroup implements IValidationGroup
         return possibleForEach.isForEach;
     }
 
-    protected validatePropertyWithRuleLinks = (propertyName: string, propertyRules: Array<RuleLink>): any => {
-        return this.promiseCounter.countPromise(this.fieldErrorProcessor.checkFieldForErrors(this.modelResolver, propertyName, propertyRules))
-            .then(possibleErrors => {
-                let hadErrors = this.hasErrors();
+    protected validatePropertyWithRuleLinks = async (propertyName: string, propertyRules: Array<RuleLink>) => {
 
-                if (!possibleErrors) {
-                    if (this.propertyErrors[propertyName]) {
-                        delete this.propertyErrors[propertyName];
-                        let eventArgs = new PropertyStateChangedEvent(propertyName, true);
-                        this.propertyStateChangedEvent.publish(eventArgs);
+        var activePromise  = this.fieldErrorProcessor.checkFieldForErrors(this.modelResolver, propertyName, propertyRules);
+        var possibleErrors = await this.promiseCounter.countPromise(activePromise);
+        let hadErrors = this.hasErrors();
 
-                        let stillHasErrors = hadErrors && this.hasErrors();
-                        if (!stillHasErrors) {
-                            this.modelStateChangedEvent.publish(new ModelStateChangedEvent(true));
-                        }
-                    }
-                    return;
-                }
+        if (!possibleErrors)
+        {
+            if (this.propertyErrors[propertyName])
+            {
+                delete this.propertyErrors[propertyName];
+                let eventArgs = new PropertyStateChangedEvent(propertyName, true);
+                this.propertyStateChangedEvent.publish(eventArgs);
 
-                let previousError = this.propertyErrors[propertyName];
-                this.propertyErrors[propertyName] = possibleErrors;
+                let stillHasErrors = hadErrors && this.hasErrors();
+                if (!stillHasErrors)
+                { this.modelStateChangedEvent.publish(new ModelStateChangedEvent(true)); }
+            }
 
-                if(possibleErrors != previousError){
-                    let eventArgs = new PropertyStateChangedEvent(propertyName, false, possibleErrors);
-                    this.propertyStateChangedEvent.publish(eventArgs);
+            return this.promiseCounter.waitForCompletion();
+        }
 
-                    if (!hadErrors) {
-                        this.modelStateChangedEvent.publish(new ModelStateChangedEvent(false));
-                    }
-                }
-            })
-            .then(this.promiseCounter.waitForCompletion)
+        let previousError = this.propertyErrors[propertyName];
+        this.propertyErrors[propertyName] = possibleErrors;
+
+        if(possibleErrors != previousError){
+            let eventArgs = new PropertyStateChangedEvent(propertyName, false, possibleErrors);
+            this.propertyStateChangedEvent.publish(eventArgs);
+
+            if (!hadErrors) {
+                this.modelStateChangedEvent.publish(new ModelStateChangedEvent(false));
+            }
+        }
+
+        return this.promiseCounter.waitForCompletion();
     };
 
     protected validatePropertyWithRuleSet = (propertyRoute: string, ruleset: Ruleset): void => {

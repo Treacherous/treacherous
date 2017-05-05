@@ -9,56 +9,50 @@ export class FieldErrorProcessor implements IFieldErrorProcessor
     constructor(public ruleRegistry: RuleRegistry){}
 
     // Validates a single property against a model
-    public processRuleLink(modelResolver: IModelResolver, propertyName: any, ruleLink: RuleLink): Promise<any>{
+    public async processRuleLink(modelResolver: IModelResolver, propertyName: any, ruleLink: RuleLink): Promise<any>{
 
         var shouldRuleApply = ruleLink.appliesIf === true
             || ((typeof(ruleLink.appliesIf) === "function")
                 ? (<((model:any, value: any, ruleOptions?: any) => boolean)>(ruleLink.appliesIf))(modelResolver, propertyName, ruleLink.ruleOptions)
                 : false);
 
-        if (!shouldRuleApply)
-        { return Promise.resolve(); }
+        if (!shouldRuleApply) { return; }
 
-        var validator = this.ruleRegistry.getRuleNamed(ruleLink.ruleName);
+        let validator = this.ruleRegistry.getRuleNamed(ruleLink.ruleName);
+        let options = (typeof ruleLink.ruleOptions == "function") ? ruleLink.ruleOptions() : ruleLink.ruleOptions;
+        let isValid = await validator.validate(modelResolver, propertyName, options);
 
-        var options = (typeof ruleLink.ruleOptions == "function") ? ruleLink.ruleOptions() : ruleLink.ruleOptions;
+        if(isValid){ return; }
 
-        return validator
-            .validate(modelResolver, propertyName, options)
-            .then(isValid => {
-                if(!isValid) {
-                    var error;
-                    if(ruleLink.messageOverride)
-                    {
-                        if(typeof(ruleLink.messageOverride) === "function")
-                        { error = (<((model:any, value: any, ruleOptions?: any) => string)>(ruleLink.messageOverride))(modelResolver, propertyName, ruleLink.ruleOptions); }
-                        else
-                        { error = ruleLink.messageOverride; }
-                    }
-                    else
-                    { error = validator.getMessage(modelResolver, propertyName, ruleLink.ruleOptions); }
+        let error;
+        if(ruleLink.messageOverride)
+        {
+            if(typeof(ruleLink.messageOverride) === "function")
+            { error = (<((model:any, value: any, ruleOptions?: any) => string)>(ruleLink.messageOverride))(modelResolver, propertyName, ruleLink.ruleOptions); }
+            else
+            { error = ruleLink.messageOverride; }
+        }
+        else
+        { error = validator.getMessage(modelResolver, propertyName, ruleLink.ruleOptions); }
 
-                    throw new FieldHasError(error);
-                }
-                return Promise.resolve();
-            });
+        throw new FieldHasError(error);
     }
 
     // Loops through each rule on a property, adds it to a chain, then calls Promise.all
     // Probably not correct, as they won't fire sequentially? Promises need to be chained
     public checkFieldForErrors(modelResolver: IModelResolver, propertyName: any, rules: any): Promise<string>
     {
-        var ruleCheck = (ruleLinkOrSet: any): Promise<any>  => {
+        let ruleCheck = (ruleLinkOrSet: any): Promise<any>  => {
             return this.processRuleLink(modelResolver, propertyName, ruleLinkOrSet);
         };
 
-        var checkEachRule = (rules: any) => {
-            var promises = [];
+        let checkEachRule = (rules: any) => {
+            let promises = [];
             rules.forEach((rule) => {
                 promises.push(ruleCheck(rule));
             });
             return Promise.all(promises);
-        }
+        };
 
         return Promise.resolve(rules)
             .then(checkEachRule)

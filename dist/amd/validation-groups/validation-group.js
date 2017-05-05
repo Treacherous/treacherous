@@ -46,34 +46,41 @@ define(["require", "exports", "../rulesets/rule-resolver", "../helpers/type-help
             this.modelResolverFactory = modelResolverFactory;
             this.ruleset = ruleset;
             this.propertyErrors = {};
-            this.validatePropertyWithRuleLinks = function (propertyName, propertyRules) {
-                return _this.promiseCounter.countPromise(_this.fieldErrorProcessor.checkFieldForErrors(_this.modelResolver, propertyName, propertyRules))
-                    .then(function (possibleErrors) {
-                    var hadErrors = _this.hasErrors();
-                    if (!possibleErrors) {
-                        if (_this.propertyErrors[propertyName]) {
-                            delete _this.propertyErrors[propertyName];
-                            var eventArgs = new property_state_changed_event_1.PropertyStateChangedEvent(propertyName, true);
-                            _this.propertyStateChangedEvent.publish(eventArgs);
-                            var stillHasErrors = hadErrors && _this.hasErrors();
-                            if (!stillHasErrors) {
-                                _this.modelStateChangedEvent.publish(new model_state_changed_event_1.ModelStateChangedEvent(true));
+            this.validatePropertyWithRuleLinks = function (propertyName, propertyRules) { return __awaiter(_this, void 0, void 0, function () {
+                var activePromise, possibleErrors, hadErrors, eventArgs, stillHasErrors, previousError, eventArgs;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            activePromise = this.fieldErrorProcessor.checkFieldForErrors(this.modelResolver, propertyName, propertyRules);
+                            return [4 /*yield*/, this.promiseCounter.countPromise(activePromise)];
+                        case 1:
+                            possibleErrors = _a.sent();
+                            hadErrors = this.hasErrors();
+                            if (!possibleErrors) {
+                                if (this.propertyErrors[propertyName]) {
+                                    delete this.propertyErrors[propertyName];
+                                    eventArgs = new property_state_changed_event_1.PropertyStateChangedEvent(propertyName, true);
+                                    this.propertyStateChangedEvent.publish(eventArgs);
+                                    stillHasErrors = hadErrors && this.hasErrors();
+                                    if (!stillHasErrors) {
+                                        this.modelStateChangedEvent.publish(new model_state_changed_event_1.ModelStateChangedEvent(true));
+                                    }
+                                }
+                                return [2 /*return*/, this.promiseCounter.waitForCompletion()];
                             }
-                        }
-                        return;
+                            previousError = this.propertyErrors[propertyName];
+                            this.propertyErrors[propertyName] = possibleErrors;
+                            if (possibleErrors != previousError) {
+                                eventArgs = new property_state_changed_event_1.PropertyStateChangedEvent(propertyName, false, possibleErrors);
+                                this.propertyStateChangedEvent.publish(eventArgs);
+                                if (!hadErrors) {
+                                    this.modelStateChangedEvent.publish(new model_state_changed_event_1.ModelStateChangedEvent(false));
+                                }
+                            }
+                            return [2 /*return*/, this.promiseCounter.waitForCompletion()];
                     }
-                    var previousError = _this.propertyErrors[propertyName];
-                    _this.propertyErrors[propertyName] = possibleErrors;
-                    if (possibleErrors != previousError) {
-                        var eventArgs = new property_state_changed_event_1.PropertyStateChangedEvent(propertyName, false, possibleErrors);
-                        _this.propertyStateChangedEvent.publish(eventArgs);
-                        if (!hadErrors) {
-                            _this.modelStateChangedEvent.publish(new model_state_changed_event_1.ModelStateChangedEvent(false));
-                        }
-                    }
-                })
-                    .then(_this.promiseCounter.waitForCompletion);
-            };
+                });
+            }); };
             this.validatePropertyWithRuleSet = function (propertyRoute, ruleset) {
                 var transformedPropertyName;
                 for (var childPropertyName in ruleset.rules) {

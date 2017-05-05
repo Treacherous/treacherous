@@ -20,7 +20,7 @@ export declare class ValidationGroup implements IValidationGroup {
     constructor(fieldErrorProcessor: IFieldErrorProcessor, ruleResolver: IRuleResolver, modelResolverFactory: IModelResolverFactory, model: any, ruleset: Ruleset);
     protected isRuleset(possibleRuleset: any): boolean;
     protected isForEach(possibleForEach: any): boolean;
-    protected validatePropertyWithRuleLinks: (propertyName: string, propertyRules: RuleLink[]) => any;
+    protected validatePropertyWithRuleLinks: (propertyName: string, propertyRules: RuleLink[]) => Promise<any>;
     protected validatePropertyWithRuleSet: (propertyRoute: string, ruleset: Ruleset) => void;
     protected validatePropertyWithRules: (propertyRoute: string, rules: any) => void;
     protected startValidateProperty: (propertyRoute: string) => void;

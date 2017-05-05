@@ -1,5 +1,5 @@
 export declare class PromiseCounter {
-    private activePromises;
+    private promiseCallbacks;
     private validationCounter;
     waitForCompletion: () => Promise<any>;
     countPromise: (promise: Promise<any>) => Promise<any>;

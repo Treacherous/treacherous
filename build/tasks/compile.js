@@ -4,11 +4,12 @@ var merge = require('merge2');
 var paths = require("../paths");
 
 var compileFor = function(moduleType, withTypings) {
-    var tsResult = gulp.src([paths.source, paths.typings])
+    var target = moduleType === "commonjs" || moduleType === "amd" ? "es5" : "es2017";
+    var tsResult = gulp.src([paths.source])
         .pipe(ts({
-            declaration: true,
+            declaration: withTypings || false,
             module: moduleType,
-            target: "es5",
+            target: target,
             moduleResolution: "node",
             lib: ["es2016", "dom"]
         }));
@@ -27,6 +28,6 @@ gulp.task('compile', ["clean", "generate-exports"], function() {
     return merge([
         compileFor("commonjs", true),
         compileFor("amd"),
-        compileFor("system")
+        compileFor("es6")
     ]);
 });

@@ -39,46 +39,48 @@ define(["require", "exports"], function (require, exports) {
     var PromiseCounter = (function () {
         function PromiseCounter() {
             var _this = this;
-            this.activePromises = [];
+            this.promiseCallbacks = [];
             this.validationCounter = 0;
             this.waitForCompletion = function () { return __awaiter(_this, void 0, void 0, function () {
                 var _this = this;
                 var resolver;
                 return __generator(this, function (_a) {
+                    if (!this.validationCounter) {
+                        return [2 /*return*/];
+                    }
                     resolver = function (resolve) {
-                        _this.validationCounter ? _this.activePromises.push(function () { return resolve(); }) : resolve();
+                        _this.promiseCallbacks.push(function () { return resolve(); });
                     };
                     return [2 /*return*/, new Promise(resolver)];
                 });
             }); };
             this.countPromise = function (promise) { return __awaiter(_this, void 0, void 0, function () {
-                var _this = this;
-                var resolver, rejecter;
+                var result;
                 return __generator(this, function (_a) {
-                    if (!promise) {
-                        return [2 /*return*/, Promise.resolve(undefined)];
+                    switch (_a.label) {
+                        case 0:
+                            if (!promise) {
+                                return [2 /*return*/];
+                            }
+                            if (!promise.then) {
+                                throw new Error("Non-Promise pass in: " + promise);
+                            }
+                            this.incrementCounter();
+                            return [4 /*yield*/, promise];
+                        case 1:
+                            result = _a.sent();
+                            this.decrementCounter();
+                            return [2 /*return*/, result];
                     }
-                    if (!promise.then) {
-                        throw new Error("Non-Promise pass in: " + promise);
-                    }
-                    this.incrementCounter();
-                    resolver = function (resolve) {
-                        _this.decrementCounter();
-                        return resolve;
-                    };
-                    rejecter = function (reject) {
-                        _this.decrementCounter();
-                        throw reject;
-                    };
-                    return [2 /*return*/, promise.then(resolver, rejecter)];
                 });
             }); };
             this.decrementCounter = function () {
                 _this.validationCounter--;
-                if (!_this.validationCounter) {
-                    while (_this.activePromises.length) {
-                        _this.activePromises.shift()();
-                    }
+                if (_this.validationCounter) {
+                    return;
+                }
+                while (_this.promiseCallbacks.length) {
+                    _this.promiseCallbacks.shift()();
                 }
             };
             this.incrementCounter = function () { _this.validationCounter++; };
