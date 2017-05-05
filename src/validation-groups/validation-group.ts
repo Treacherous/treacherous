@@ -47,7 +47,7 @@ export class ValidationGroup implements IValidationGroup
     protected validatePropertyWithRuleLinks = (propertyName: string, propertyRules: Array<RuleLink>): any => {
         return this.promiseCounter.countPromise(this.fieldErrorProcessor.checkFieldForErrors(this.modelResolver, propertyName, propertyRules))
             .then(possibleErrors => {
-                var hadErrors = this.hasErrors();
+                let hadErrors = this.hasErrors();
 
                 if (!possibleErrors) {
                     if (this.propertyErrors[propertyName]) {
@@ -63,11 +63,11 @@ export class ValidationGroup implements IValidationGroup
                     return;
                 }
 
-                var previousError = this.propertyErrors[propertyName];
+                let previousError = this.propertyErrors[propertyName];
                 this.propertyErrors[propertyName] = possibleErrors;
 
                 if(possibleErrors != previousError){
-                    var eventArgs = new PropertyStateChangedEvent(propertyName, false, possibleErrors);
+                    let eventArgs = new PropertyStateChangedEvent(propertyName, false, possibleErrors);
                     this.propertyStateChangedEvent.publish(eventArgs);
 
                     if (!hadErrors) {
@@ -80,18 +80,18 @@ export class ValidationGroup implements IValidationGroup
     };
 
     protected validatePropertyWithRuleSet = (propertyRoute: string, ruleset: Ruleset): void => {
-        var transformedPropertyName;
-        for(var childPropertyName in ruleset.rules){
+        let transformedPropertyName;
+        for(let childPropertyName in ruleset.rules){
             transformedPropertyName = `${propertyRoute}.${childPropertyName}`;
             this.validatePropertyWithRules(transformedPropertyName, ruleset.getRulesForProperty(childPropertyName));
         }
     }
 
     protected validatePropertyWithRules = (propertyRoute: string, rules: any): ValidationGroup => {
-        var ruleLinks = [];
-        var ruleSets = [];
+        let ruleLinks = [];
+        let ruleSets = [];
 
-        var currentValue;
+        let currentValue;
         try
         {
             currentValue = this.modelResolver.resolve(propertyRoute);
@@ -102,14 +102,14 @@ export class ValidationGroup implements IValidationGroup
             throw(ex);
         }
 
-        var routeEachRule = (ruleLinkOrSet) => {
+        let routeEachRule = (ruleLinkOrSet) => {
             if(this.isForEach(ruleLinkOrSet))
             {
-                var isCurrentlyAnArray = TypeHelper.isArrayType(currentValue);
+                let isCurrentlyAnArray = TypeHelper.isArrayType(currentValue);
 
                 if(isCurrentlyAnArray) {
                     currentValue.forEach((element, index) => {
-                        var childPropertyName = `${propertyRoute}[${index}]`;
+                        let childPropertyName = `${propertyRoute}[${index}]`;
                         this.validatePropertyWithRules(childPropertyName, [ruleLinkOrSet.internalRule]);
                     });
                 }
@@ -138,16 +138,16 @@ export class ValidationGroup implements IValidationGroup
     }
 
     protected startValidateProperty = (propertyRoute: string) => {
-        var rulesForProperty = this.ruleResolver.resolvePropertyRules(propertyRoute, this.ruleset);
-        if(!rulesForProperty) { return this; }
+        let rulesForProperty = this.ruleResolver.resolvePropertyRules(propertyRoute, this.ruleset);
+        if(!rulesForProperty) { return; }
+
         return this.validatePropertyWithRules(propertyRoute, rulesForProperty);
     };
 
     protected startValidateModel = () => {
-        for(var parameterName in this.ruleset.rules) {
+        for(let parameterName in this.ruleset.rules) {
             this.startValidateProperty(parameterName);
         }
-        return this;
     };
 
     protected hasErrors(): boolean {
@@ -158,36 +158,37 @@ export class ValidationGroup implements IValidationGroup
         this.modelResolver = this.modelResolverFactory.createModelResolver(model);
     }
 
-    public validateProperty = (propertyRoute): Promise<boolean> =>
+    public validateProperty = async(propertyRoute): Promise<boolean> =>
     {
-        return this.startValidateProperty(propertyRoute)
-            .promiseCounter.waitForCompletion()
-            .then(() => !this.propertyErrors[propertyRoute]);
+        await this.startValidateProperty(propertyRoute);
+        await this.promiseCounter.waitForCompletion();
+        return !this.propertyErrors[propertyRoute];
     }
 
-    public validate = (): Promise<boolean> =>
+    public validate = async(): Promise<boolean> =>
     {
-        return this.startValidateModel()
-            .promiseCounter.waitForCompletion()
-            .then(() => !this.hasErrors());
+        await this.startValidateModel();
+        await this.promiseCounter.waitForCompletion();
+
+        return !this.hasErrors();
     }
 
-    public getModelErrors = (revalidate = false): Promise<any> =>
+    public getModelErrors = async(revalidate = false): Promise<any> =>
     {
-        var promise = revalidate ?
-            this.startValidateModel().promiseCounter.waitForCompletion() :
-            this.promiseCounter.waitForCompletion();
+        if(revalidate)
+        { await this.startValidateModel(); }
 
-        return promise.then(() => { return this.propertyErrors; });
+        await this.promiseCounter.waitForCompletion();
+        return this.propertyErrors;
     }
 
-    public getPropertyError = (propertyRoute: string, revalidate = false): Promise<any> =>
+    public getPropertyError = async(propertyRoute: string, revalidate = false): Promise<any> =>
     {
-        var promise = revalidate ?
-            this.startValidateProperty(propertyRoute).promiseCounter.waitForCompletion() :
-            this.promiseCounter.waitForCompletion();
+        if(revalidate)
+        { await this.startValidateProperty(propertyRoute); }
 
-        return promise.then(() => this.propertyErrors[propertyRoute])
+        await this.promiseCounter.waitForCompletion();
+        return this.propertyErrors[propertyRoute];
     }
 
     public release = () => {}

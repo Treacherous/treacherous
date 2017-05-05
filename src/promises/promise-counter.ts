@@ -3,7 +3,7 @@ export class PromiseCounter
     private activePromises = [];
     private validationCounter = 0;
 
-    public waitForCompletion = () => {
+    public waitForCompletion = async() : Promise<any> => {
         var resolver = (resolve) => {
             this.validationCounter ? this.activePromises.push(() => resolve() ) : resolve()
         };
@@ -11,7 +11,7 @@ export class PromiseCounter
         return new Promise(resolver);
     }
 
-    public countPromise = (promise: Promise<any>) => {
+    public countPromise = async(promise: Promise<any>) => {
         if(!promise) { return Promise.resolve(undefined); }
         if(!promise.then) { throw new Error("Non-Promise pass in: " + promise) }
 

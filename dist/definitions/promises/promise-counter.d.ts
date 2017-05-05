@@ -1,7 +1,7 @@
 export declare class PromiseCounter {
     private activePromises;
     private validationCounter;
-    waitForCompletion: () => Promise<{}>;
+    waitForCompletion: () => Promise<any>;
     countPromise: (promise: Promise<any>) => Promise<any>;
     private decrementCounter;
     private incrementCounter;
