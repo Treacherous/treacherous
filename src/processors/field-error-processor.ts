@@ -11,7 +11,7 @@ export class FieldErrorProcessor implements IFieldErrorProcessor
     // Validates a single property against a model
     public async processRuleLink(modelResolver: IModelResolver, propertyName: any, ruleLink: RuleLink): Promise<any>{
 
-        var shouldRuleApply = ruleLink.appliesIf === true
+        let shouldRuleApply = ruleLink.appliesIf === true
             || ((typeof(ruleLink.appliesIf) === "function")
                 ? (<((model:any, value: any, ruleOptions?: any) => boolean)>(ruleLink.appliesIf))(modelResolver, propertyName, ruleLink.ruleOptions)
                 : false);
@@ -40,7 +40,7 @@ export class FieldErrorProcessor implements IFieldErrorProcessor
 
     // Loops through each rule on a property, adds it to a chain, then calls Promise.all
     // Probably not correct, as they won't fire sequentially? Promises need to be chained
-    public checkFieldForErrors(modelResolver: IModelResolver, propertyName: any, rules: any): Promise<string>
+    public async checkFieldForErrors(modelResolver: IModelResolver, propertyName: any, rules: any): Promise<string>
     {
         let ruleCheck = (ruleLinkOrSet: any): Promise<any>  => {
             return this.processRuleLink(modelResolver, propertyName, ruleLinkOrSet);

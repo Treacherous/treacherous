@@ -1,18 +1,8 @@
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-define(["require", "exports", "../rulesets/rule-resolver", "./validation-group"], function (require, exports, rule_resolver_1, validation_group_1) {
+define(["require", "exports", "tslib", "../rulesets/rule-resolver", "./validation-group"], function (require, exports, tslib_1, rule_resolver_1, validation_group_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var ReactiveValidationGroup = (function (_super) {
-        __extends(ReactiveValidationGroup, _super);
+        tslib_1.__extends(ReactiveValidationGroup, _super);
         function ReactiveValidationGroup(fieldErrorProcessor, ruleResolver, modelResolverFactory, modelWatcherFactory, model, ruleset, refreshRate) {
             if (ruleResolver === void 0) { ruleResolver = new rule_resolver_1.RuleResolver(); }
             if (refreshRate === void 0) { refreshRate = 500; }

@@ -5,14 +5,13 @@ var paths = require("../paths");
 
 var compileFor = function(moduleType, withTypings) {
     var target = moduleType === "commonjs" || moduleType === "amd" ? "es5" : "es2017";
+    var tsProject = ts.createProject('tsconfig.json', {
+        declaration: withTypings || false,
+        module: moduleType,
+        target: target
+    });
     var tsResult = gulp.src([paths.source])
-        .pipe(ts({
-            declaration: withTypings || false,
-            module: moduleType,
-            target: target,
-            moduleResolution: "node",
-            lib: ["es2016", "dom"]
-        }));
+        .pipe(tsProject());
 
     if(withTypings) {
         return merge([
