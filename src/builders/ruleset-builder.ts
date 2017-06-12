@@ -4,6 +4,8 @@ import {ForEachRule} from "../rulesets/for-each-rule";
 import {RuleRegistry} from "../rules/rule-registry";
 import {TypeHelper} from "../helpers/type-helper";
 import {IModelResolver} from "../resolvers/imodel-resolver";
+import {ICompositeValidationRule} from "../rules/composite/icomposite-validation-rule";
+import {DynamicCompositeValidationRule} from "../rules/composite/dynamic-composite-validation-rule";
 
 export class RulesetBuilder<T>
 {
@@ -14,8 +16,8 @@ export class RulesetBuilder<T>
     constructor(private ruleRegistry?: RuleRegistry) {}
 
     protected extractPropertyName(predicate: (model: T) => any) : string {
-        var regex = /.*\.([\w]*);/;
-        var predicateString = predicate.toString();
+        let regex = /.*\.([\w]*);/;
+        let predicateString = predicate.toString();
         return regex.exec(predicateString)[1];
     }
 
@@ -41,7 +43,7 @@ export class RulesetBuilder<T>
 
     public forProperty = (propertyNameOrPredicate: ((model: T) => any) | string): RulesetBuilder<T> =>
     {
-        var endProperty = propertyNameOrPredicate;
+        let endProperty = propertyNameOrPredicate;
         if(TypeHelper.isFunctionType(endProperty))
         {
             endProperty = this.extractPropertyName(<any>propertyNameOrPredicate);
@@ -58,6 +60,17 @@ export class RulesetBuilder<T>
         this.verifyRuleNameIsValid(rule);
         this.verifyExistingProperty();
         this.internalRuleset.addRule(this.currentProperty, this.currentRule=new RuleLink(rule, ruleOptions));
+        return this;
+    }
+
+    public addCompositeRule = (compositeRule: ICompositeValidationRule): RulesetBuilder<T> => {
+        this.internalRuleset.compositeRules[compositeRule.propertyName] = compositeRule;
+        return this;
+    }
+
+    public addDynamicRule = (propertyName: string, validate: ((modelResolver: IModelResolver) => Promise<boolean>), getMessage: ((modelResolver: IModelResolver) => string)) => {
+        let compositeRule = new DynamicCompositeValidationRule(propertyName, validate, getMessage);
+        this.internalRuleset.compositeRules[propertyName] = compositeRule;
         return this;
     }
 
@@ -80,7 +93,7 @@ export class RulesetBuilder<T>
         this.verifyRuleNameIsValid(rule);
         this.verifyExistingProperty();
 
-        var ruleLink = new RuleLink(rule, ruleOptions);
+        let ruleLink = new RuleLink(rule, ruleOptions);
         this.currentRule = ruleLink;
         this.internalRuleset.addRule(this.currentProperty, new ForEachRule<RuleLink>(ruleLink));
 

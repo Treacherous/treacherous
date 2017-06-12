@@ -2,6 +2,7 @@ import { Ruleset } from "../rulesets/ruleset";
 import { RuleLink } from "../rulesets/rule-link";
 import { ForEachRule } from "../rulesets/for-each-rule";
 import { TypeHelper } from "../helpers/type-helper";
+import { DynamicCompositeValidationRule } from "../rules/composite/dynamic-composite-validation-rule";
 export class RulesetBuilder {
     constructor(ruleRegistry) {
         this.ruleRegistry = ruleRegistry;
@@ -24,7 +25,7 @@ export class RulesetBuilder {
             return this;
         };
         this.forProperty = (propertyNameOrPredicate) => {
-            var endProperty = propertyNameOrPredicate;
+            let endProperty = propertyNameOrPredicate;
             if (TypeHelper.isFunctionType(endProperty)) {
                 endProperty = this.extractPropertyName(propertyNameOrPredicate);
                 if (!endProperty) {
@@ -41,6 +42,15 @@ export class RulesetBuilder {
             this.internalRuleset.addRule(this.currentProperty, this.currentRule = new RuleLink(rule, ruleOptions));
             return this;
         };
+        this.addCompositeRule = (compositeRule) => {
+            this.internalRuleset.compositeRules[compositeRule.propertyName] = compositeRule;
+            return this;
+        };
+        this.addDynamicRule = (propertyName, validate, getMessage) => {
+            let compositeRule = new DynamicCompositeValidationRule(propertyName, validate, getMessage);
+            this.internalRuleset.compositeRules[propertyName] = compositeRule;
+            return this;
+        };
         this.withMessage = (messageOverride) => {
             this.verifyExistingProperty();
             this.currentRule.messageOverride = messageOverride;
@@ -54,7 +64,7 @@ export class RulesetBuilder {
         this.addRuleForEach = (rule, ruleOptions) => {
             this.verifyRuleNameIsValid(rule);
             this.verifyExistingProperty();
-            var ruleLink = new RuleLink(rule, ruleOptions);
+            let ruleLink = new RuleLink(rule, ruleOptions);
             this.currentRule = ruleLink;
             this.internalRuleset.addRule(this.currentProperty, new ForEachRule(ruleLink));
             return this;
@@ -74,8 +84,8 @@ export class RulesetBuilder {
         };
     }
     extractPropertyName(predicate) {
-        var regex = /.*\.([\w]*);/;
-        var predicateString = predicate.toString();
+        let regex = /.*\.([\w]*);/;
+        let predicateString = predicate.toString();
         return regex.exec(predicateString)[1];
     }
 }

@@ -7,6 +7,7 @@ import {IModelResolver} from "../../src/resolvers/imodel-resolver";
 import {ValidationGroup} from "../../src/validation-groups/validation-group";
 import {IValidationGroup} from "../../src/validation-groups/ivalidation-group";
 import {ModelResolverFactory} from "../../src/factories/model-resolver-factory";
+import {DynamicCompositeValidationRule} from "../../src/index";
 
 describe('Validation Group', function () {
 
@@ -733,5 +734,38 @@ describe('Validation Group', function () {
         dummyModel.foo = "this is now no longer valid";
         validationGroup.getPropertyError("foo", true);
     });
+
+    /*
+    it('should correctly trigger validation changes when composite rules trigger', function (done) {
+
+        let validationName = "testCompositeRule";
+        let compositeRule = new DynamicCompositeValidationRule(
+            validationName,
+            () => { return Promise.resolve(false); },
+            () => { return "validation triggered" });
+
+        let rulesetBuilder = new RulesetBuilder();
+        let ruleset = rulesetBuilder.create()
+            .addCompositeRule(compositeRule)
+            .build();
+
+        let dummyModel = {
+            foo: ""
+        };
+
+        let validationGroup = createValidationGroupFor(dummyModel, ruleset);
+        validationGroup.modelStateChangedEvent.subscribe(function(args){
+            console.log("vg", validationGroup);
+            expect(args.isValid).to.be.false;
+            validationGroup.release();
+            done();
+        });
+
+        validationGroup.getPropertyError(validationName, true)
+            .then((error) => {
+                console.log(error);
+            });
+    });
+*/
 
 });

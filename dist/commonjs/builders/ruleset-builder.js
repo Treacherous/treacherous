@@ -4,6 +4,7 @@ var ruleset_1 = require("../rulesets/ruleset");
 var rule_link_1 = require("../rulesets/rule-link");
 var for_each_rule_1 = require("../rulesets/for-each-rule");
 var type_helper_1 = require("../helpers/type-helper");
+var dynamic_composite_validation_rule_1 = require("../rules/composite/dynamic-composite-validation-rule");
 var RulesetBuilder = (function () {
     function RulesetBuilder(ruleRegistry) {
         var _this = this;
@@ -42,6 +43,15 @@ var RulesetBuilder = (function () {
             _this.verifyRuleNameIsValid(rule);
             _this.verifyExistingProperty();
             _this.internalRuleset.addRule(_this.currentProperty, _this.currentRule = new rule_link_1.RuleLink(rule, ruleOptions));
+            return _this;
+        };
+        this.addCompositeRule = function (compositeRule) {
+            _this.internalRuleset.compositeRules[compositeRule.propertyName] = compositeRule;
+            return _this;
+        };
+        this.addDynamicRule = function (propertyName, validate, getMessage) {
+            var compositeRule = new dynamic_composite_validation_rule_1.DynamicCompositeValidationRule(propertyName, validate, getMessage);
+            _this.internalRuleset.compositeRules[propertyName] = compositeRule;
             return _this;
         };
         this.withMessage = function (messageOverride) {

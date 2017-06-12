@@ -2,6 +2,7 @@ import { Ruleset } from "../rulesets/ruleset";
 import { RuleLink } from "../rulesets/rule-link";
 import { RuleRegistry } from "../rules/rule-registry";
 import { IModelResolver } from "../resolvers/imodel-resolver";
+import { ICompositeValidationRule } from "../rules/composite/icomposite-validation-rule";
 export declare class RulesetBuilder<T> {
     private ruleRegistry;
     protected internalRuleset: Ruleset;
@@ -14,6 +15,8 @@ export declare class RulesetBuilder<T> {
     create: () => RulesetBuilder<T>;
     forProperty: (propertyNameOrPredicate: string | ((model: T) => any)) => RulesetBuilder<T>;
     addRule: (rule: string, ruleOptions?: any) => RulesetBuilder<T>;
+    addCompositeRule: (compositeRule: ICompositeValidationRule) => RulesetBuilder<T>;
+    addDynamicRule: (propertyName: string, validate: (modelResolver: IModelResolver) => Promise<boolean>, getMessage: (modelResolver: IModelResolver) => string) => this;
     withMessage: (messageOverride: string | ((value: any, ruleOptions?: any) => string)) => RulesetBuilder<T>;
     appliesIf: (appliesFunction: boolean | ((modelResolver: IModelResolver, value: any, ruleOptions?: any) => boolean)) => RulesetBuilder<T>;
     addRuleForEach: (rule: string, ruleOptions?: any) => RulesetBuilder<T>;

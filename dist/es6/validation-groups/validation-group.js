@@ -13,8 +13,8 @@ export class ValidationGroup {
         this.ruleset = ruleset;
         this.propertyErrors = {};
         this.validatePropertyWithRuleLinks = async (propertyName, propertyRules) => {
-            var activePromise = this.fieldErrorProcessor.checkFieldForErrors(this.modelResolver, propertyName, propertyRules);
-            var possibleErrors = await this.promiseCounter.countPromise(activePromise);
+            let activePromise = this.fieldErrorProcessor.checkFieldForErrors(this.modelResolver, propertyName, propertyRules);
+            let possibleErrors = await this.promiseCounter.countPromise(activePromise);
             let hadErrors = this.hasErrors();
             if (!possibleErrors) {
                 if (this.propertyErrors[propertyName]) {
@@ -58,7 +58,7 @@ export class ValidationGroup {
                 throw (ex);
             }
             let routeEachRule = (ruleLinkOrSet) => {
-                if (this.isForEach(ruleLinkOrSet)) {
+                if (ValidationGroup.isForEach(ruleLinkOrSet)) {
                     let isCurrentlyAnArray = TypeHelper.isArrayType(currentValue);
                     if (isCurrentlyAnArray) {
                         currentValue.forEach((element, index) => {
@@ -67,7 +67,7 @@ export class ValidationGroup {
                         });
                     }
                     else {
-                        if (this.isRuleset(ruleLinkOrSet.internalRule)) {
+                        if (ValidationGroup.isRuleset(ruleLinkOrSet.internalRule)) {
                             ruleSets.push(ruleLinkOrSet.internalRule);
                         }
                         else {
@@ -75,7 +75,7 @@ export class ValidationGroup {
                         }
                     }
                 }
-                else if (this.isRuleset(ruleLinkOrSet)) {
+                else if (ValidationGroup.isRuleset(ruleLinkOrSet)) {
                     ruleSets.push(ruleLinkOrSet);
                 }
                 else {
@@ -88,12 +88,54 @@ export class ValidationGroup {
                 this.validatePropertyWithRuleSet(propertyRoute, ruleSet);
             });
         };
-        this.startValidateProperty = (propertyRoute) => {
+        this.startValidateProperty = async (propertyRoute) => {
+            if (this.ruleset.compositeRules !== {}) {
+                await this.validateCompositeRules();
+            }
+            /*
+            if(this.ruleset.compositeRules[propertyRoute])
+            { return; }
+    */
             let rulesForProperty = this.ruleResolver.resolvePropertyRules(propertyRoute, this.ruleset);
             if (!rulesForProperty) {
                 return;
             }
             return this.validatePropertyWithRules(propertyRoute, rulesForProperty);
+        };
+        this.validateCompositeRule = async (compositeRule) => {
+            let hadErrors = this.hasErrors();
+            let isValid = await compositeRule.validate(this.modelResolver);
+            if (isValid) {
+                if (this.propertyErrors[compositeRule.propertyName]) {
+                    delete this.propertyErrors[compositeRule.propertyName];
+                    let eventArgs = new PropertyStateChangedEvent(compositeRule.propertyName, true);
+                    this.propertyStateChangedEvent.publish(eventArgs);
+                }
+                let stillHasErrors = hadErrors && this.hasErrors();
+                if (!stillHasErrors) {
+                    this.modelStateChangedEvent.publish(new ModelStateChangedEvent(true));
+                }
+                await this.promiseCounter.waitForCompletion();
+                return;
+            }
+            let previousError = this.propertyErrors[compositeRule.propertyName];
+            let currentError = compositeRule.getMessage(this.modelResolver);
+            this.propertyErrors[compositeRule.propertyName] = currentError;
+            if (currentError != previousError) {
+                let eventArgs = new PropertyStateChangedEvent(compositeRule.propertyName, false, currentError);
+                this.propertyStateChangedEvent.publish(eventArgs);
+                if (!hadErrors) {
+                    this.modelStateChangedEvent.publish(new ModelStateChangedEvent(false));
+                }
+            }
+            await this.promiseCounter.waitForCompletion();
+            return this.propertyErrors[compositeRule.propertyName];
+        };
+        this.validateCompositeRules = async () => {
+            for (let propertyName in this.ruleset.compositeRules) {
+                let compositeRule = this.ruleset.compositeRules[propertyName];
+                await this.validateCompositeRule(compositeRule);
+            }
         };
         this.startValidateModel = () => {
             for (let parameterName in this.ruleset.rules) {
@@ -133,10 +175,10 @@ export class ValidationGroup {
         this.promiseCounter = new PromiseCounter();
         this.modelResolver = this.modelResolverFactory.createModelResolver(model);
     }
-    isRuleset(possibleRuleset) {
+    static isRuleset(possibleRuleset) {
         return (typeof (possibleRuleset.addRule) == "function");
     }
-    isForEach(possibleForEach) {
+    static isForEach(possibleForEach) {
         return possibleForEach.isForEach;
     }
     hasErrors() {

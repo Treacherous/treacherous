@@ -1,4 +1,4 @@
-define(["require", "exports", "../rulesets/ruleset", "../rulesets/rule-link", "../rulesets/for-each-rule", "../helpers/type-helper"], function (require, exports, ruleset_1, rule_link_1, for_each_rule_1, type_helper_1) {
+define(["require", "exports", "../rulesets/ruleset", "../rulesets/rule-link", "../rulesets/for-each-rule", "../helpers/type-helper", "../rules/composite/dynamic-composite-validation-rule"], function (require, exports, ruleset_1, rule_link_1, for_each_rule_1, type_helper_1, dynamic_composite_validation_rule_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var RulesetBuilder = (function () {
@@ -39,6 +39,15 @@ define(["require", "exports", "../rulesets/ruleset", "../rulesets/rule-link", ".
                 _this.verifyRuleNameIsValid(rule);
                 _this.verifyExistingProperty();
                 _this.internalRuleset.addRule(_this.currentProperty, _this.currentRule = new rule_link_1.RuleLink(rule, ruleOptions));
+                return _this;
+            };
+            this.addCompositeRule = function (compositeRule) {
+                _this.internalRuleset.compositeRules[compositeRule.propertyName] = compositeRule;
+                return _this;
+            };
+            this.addDynamicRule = function (propertyName, validate, getMessage) {
+                var compositeRule = new dynamic_composite_validation_rule_1.DynamicCompositeValidationRule(propertyName, validate, getMessage);
+                _this.internalRuleset.compositeRules[propertyName] = compositeRule;
                 return _this;
             };
             this.withMessage = function (messageOverride) {
