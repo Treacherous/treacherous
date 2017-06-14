@@ -166,6 +166,9 @@ export class ValidationGroup {
             await this.promiseCounter.waitForCompletion();
             return this.propertyErrors[propertyRoute];
         };
+        this.getPropertyDisplayName = (propertyRoute) => {
+            return this.ruleset.getPropertyDisplayName(propertyRoute);
+        };
         this.release = () => { };
         this.propertyStateChangedEvent = new EventHandler(this);
         this.modelStateChangedEvent = new EventHandler(this);

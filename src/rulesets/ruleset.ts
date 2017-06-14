@@ -36,6 +36,6 @@ export class Ruleset
     public getCompositeRulesRulesForProperty = (propertyName: string): Array<any> =>
     { return this.compositeRules[propertyName]; }
 
-    public getPropertyDisplayName = (propertyName: string): Array<any> =>
-    { return this.propertyDisplayNames[propertyName]; }
+    public getPropertyDisplayName = (propertyName: string): string =>
+    { return this.propertyDisplayNames[propertyName] || propertyName; }
 }

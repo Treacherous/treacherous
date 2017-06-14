@@ -241,5 +241,9 @@ export class ValidationGroup implements IValidationGroup
         return this.propertyErrors[propertyRoute];
     }
 
+    public getPropertyDisplayName = (propertyRoute: string): string => {
+        return this.ruleset.getPropertyDisplayName(propertyRoute);
+    }
+
     public release = () => {}
 }

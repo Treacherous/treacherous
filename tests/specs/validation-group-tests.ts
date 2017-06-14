@@ -821,4 +821,23 @@ describe('Validation Group', function () {
         validationGroup.getPropertyError(validationName, true);
     });
 
+    it('should correctly get property display name', function () {
+        let displayName = "User's name";
+        let rulesetBuilder = new RulesetBuilder();
+        let ruleset = rulesetBuilder.create()
+            .forProperty("username")
+                .addRule("required")
+                .withDisplayName(displayName)
+            .build();
+
+        let dummyModel = {
+            username: ""
+        };
+
+        let validationGroup = createValidationGroupFor(dummyModel, ruleset);
+        let actualDisplayName = validationGroup.getPropertyDisplayName("username");
+
+        expect(actualDisplayName).to.equal(displayName);
+    });
+
 });

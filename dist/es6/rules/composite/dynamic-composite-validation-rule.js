@@ -1,7 +1,15 @@
 export class DynamicCompositeValidationRule {
-    constructor(propertyName, validate, getMessage) {
+    constructor(propertyName, validate, message) {
         this.propertyName = propertyName;
         this.validate = validate;
-        this.getMessage = getMessage;
+        this.message = message;
+    }
+    getMessage(modelResolver) {
+        if (typeof (this.message) === "function") {
+            return this.message(modelResolver);
+        }
+        else {
+            return this.message;
+        }
     }
 }

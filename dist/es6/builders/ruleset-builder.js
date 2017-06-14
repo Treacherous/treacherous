@@ -46,6 +46,11 @@ export class RulesetBuilder {
             this.internalRuleset.compositeRules[compositeRule.propertyName] = compositeRule;
             return this;
         };
+        this.withDisplayName = (displayName) => {
+            this.verifyExistingProperty();
+            this.internalRuleset.propertyDisplayNames[this.currentProperty] = displayName;
+            return this;
+        };
         this.addDynamicRule = (propertyName, validate, getMessage) => {
             let compositeRule = new DynamicCompositeValidationRule(propertyName, validate, getMessage);
             this.internalRuleset.compositeRules[propertyName] = compositeRule;
