@@ -22,7 +22,7 @@ each framework/platforms many different validation paradigms or libraries.
 - Can be integrated with any front end framework`*`
 - Works in browser or server
 
-`*` = Currently supports [knockout](https://github.com/grofit/treacherous-knockout), [aurelia] (https://github.com/grofit/treacherous-aurelia), others coming soon.
+`*` = Currently supports [knockout](https://github.com/grofit/treacherous-knockout), [aurelia](https://github.com/grofit/treacherous-aurelia), others coming soon i.e vuejs, ng.
 
 ---
 
