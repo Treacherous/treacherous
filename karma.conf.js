@@ -43,6 +43,10 @@ module.exports = function(config) {
         // Continuous Integration mode
         singleRun: true,
 
+        mime: {
+            'text/x-typescript': ['ts','tsx']
+        },
+
         phantomjsLauncher: {
             // Have phantomjs exit if a ResourceError is encountered (useful if karma exits without killing phantom)
             exitOnResourceError: true

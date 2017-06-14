@@ -68,7 +68,7 @@ export class RulesetBuilder<T>
         return this;
     }
 
-    public addDynamicRule = (propertyName: string, validate: ((modelResolver: IModelResolver) => Promise<boolean>), getMessage: ((modelResolver: IModelResolver) => string)) => {
+    public addDynamicRule = (propertyName: string, validate: ICompositeValidationRule["validate"], getMessage: ((modelResolver: IModelResolver) => string) | string) => {
         let compositeRule = new DynamicCompositeValidationRule(propertyName, validate, getMessage);
         this.internalRuleset.compositeRules[propertyName] = compositeRule;
         return this;

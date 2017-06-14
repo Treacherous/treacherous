@@ -134,4 +134,42 @@ describe('Treacherous Sanity Checks', function () {
             done();
         }, 1500);
     });
+
+    it("should correctly allow composite rules and normal rules and work together", async function(){
+        let ruleSet = createRuleset()
+            .forProperty("number1").addRule("minValue", 1)
+            .addDynamicRule("totalNumber",
+                x => {
+                     let total = x.resolve("number1") + x.resolve("number2");
+                     return Promise.resolve(total > 10);
+                },
+                "The total is not greater than 10")
+            .build();
+
+        let model = {
+            number1: 0,
+            number2: 0
+        };
+
+        let valGroup = createGroup().build(model, ruleSet);
+
+        let initialErrors = await valGroup.getModelErrors(true);
+        expect(initialErrors).to.include.keys("number1");
+        expect(initialErrors).to.include.keys("totalNumber");
+        console.log("initial", initialErrors);
+
+        model.number1 = 8;
+
+        let nextErrors = await valGroup.getModelErrors(true);
+        expect(nextErrors).to.not.include.keys("number1");
+        expect(nextErrors).to.include.keys("totalNumber");
+        console.log("next", nextErrors);
+
+        model.number2 = 5;
+
+        let noErrors = await valGroup.getModelErrors(true);
+        expect(noErrors).to.not.include.keys("number1");
+        expect(noErrors).to.not.include.keys("totalNumber");
+        console.log("last", noErrors);
+    });
 });

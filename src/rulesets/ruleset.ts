@@ -5,7 +5,7 @@ import {ICompositeValidationRule} from "../rules/composite/icomposite-validation
 export class Ruleset
 {
     public rules = {};
-    public compositeRules: {};
+    public compositeRules = {};
     public propertyDisplayNames = {};
 
     private createPropertyEntryIfNeeded = (property: string): void =>

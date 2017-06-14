@@ -1,6 +1,7 @@
 export class Ruleset {
     constructor() {
         this.rules = {};
+        this.compositeRules = {};
         this.propertyDisplayNames = {};
         this.createPropertyEntryIfNeeded = (property) => {
             if (!this.rules[property]) {

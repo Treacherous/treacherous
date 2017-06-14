@@ -143,10 +143,9 @@ export class ValidationGroup implements IValidationGroup
         if(this.ruleset.compositeRules !== {})
         { await this.validateCompositeRules(); }
 
-        /*
-        if(this.ruleset.compositeRules[propertyRoute])
+        if(this.ruleset.compositeRules[propertyRoute] !== undefined)
         { return; }
-*/
+
         let rulesForProperty = this.ruleResolver.resolvePropertyRules(propertyRoute, this.ruleset);
         if(!rulesForProperty) { return; }
 
@@ -155,7 +154,7 @@ export class ValidationGroup implements IValidationGroup
 
     protected validateCompositeRule = async(compositeRule: ICompositeValidationRule) => {
         let hadErrors = this.hasErrors();
-        let isValid = await compositeRule.validate(this.modelResolver)
+        let isValid = await compositeRule.validate(this.modelResolver);
 
         if(isValid)
         {
@@ -169,8 +168,6 @@ export class ValidationGroup implements IValidationGroup
             let stillHasErrors = hadErrors && this.hasErrors();
             if (!stillHasErrors)
             { this.modelStateChangedEvent.publish(new ModelStateChangedEvent(true)); }
-
-            await this.promiseCounter.waitForCompletion();
             return;
         }
 
@@ -187,7 +184,6 @@ export class ValidationGroup implements IValidationGroup
             { this.modelStateChangedEvent.publish(new ModelStateChangedEvent(false)); }
         }
 
-        await this.promiseCounter.waitForCompletion();
         return this.propertyErrors[compositeRule.propertyName];
     }
 
@@ -195,7 +191,7 @@ export class ValidationGroup implements IValidationGroup
         for(let propertyName in this.ruleset.compositeRules)
         {
             let compositeRule = this.ruleset.compositeRules[propertyName];
-            await this.validateCompositeRule(compositeRule);
+            this.validateCompositeRule(compositeRule);
         }
     }
 
@@ -239,7 +235,7 @@ export class ValidationGroup implements IValidationGroup
     public getPropertyError = async(propertyRoute: string, revalidate = false): Promise<any> =>
     {
         if(revalidate)
-        { await this.startValidateProperty(propertyRoute); }
+        { this.startValidateProperty(propertyRoute); }
 
         await this.promiseCounter.waitForCompletion();
         return this.propertyErrors[propertyRoute];

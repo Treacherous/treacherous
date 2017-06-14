@@ -92,10 +92,9 @@ export class ValidationGroup {
             if (this.ruleset.compositeRules !== {}) {
                 await this.validateCompositeRules();
             }
-            /*
-            if(this.ruleset.compositeRules[propertyRoute])
-            { return; }
-    */
+            if (this.ruleset.compositeRules[propertyRoute] !== undefined) {
+                return;
+            }
             let rulesForProperty = this.ruleResolver.resolvePropertyRules(propertyRoute, this.ruleset);
             if (!rulesForProperty) {
                 return;
@@ -115,7 +114,6 @@ export class ValidationGroup {
                 if (!stillHasErrors) {
                     this.modelStateChangedEvent.publish(new ModelStateChangedEvent(true));
                 }
-                await this.promiseCounter.waitForCompletion();
                 return;
             }
             let previousError = this.propertyErrors[compositeRule.propertyName];
@@ -128,13 +126,12 @@ export class ValidationGroup {
                     this.modelStateChangedEvent.publish(new ModelStateChangedEvent(false));
                 }
             }
-            await this.promiseCounter.waitForCompletion();
             return this.propertyErrors[compositeRule.propertyName];
         };
         this.validateCompositeRules = async () => {
             for (let propertyName in this.ruleset.compositeRules) {
                 let compositeRule = this.ruleset.compositeRules[propertyName];
-                await this.validateCompositeRule(compositeRule);
+                this.validateCompositeRule(compositeRule);
             }
         };
         this.startValidateModel = () => {
@@ -164,7 +161,7 @@ export class ValidationGroup {
         };
         this.getPropertyError = async (propertyRoute, revalidate = false) => {
             if (revalidate) {
-                await this.startValidateProperty(propertyRoute);
+                this.startValidateProperty(propertyRoute);
             }
             await this.promiseCounter.waitForCompletion();
             return this.propertyErrors[propertyRoute];

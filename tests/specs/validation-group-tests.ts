@@ -8,6 +8,7 @@ import {ValidationGroup} from "../../src/validation-groups/validation-group";
 import {IValidationGroup} from "../../src/validation-groups/ivalidation-group";
 import {ModelResolverFactory} from "../../src/factories/model-resolver-factory";
 import {DynamicCompositeValidationRule} from "../../src/index";
+import {PropertyStateChangedEvent} from "../../src/events/property-state-changed-event";
 
 describe('Validation Group', function () {
 
@@ -735,14 +736,42 @@ describe('Validation Group', function () {
         validationGroup.getPropertyError("foo", true);
     });
 
-    /*
-    it('should correctly trigger validation changes when composite rules trigger', function (done) {
-
+    it('should correctly return errors for composite rules with getPropertyError', function (done) {
         let validationName = "testCompositeRule";
+        let expectedError = "validation triggered";
+
         let compositeRule = new DynamicCompositeValidationRule(
             validationName,
             () => { return Promise.resolve(false); },
-            () => { return "validation triggered" });
+            () => { return expectedError });
+
+        let rulesetBuilder = new RulesetBuilder();
+        let ruleset = rulesetBuilder.create()
+            .addCompositeRule(compositeRule)
+            .build();
+
+        let dummyModel = {
+            foo: ""
+        };
+
+        let validationGroup = createValidationGroupFor(dummyModel, ruleset);
+
+        validationGroup.getPropertyError(validationName, true)
+            .then((error) => {
+                expect(error).to.equal(expectedError);
+                validationGroup.release();
+                done();
+            });
+    });
+
+    it('should correctly raise model validation changes for composite rule changes', function (done) {
+        let validationName = "testCompositeRule";
+        let expectedError = "validation triggered";
+
+        let compositeRule = new DynamicCompositeValidationRule(
+            validationName,
+            () => { return Promise.resolve(false); },
+            () => { return expectedError });
 
         let rulesetBuilder = new RulesetBuilder();
         let ruleset = rulesetBuilder.create()
@@ -755,17 +784,41 @@ describe('Validation Group', function () {
 
         let validationGroup = createValidationGroupFor(dummyModel, ruleset);
         validationGroup.modelStateChangedEvent.subscribe(function(args){
-            console.log("vg", validationGroup);
             expect(args.isValid).to.be.false;
             validationGroup.release();
             done();
         });
 
-        validationGroup.getPropertyError(validationName, true)
-            .then((error) => {
-                console.log(error);
-            });
+        validationGroup.getPropertyError(validationName, true);
     });
-*/
+
+    it('should correctly raise property validation changes for composite rule changes', function (done) {
+        let validationName = "testCompositeRule";
+        let expectedError = "validation triggered";
+
+        let compositeRule = new DynamicCompositeValidationRule(
+            validationName,
+            () => { return Promise.resolve(false); },
+            () => { return expectedError });
+
+        let rulesetBuilder = new RulesetBuilder();
+        let ruleset = rulesetBuilder.create()
+            .addCompositeRule(compositeRule)
+            .build();
+
+        let dummyModel = {
+            foo: ""
+        };
+
+        let validationGroup = createValidationGroupFor(dummyModel, ruleset);
+        validationGroup.propertyStateChangedEvent.subscribe(function(args: PropertyStateChangedEvent){
+            expect(args.isValid).to.be.false;
+            expect(args.property).to.equal(validationName);
+            validationGroup.release();
+            done();
+        });
+
+        validationGroup.getPropertyError(validationName, true);
+    });
 
 });
