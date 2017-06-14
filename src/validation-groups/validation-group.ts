@@ -158,10 +158,10 @@ export class ValidationGroup implements IValidationGroup
 
         if(isValid)
         {
-            if(this.propertyErrors[compositeRule.propertyName])
+            if(this.propertyErrors[compositeRule.virtualPropertyName])
             {
-                delete this.propertyErrors[compositeRule.propertyName];
-                let eventArgs = new PropertyStateChangedEvent(compositeRule.propertyName, true);
+                delete this.propertyErrors[compositeRule.virtualPropertyName];
+                let eventArgs = new PropertyStateChangedEvent(compositeRule.virtualPropertyName, true);
                 this.propertyStateChangedEvent.publish(eventArgs);
             }
 
@@ -171,20 +171,20 @@ export class ValidationGroup implements IValidationGroup
             return;
         }
 
-        let previousError = this.propertyErrors[compositeRule.propertyName];
+        let previousError = this.propertyErrors[compositeRule.virtualPropertyName];
         let currentError = compositeRule.getMessage(this.modelResolver);
-        this.propertyErrors[compositeRule.propertyName] = currentError;
+        this.propertyErrors[compositeRule.virtualPropertyName] = currentError;
 
         if(currentError != previousError)
         {
-            let eventArgs = new PropertyStateChangedEvent(compositeRule.propertyName, false, currentError);
+            let eventArgs = new PropertyStateChangedEvent(compositeRule.virtualPropertyName, false, currentError);
             this.propertyStateChangedEvent.publish(eventArgs);
 
             if (!hadErrors)
             { this.modelStateChangedEvent.publish(new ModelStateChangedEvent(false)); }
         }
 
-        return this.propertyErrors[compositeRule.propertyName];
+        return this.propertyErrors[compositeRule.virtualPropertyName];
     }
 
     protected validateCompositeRules = async () => {

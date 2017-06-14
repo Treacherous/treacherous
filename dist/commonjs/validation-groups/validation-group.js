@@ -133,9 +133,9 @@ var ValidationGroup = (function () {
                     case 1:
                         isValid = _a.sent();
                         if (isValid) {
-                            if (this.propertyErrors[compositeRule.propertyName]) {
-                                delete this.propertyErrors[compositeRule.propertyName];
-                                eventArgs = new property_state_changed_event_1.PropertyStateChangedEvent(compositeRule.propertyName, true);
+                            if (this.propertyErrors[compositeRule.virtualPropertyName]) {
+                                delete this.propertyErrors[compositeRule.virtualPropertyName];
+                                eventArgs = new property_state_changed_event_1.PropertyStateChangedEvent(compositeRule.virtualPropertyName, true);
                                 this.propertyStateChangedEvent.publish(eventArgs);
                             }
                             stillHasErrors = hadErrors && this.hasErrors();
@@ -144,17 +144,17 @@ var ValidationGroup = (function () {
                             }
                             return [2 /*return*/];
                         }
-                        previousError = this.propertyErrors[compositeRule.propertyName];
+                        previousError = this.propertyErrors[compositeRule.virtualPropertyName];
                         currentError = compositeRule.getMessage(this.modelResolver);
-                        this.propertyErrors[compositeRule.propertyName] = currentError;
+                        this.propertyErrors[compositeRule.virtualPropertyName] = currentError;
                         if (currentError != previousError) {
-                            eventArgs = new property_state_changed_event_1.PropertyStateChangedEvent(compositeRule.propertyName, false, currentError);
+                            eventArgs = new property_state_changed_event_1.PropertyStateChangedEvent(compositeRule.virtualPropertyName, false, currentError);
                             this.propertyStateChangedEvent.publish(eventArgs);
                             if (!hadErrors) {
                                 this.modelStateChangedEvent.publish(new model_state_changed_event_1.ModelStateChangedEvent(false));
                             }
                         }
-                        return [2 /*return*/, this.propertyErrors[compositeRule.propertyName]];
+                        return [2 /*return*/, this.propertyErrors[compositeRule.virtualPropertyName]];
                 }
             });
         }); };

@@ -25,7 +25,7 @@ export class Ruleset
     }
 
     public addCompositeRule = (compositeRule: ICompositeValidationRule) : void =>
-    { this.compositeRules[compositeRule.propertyName] = compositeRule; }
+    { this.compositeRules[compositeRule.virtualPropertyName] = compositeRule; }
 
     public addPropertyDisplayName = (propertyName: string, displayName) : string =>
     { return this.propertyDisplayNames[propertyName] = displayName; }

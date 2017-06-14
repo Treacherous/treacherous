@@ -20,7 +20,7 @@ define(["require", "exports"], function (require, exports) {
                 _this.createPropertyEntryIfNeeded(property);
                 _this.rules[property].push(ruleset);
             };
-            this.addCompositeRule = function (compositeRule) { _this.compositeRules[compositeRule.propertyName] = compositeRule; };
+            this.addCompositeRule = function (compositeRule) { _this.compositeRules[compositeRule.virtualPropertyName] = compositeRule; };
             this.addPropertyDisplayName = function (propertyName, displayName) { return _this.propertyDisplayNames[propertyName] = displayName; };
             this.getRulesForProperty = function (property) { return _this.rules[property]; };
             this.getCompositeRulesRulesForProperty = function (propertyName) { return _this.compositeRules[propertyName]; };

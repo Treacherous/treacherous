@@ -64,7 +64,7 @@ export class RulesetBuilder<T>
     }
 
     public addCompositeRule = (compositeRule: ICompositeValidationRule): RulesetBuilder<T> => {
-        this.internalRuleset.compositeRules[compositeRule.propertyName] = compositeRule;
+        this.internalRuleset.compositeRules[compositeRule.virtualPropertyName] = compositeRule;
         return this;
     }
 
@@ -75,9 +75,9 @@ export class RulesetBuilder<T>
         return this;
     }
 
-    public addDynamicRule = (propertyName: string, validate: ICompositeValidationRule["validate"], getMessage: ((modelResolver: IModelResolver) => string) | string) => {
-        let compositeRule = new DynamicCompositeValidationRule(propertyName, validate, getMessage);
-        this.internalRuleset.compositeRules[propertyName] = compositeRule;
+    public addDynamicRule = (virtualPropertyName: string, validate: ICompositeValidationRule["validate"], getMessage: ((modelResolver: IModelResolver) => string) | string) => {
+        let compositeRule = new DynamicCompositeValidationRule(virtualPropertyName, validate, getMessage);
+        this.internalRuleset.compositeRules[virtualPropertyName] = compositeRule;
         return this;
     }
 

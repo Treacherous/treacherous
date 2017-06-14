@@ -10,6 +10,6 @@ export class DynamicCompositeValidationRule implements ICompositeValidationRule
         { return this.message; }
     }
 
-    constructor(public propertyName: string, public validate: ICompositeValidationRule["validate"], private message: ICompositeValidationRule["getMessage"] | string){
+    constructor(public virtualPropertyName: string, public validate: ICompositeValidationRule["validate"], private message: ICompositeValidationRule["getMessage"] | string){
     }
 }

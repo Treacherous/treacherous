@@ -1,6 +1,6 @@
 export class DynamicCompositeValidationRule {
-    constructor(propertyName, validate, message) {
-        this.propertyName = propertyName;
+    constructor(virtualPropertyName, validate, message) {
+        this.virtualPropertyName = virtualPropertyName;
         this.validate = validate;
         this.message = message;
     }

@@ -16,7 +16,7 @@ export class Ruleset {
             this.createPropertyEntryIfNeeded(property);
             this.rules[property].push(ruleset);
         };
-        this.addCompositeRule = (compositeRule) => { this.compositeRules[compositeRule.propertyName] = compositeRule; };
+        this.addCompositeRule = (compositeRule) => { this.compositeRules[compositeRule.virtualPropertyName] = compositeRule; };
         this.addPropertyDisplayName = (propertyName, displayName) => { return this.propertyDisplayNames[propertyName] = displayName; };
         this.getRulesForProperty = (property) => { return this.rules[property]; };
         this.getCompositeRulesRulesForProperty = (propertyName) => { return this.compositeRules[propertyName]; };

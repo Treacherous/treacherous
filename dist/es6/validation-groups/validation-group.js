@@ -105,9 +105,9 @@ export class ValidationGroup {
             let hadErrors = this.hasErrors();
             let isValid = await compositeRule.validate(this.modelResolver);
             if (isValid) {
-                if (this.propertyErrors[compositeRule.propertyName]) {
-                    delete this.propertyErrors[compositeRule.propertyName];
-                    let eventArgs = new PropertyStateChangedEvent(compositeRule.propertyName, true);
+                if (this.propertyErrors[compositeRule.virtualPropertyName]) {
+                    delete this.propertyErrors[compositeRule.virtualPropertyName];
+                    let eventArgs = new PropertyStateChangedEvent(compositeRule.virtualPropertyName, true);
                     this.propertyStateChangedEvent.publish(eventArgs);
                 }
                 let stillHasErrors = hadErrors && this.hasErrors();
@@ -116,17 +116,17 @@ export class ValidationGroup {
                 }
                 return;
             }
-            let previousError = this.propertyErrors[compositeRule.propertyName];
+            let previousError = this.propertyErrors[compositeRule.virtualPropertyName];
             let currentError = compositeRule.getMessage(this.modelResolver);
-            this.propertyErrors[compositeRule.propertyName] = currentError;
+            this.propertyErrors[compositeRule.virtualPropertyName] = currentError;
             if (currentError != previousError) {
-                let eventArgs = new PropertyStateChangedEvent(compositeRule.propertyName, false, currentError);
+                let eventArgs = new PropertyStateChangedEvent(compositeRule.virtualPropertyName, false, currentError);
                 this.propertyStateChangedEvent.publish(eventArgs);
                 if (!hadErrors) {
                     this.modelStateChangedEvent.publish(new ModelStateChangedEvent(false));
                 }
             }
-            return this.propertyErrors[compositeRule.propertyName];
+            return this.propertyErrors[compositeRule.virtualPropertyName];
         };
         this.validateCompositeRules = async () => {
             for (let propertyName in this.ruleset.compositeRules) {

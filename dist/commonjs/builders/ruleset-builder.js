@@ -46,7 +46,7 @@ var RulesetBuilder = (function () {
             return _this;
         };
         this.addCompositeRule = function (compositeRule) {
-            _this.internalRuleset.compositeRules[compositeRule.propertyName] = compositeRule;
+            _this.internalRuleset.compositeRules[compositeRule.virtualPropertyName] = compositeRule;
             return _this;
         };
         this.withDisplayName = function (displayName) {
@@ -54,9 +54,9 @@ var RulesetBuilder = (function () {
             _this.internalRuleset.propertyDisplayNames[_this.currentProperty] = displayName;
             return _this;
         };
-        this.addDynamicRule = function (propertyName, validate, getMessage) {
-            var compositeRule = new dynamic_composite_validation_rule_1.DynamicCompositeValidationRule(propertyName, validate, getMessage);
-            _this.internalRuleset.compositeRules[propertyName] = compositeRule;
+        this.addDynamicRule = function (virtualPropertyName, validate, getMessage) {
+            var compositeRule = new dynamic_composite_validation_rule_1.DynamicCompositeValidationRule(virtualPropertyName, validate, getMessage);
+            _this.internalRuleset.compositeRules[virtualPropertyName] = compositeRule;
             return _this;
         };
         this.withMessage = function (messageOverride) {

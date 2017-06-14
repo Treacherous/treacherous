@@ -40,6 +40,26 @@ the arrays.
 This is for use with arrays and specifies that each element within the array should be subject to the ruleset
 provided, so this allows for complex repeatable rules with very little effort.
 
+### addCompositeRule(rule: ICompositeValidationRule)
+
+This allows you to write a rule that applies to the model, not a singular property. So if you need to validate that 
+3 different properties all have a specific value, you can use composite rules to do that.
+
+### addDynamicRule(virtualPropertyName: string, validate: ICompositeValidationRule["validate"], getMessage: ((modelResolver: IModelResolver)
+
+This allows you to dynamically create a composite rule on the fly, the `virtualPropertyName` passed in should not be an existing 
+property name, but a virtual one which is used as the unique identifier in the error list for this rule, it can be used elsewhere 
+i.e `getPropertyErrors` and in event subscriptions, but every dynamic/composite rule should have a unique name. The `validate`
+method should provide the actual validation body to return a true or a false in a promise form, as well as the `getMessage` 
+argument which can be a hardcoded string or a method which returns the string to display.
+
+### withDisplayName(displayName: string)
+
+This is used to provide a hint to other treacherous libraries that the property name should be displayed as the given string,
+an example of this would if you had a model field called `usersOldPassword` you may want it displayed as `Original Password` 
+when viewing it in validation summaries. Nothing within treacherous core uses this, but `IValidationGroup` objects expose a 
+way to get a display name for a property. This is mainly here for view related libraries.
+
 ### withMessage(messageOverride: ((value: any, ruleOptions?: any) => string) | string)
 
 This allows you to override the default message for the rule, so you can provide a string or a function which would

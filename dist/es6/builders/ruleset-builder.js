@@ -43,7 +43,7 @@ export class RulesetBuilder {
             return this;
         };
         this.addCompositeRule = (compositeRule) => {
-            this.internalRuleset.compositeRules[compositeRule.propertyName] = compositeRule;
+            this.internalRuleset.compositeRules[compositeRule.virtualPropertyName] = compositeRule;
             return this;
         };
         this.withDisplayName = (displayName) => {
@@ -51,9 +51,9 @@ export class RulesetBuilder {
             this.internalRuleset.propertyDisplayNames[this.currentProperty] = displayName;
             return this;
         };
-        this.addDynamicRule = (propertyName, validate, getMessage) => {
-            let compositeRule = new DynamicCompositeValidationRule(propertyName, validate, getMessage);
-            this.internalRuleset.compositeRules[propertyName] = compositeRule;
+        this.addDynamicRule = (virtualPropertyName, validate, getMessage) => {
+            let compositeRule = new DynamicCompositeValidationRule(virtualPropertyName, validate, getMessage);
+            this.internalRuleset.compositeRules[virtualPropertyName] = compositeRule;
             return this;
         };
         this.withMessage = (messageOverride) => {
