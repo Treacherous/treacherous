@@ -9,7 +9,7 @@ var ruleResolver = new RuleResolver();
 
 export function createRuleset<T>(withRuleVerification = false): RulesetBuilder<T>
 {
-    var rulesetBuilder = withRuleVerification ? new RulesetBuilder<T>(ruleRegistry) : new RulesetBuilder();
+    var rulesetBuilder = withRuleVerification ? new RulesetBuilder<T>(ruleRegistry) : new RulesetBuilder<T>();
     return rulesetBuilder.create();
 }
 
