@@ -245,5 +245,10 @@ export class ValidationGroup implements IValidationGroup
         return this.ruleset.getPropertyDisplayName(propertyRoute);
     }
 
+    public isPropertyInGroup = (propertyRoute: string): boolean => {
+        let applicableRules = this.ruleResolver.resolvePropertyRules(propertyRoute, this.ruleset);
+        return (applicableRules != null);
+    }
+
     public release = () => {}
 }

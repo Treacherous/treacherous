@@ -8,5 +8,6 @@ export interface IValidationGroup {
     getPropertyError(propertyRoute: string, revalidate?: boolean): Promise<any>;
     getPropertyDisplayName(propertyRoute: string): string;
     changeValidationTarget(model: any): any;
+    isPropertyInGroup(propertyRoute: string): boolean;
     release(): void;
 }

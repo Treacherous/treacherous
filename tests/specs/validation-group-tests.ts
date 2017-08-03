@@ -840,4 +840,26 @@ describe('Validation Group', function () {
         expect(actualDisplayName).to.equal(displayName);
     });
 
+    it('should correctly check if property is within group', function () {
+        let rulesetBuilder = new RulesetBuilder();
+        let ruleset = rulesetBuilder.create()
+            .forProperty("propertyInGroup")
+                .addRule("required")
+            .build();
+
+        let dummyModel = {
+            propertyInGroup: "",
+            propertyNotInGroup: ""
+        };
+
+        let validationGroup = createValidationGroupFor(dummyModel, ruleset);
+        let shouldBeInGroup = validationGroup.isPropertyInGroup("propertyInGroup");
+        let shouldNotBeInGroup = validationGroup.isPropertyInGroup("propertyNotInGroup");
+        let shouldAlsoNotBeInGroup = validationGroup.isPropertyInGroup("notEvenARealProperty");
+        
+        expect(shouldBeInGroup).to.be.true;
+        expect(shouldNotBeInGroup).to.be.false;
+        expect(shouldAlsoNotBeInGroup).to.be.false;
+    });
+
 });

@@ -241,6 +241,10 @@ var ValidationGroup = (function () {
         this.getPropertyDisplayName = function (propertyRoute) {
             return _this.ruleset.getPropertyDisplayName(propertyRoute);
         };
+        this.isPropertyInGroup = function (propertyRoute) {
+            var applicableRules = _this.ruleResolver.resolvePropertyRules(propertyRoute, _this.ruleset);
+            return (applicableRules != null);
+        };
         this.release = function () { };
         this.propertyStateChangedEvent = new event_js_1.EventHandler(this);
         this.modelStateChangedEvent = new event_js_1.EventHandler(this);

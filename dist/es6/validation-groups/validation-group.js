@@ -169,6 +169,10 @@ export class ValidationGroup {
         this.getPropertyDisplayName = (propertyRoute) => {
             return this.ruleset.getPropertyDisplayName(propertyRoute);
         };
+        this.isPropertyInGroup = (propertyRoute) => {
+            let applicableRules = this.ruleResolver.resolvePropertyRules(propertyRoute, this.ruleset);
+            return (applicableRules != null);
+        };
         this.release = () => { };
         this.propertyStateChangedEvent = new EventHandler(this);
         this.modelStateChangedEvent = new EventHandler(this);

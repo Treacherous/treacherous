@@ -35,5 +35,6 @@ export declare class ValidationGroup implements IValidationGroup {
     getModelErrors: (revalidate?: boolean) => Promise<any>;
     getPropertyError: (propertyRoute: string, revalidate?: boolean) => Promise<any>;
     getPropertyDisplayName: (propertyRoute: string) => string;
+    isPropertyInGroup: (propertyRoute: string) => boolean;
     release: () => void;
 }
