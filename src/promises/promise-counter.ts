@@ -1,12 +1,12 @@
 export class PromiseCounter
 {
-    private promiseCallbacks = [];
+    private promiseCallbacks: Array<Function> = [];
     private validationCounter = 0;
 
     public waitForCompletion = async() : Promise<any> => {
         if(!this.validationCounter) { return; }
 
-        let resolver = (resolve) => {
+        let resolver = (resolve: Function) => {
             this.promiseCallbacks.push(() => resolve());
         };
         return new Promise(resolver);

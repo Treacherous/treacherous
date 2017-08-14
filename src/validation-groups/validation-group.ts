@@ -19,7 +19,7 @@ export class ValidationGroup implements IValidationGroup
     public propertyStateChangedEvent: EventHandler;
     public modelStateChangedEvent: EventHandler;
 
-    protected propertyErrors = {};
+    protected propertyErrors: any = {};
     protected promiseCounter: PromiseCounter;
     protected modelResolver: IModelResolver;
 
@@ -91,10 +91,10 @@ export class ValidationGroup implements IValidationGroup
     }
 
     protected validatePropertyWithRules = (propertyRoute: string, rules: any) => {
-        let ruleLinks = [];
-        let ruleSets = [];
+        let ruleLinks: Array<RuleLink> = [];
+        let ruleSets: Array<Ruleset> = [];
 
-        let currentValue;
+        let currentValue: any;
         try
         {
             currentValue = this.modelResolver.resolve(propertyRoute);
@@ -105,13 +105,13 @@ export class ValidationGroup implements IValidationGroup
             throw(ex);
         }
 
-        let routeEachRule = (ruleLinkOrSet) => {
+        let routeEachRule = (ruleLinkOrSet: any) => {
             if(ValidationGroup.isForEach(ruleLinkOrSet))
             {
                 let isCurrentlyAnArray = TypeHelper.isArrayType(currentValue);
 
                 if(isCurrentlyAnArray) {
-                    currentValue.forEach((element, index) => {
+                    currentValue.forEach((element: any, index: number) => {
                         let childPropertyName = `${propertyRoute}[${index}]`;
                         this.validatePropertyWithRules(childPropertyName, [ruleLinkOrSet.internalRule]);
                     });
@@ -209,7 +209,7 @@ export class ValidationGroup implements IValidationGroup
         this.modelResolver = this.modelResolverFactory.createModelResolver(model);
     }
 
-    public validateProperty = async(propertyRoute): Promise<boolean> =>
+    public validateProperty = async(propertyRoute: string): Promise<boolean> =>
     {
         await this.startValidateProperty(propertyRoute);
         await this.promiseCounter.waitForCompletion();

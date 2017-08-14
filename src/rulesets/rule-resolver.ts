@@ -61,8 +61,8 @@ export class RuleResolver implements IRuleResolver
         if (this.isIndexRoute(nextProperty)) {
             propertyRouteSections.shift();
 
-            let applicableRules = [];
-            childRules.forEach((internalRules) => {
+            let applicableRules: Array<any> = [];
+            childRules.forEach((internalRules: any) => {
                if(internalRules.isForEach) {
                    applicableRules.push(internalRules.internalRule);
                }
@@ -70,11 +70,11 @@ export class RuleResolver implements IRuleResolver
 
             if(propertyRouteSections.length > 0)
             {
-                let totalRules = [];
-                applicableRules.forEach((applicableRule) => {
+                let totalRules: Array<any> = [];
+                applicableRules.forEach((applicableRule: any) => {
                     let currentRouteSection = propertyRouteSections.slice();
                     let outputRules = this.traverseRulesForRoutes(currentRouteSection, applicableRule);
-                    outputRules.forEach((outputRule) => {
+                    outputRules.forEach((outputRule: any) => {
                         totalRules.push(outputRule);
                     });
                 });

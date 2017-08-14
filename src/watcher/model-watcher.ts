@@ -76,7 +76,7 @@ export class ModelWatcher implements IModelWatcher
         });
     }
 
-    private watchProperty = (watchRoute, previousData) => {
+    private watchProperty = (watchRoute: string, previousData: any) => {
 
         if(this.watchCacheKeys.indexOf(watchRoute) == -1)
         {
@@ -86,7 +86,7 @@ export class ModelWatcher implements IModelWatcher
         }
     }
 
-    private cacheWatchTargets = (propertyStack, ruleset) => {
+    private cacheWatchTargets = (propertyStack: string, ruleset: Ruleset) => {
         let paramRoute: any, parameterRules: any;
         let anyRulesAreForEach: any, anyRulesAreSets: any;
         let hasValue: any, currentValue: any;
@@ -98,7 +98,7 @@ export class ModelWatcher implements IModelWatcher
 
             anyRulesAreForEach = false;
             anyRulesAreSets = false;
-            parameterRules.forEach(function(rule){
+            parameterRules.forEach(function(rule: any){
                 if(rule.isForEach) { anyRulesAreForEach = true; }
                 if(rule.getRulesForProperty) { anyRulesAreSets = true; }
             });
@@ -118,7 +118,7 @@ export class ModelWatcher implements IModelWatcher
                 else { currentValue = null; }
             }
 
-            parameterRules.forEach((rule) => {
+            parameterRules.forEach((rule: any) => {
 
                 let isArray = TypeHelper.isArrayType(currentValue);
                 if(isArray)
@@ -133,7 +133,7 @@ export class ModelWatcher implements IModelWatcher
                     if(rule.internalRule.getRulesForProperty)
                     {
                         if(this.model[param]) {
-                            this.model[param].forEach((element, index) => {
+                            this.model[param].forEach((element: any, index: number) => {
                                 this.cacheWatchTargets(paramRoute + "[" + index + "]", rule.internalRule);
                             });
                         }
@@ -141,7 +141,7 @@ export class ModelWatcher implements IModelWatcher
                     else
                     {
                         if(this.model[param]) {
-                            this.model[param].forEach((element, index) => {
+                            this.model[param].forEach((element: any, index: number) => {
                                 this.watchProperty(paramRoute + "[" + index + "]", this.model[param][index]);
                             });
                         }

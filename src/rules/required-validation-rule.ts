@@ -27,7 +27,7 @@ export class RequiredValidationRule implements IValidationRule
         return (testValue + '').length > 0;
     }
 
-    public getMessage(modelResolver: IModelResolver, propertyName: string, isRequired) {
+    public getMessage(modelResolver: IModelResolver, propertyName: string, isRequired: boolean) {
         return "This field is required";
     }
 }

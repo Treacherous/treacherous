@@ -5,7 +5,7 @@ export class MinLengthValidationRule implements IValidationRule
 {
     public ruleName = "minLength";
 
-    public async validate(modelResolver: IModelResolver, propertyName: string, minLength:any): Promise<boolean>
+    public async validate(modelResolver: IModelResolver, propertyName: string, minLength:number): Promise<boolean>
     {
         let value = modelResolver.resolve(propertyName);
 
@@ -15,7 +15,7 @@ export class MinLengthValidationRule implements IValidationRule
         return value.length >= minLength;
     }
 
-    public getMessage(modelResolver: IModelResolver, propertyName: string, minLength) {
+    public getMessage(modelResolver: IModelResolver, propertyName: string, minLength: number) {
         let value = modelResolver.resolve(propertyName);
         return `This field has a length of ${value.length} but should more than ${minLength}`;
     }

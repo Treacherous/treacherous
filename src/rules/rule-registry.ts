@@ -2,7 +2,7 @@ import {IValidationRule} from "./ivalidation-rule";
 
 export class RuleRegistry
 {
-    public rules = {};
+    public rules: any = {};
 
     public registerRule = (validationRule: IValidationRule): void =>
     {

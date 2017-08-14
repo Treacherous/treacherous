@@ -2,7 +2,8 @@
   "compilerOptions": {
     "moduleResolution": "node",
     "lib": ["es2016", "dom"],
-    "importHelpers": true
+    "importHelpers": true,
+    "noImplicitAny": true
   },
   "exclude": [
     "node_modules"

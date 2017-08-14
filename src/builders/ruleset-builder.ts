@@ -26,7 +26,7 @@ export class RulesetBuilder<T>
         { throw new Error("A property must precede any rule calls in the chain"); }
     }
 
-    protected verifyRuleNameIsValid = (rule) => {
+    protected verifyRuleNameIsValid = (rule: any) => {
         if(rule == null || typeof(rule) == "undefined" || rule.length == 0)
         { throw new Error("A rule name is required"); }
 

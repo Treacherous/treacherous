@@ -47,8 +47,8 @@ export class FieldErrorProcessor implements IFieldErrorProcessor
         };
 
         let checkEachRule = (rules: any) => {
-            let promises = [];
-            rules.forEach((rule) => {
+            let promises: Array<any> = [];
+            rules.forEach((rule: any) => {
                 promises.push(ruleCheck(rule));
             });
             return Promise.all(promises);

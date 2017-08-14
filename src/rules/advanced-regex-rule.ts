@@ -5,9 +5,9 @@ export class AdvancedRegexValidationRule implements IValidationRule
 {
     public ruleName: string;
     public expression: string;
-    public message: (value) => string;
+    public message: (value: any) => string;
 
-    constructor(ruleName: string, expression: string, message: string | ((value)=>string)) {
+    constructor(ruleName: string, expression: string, message: string | ((value: any)=>string)) {
 
         if(!ruleName || ruleName.length == 0)
         { throw new Error("ruleName is required, an empty rule name is invalid"); }

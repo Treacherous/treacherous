@@ -1,4 +1,4 @@
-define(["require", "exports", "tslib", "./exposer", "./rule-registry-setup", "./builders/reactive-validation-group-builder", "./builders/ruleset-builder", "./builders/validation-group-builder", "./events/model-state-changed-event", "./events/property-changed-event", "./events/property-state-changed-event", "./factories/model-resolver-factory", "./factories/model-watcher-factory", "./helpers/comparer-helper", "./helpers/type-helper", "./processors/field-error-processor", "./processors/field-has-error", "./processors/validation-error", "./promises/promise-counter", "./resolvers/model-resolver", "./rulesets/for-each-rule", "./rulesets/rule-link", "./rulesets/rule-resolver", "./rulesets/ruleset", "./rules/advanced-regex-rule", "./rules/date-validation-rule", "./rules/decimal-validation-rule", "./rules/email-validation-rule", "./rules/equal-validation-rule", "./rules/iso-date-validation-rule", "./rules/matches-validation-rule", "./rules/max-length-validation-rule", "./rules/max-value-validation-rule", "./rules/min-length-validation-rule", "./rules/min-value-validation-rule", "./rules/not-equal-validation-rule", "./rules/number-validation-rule", "./rules/regex-validation-rule", "./rules/required-validation-rule", "./rules/rule-registry", "./rules/step-validation-rule", "./validation-groups/reactive-validation-group", "./validation-groups/validation-group", "./watcher/model-watcher", "./watcher/property-watcher", "./rules/composite/dynamic-composite-validation-rule"], function (require, exports, tslib_1, exposer_1, rule_registry_setup_1, reactive_validation_group_builder_1, ruleset_builder_1, validation_group_builder_1, model_state_changed_event_1, property_changed_event_1, property_state_changed_event_1, model_resolver_factory_1, model_watcher_factory_1, comparer_helper_1, type_helper_1, field_error_processor_1, field_has_error_1, validation_error_1, promise_counter_1, model_resolver_1, for_each_rule_1, rule_link_1, rule_resolver_1, ruleset_1, advanced_regex_rule_1, date_validation_rule_1, decimal_validation_rule_1, email_validation_rule_1, equal_validation_rule_1, iso_date_validation_rule_1, matches_validation_rule_1, max_length_validation_rule_1, max_value_validation_rule_1, min_length_validation_rule_1, min_value_validation_rule_1, not_equal_validation_rule_1, number_validation_rule_1, regex_validation_rule_1, required_validation_rule_1, rule_registry_1, step_validation_rule_1, reactive_validation_group_1, validation_group_1, model_watcher_1, property_watcher_1, dynamic_composite_validation_rule_1) {
+define(["require", "exports", "tslib", "./exposer", "./rule-registry-setup", "./builders/reactive-validation-group-builder", "./builders/ruleset-builder", "./builders/validation-group-builder", "./factories/model-resolver-factory", "./factories/model-watcher-factory", "./events/model-state-changed-event", "./events/property-changed-event", "./events/property-state-changed-event", "./helpers/comparer-helper", "./helpers/type-helper", "./processors/field-error-processor", "./processors/field-has-error", "./processors/validation-error", "./resolvers/model-resolver", "./promises/promise-counter", "./rulesets/for-each-rule", "./rulesets/rule-link", "./rulesets/rule-resolver", "./rulesets/ruleset", "./rules/advanced-regex-rule", "./rules/date-validation-rule", "./rules/decimal-validation-rule", "./rules/email-validation-rule", "./rules/equal-validation-rule", "./rules/iso-date-validation-rule", "./rules/matches-validation-rule", "./rules/max-length-validation-rule", "./rules/max-value-validation-rule", "./rules/min-length-validation-rule", "./rules/min-value-validation-rule", "./rules/not-equal-validation-rule", "./rules/number-validation-rule", "./rules/regex-validation-rule", "./rules/required-validation-rule", "./rules/rule-registry", "./rules/step-validation-rule", "./watcher/model-watcher", "./watcher/property-watcher", "./validation-groups/reactive-validation-group", "./validation-groups/validation-group", "./rules/composite/dynamic-composite-validation-rule"], function (require, exports, tslib_1, exposer_1, rule_registry_setup_1, reactive_validation_group_builder_1, ruleset_builder_1, validation_group_builder_1, model_resolver_factory_1, model_watcher_factory_1, model_state_changed_event_1, property_changed_event_1, property_state_changed_event_1, comparer_helper_1, type_helper_1, field_error_processor_1, field_has_error_1, validation_error_1, model_resolver_1, promise_counter_1, for_each_rule_1, rule_link_1, rule_resolver_1, ruleset_1, advanced_regex_rule_1, date_validation_rule_1, decimal_validation_rule_1, email_validation_rule_1, equal_validation_rule_1, iso_date_validation_rule_1, matches_validation_rule_1, max_length_validation_rule_1, max_value_validation_rule_1, min_length_validation_rule_1, min_value_validation_rule_1, not_equal_validation_rule_1, number_validation_rule_1, regex_validation_rule_1, required_validation_rule_1, rule_registry_1, step_validation_rule_1, model_watcher_1, property_watcher_1, reactive_validation_group_1, validation_group_1, dynamic_composite_validation_rule_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     tslib_1.__exportStar(exposer_1, exports);
@@ -6,18 +6,18 @@ define(["require", "exports", "tslib", "./exposer", "./rule-registry-setup", "./
     tslib_1.__exportStar(reactive_validation_group_builder_1, exports);
     tslib_1.__exportStar(ruleset_builder_1, exports);
     tslib_1.__exportStar(validation_group_builder_1, exports);
+    tslib_1.__exportStar(model_resolver_factory_1, exports);
+    tslib_1.__exportStar(model_watcher_factory_1, exports);
     tslib_1.__exportStar(model_state_changed_event_1, exports);
     tslib_1.__exportStar(property_changed_event_1, exports);
     tslib_1.__exportStar(property_state_changed_event_1, exports);
-    tslib_1.__exportStar(model_resolver_factory_1, exports);
-    tslib_1.__exportStar(model_watcher_factory_1, exports);
     tslib_1.__exportStar(comparer_helper_1, exports);
     tslib_1.__exportStar(type_helper_1, exports);
     tslib_1.__exportStar(field_error_processor_1, exports);
     tslib_1.__exportStar(field_has_error_1, exports);
     tslib_1.__exportStar(validation_error_1, exports);
-    tslib_1.__exportStar(promise_counter_1, exports);
     tslib_1.__exportStar(model_resolver_1, exports);
+    tslib_1.__exportStar(promise_counter_1, exports);
     tslib_1.__exportStar(for_each_rule_1, exports);
     tslib_1.__exportStar(rule_link_1, exports);
     tslib_1.__exportStar(rule_resolver_1, exports);
@@ -39,9 +39,9 @@ define(["require", "exports", "tslib", "./exposer", "./rule-registry-setup", "./
     tslib_1.__exportStar(required_validation_rule_1, exports);
     tslib_1.__exportStar(rule_registry_1, exports);
     tslib_1.__exportStar(step_validation_rule_1, exports);
-    tslib_1.__exportStar(reactive_validation_group_1, exports);
-    tslib_1.__exportStar(validation_group_1, exports);
     tslib_1.__exportStar(model_watcher_1, exports);
     tslib_1.__exportStar(property_watcher_1, exports);
+    tslib_1.__exportStar(reactive_validation_group_1, exports);
+    tslib_1.__exportStar(validation_group_1, exports);
     tslib_1.__exportStar(dynamic_composite_validation_rule_1, exports);
 });

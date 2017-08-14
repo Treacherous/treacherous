@@ -15,7 +15,7 @@ export declare class ValidationGroup implements IValidationGroup {
     protected ruleset: Ruleset;
     propertyStateChangedEvent: EventHandler;
     modelStateChangedEvent: EventHandler;
-    protected propertyErrors: {};
+    protected propertyErrors: any;
     protected promiseCounter: PromiseCounter;
     protected modelResolver: IModelResolver;
     constructor(fieldErrorProcessor: IFieldErrorProcessor, ruleResolver: IRuleResolver, modelResolverFactory: IModelResolverFactory, model: any, ruleset: Ruleset);
@@ -30,7 +30,7 @@ export declare class ValidationGroup implements IValidationGroup {
     protected startValidateModel: () => void;
     protected hasErrors(): boolean;
     changeValidationTarget: (model: any) => void;
-    validateProperty: (propertyRoute: any) => Promise<boolean>;
+    validateProperty: (propertyRoute: string) => Promise<boolean>;
     validate: () => Promise<boolean>;
     getModelErrors: (revalidate?: boolean) => Promise<any>;
     getPropertyError: (propertyRoute: string, revalidate?: boolean) => Promise<any>;

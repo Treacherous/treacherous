@@ -4,9 +4,9 @@ import {ICompositeValidationRule} from "../rules/composite/icomposite-validation
 
 export class Ruleset
 {
-    public rules = {};
-    public compositeRules = {};
-    public propertyDisplayNames = {};
+    public rules: any = {};
+    public compositeRules: any = {};
+    public propertyDisplayNames: any = {};
 
     private createPropertyEntryIfNeeded = (property: string): void =>
     {
@@ -27,7 +27,7 @@ export class Ruleset
     public addCompositeRule = (compositeRule: ICompositeValidationRule) : void =>
     { this.compositeRules[compositeRule.virtualPropertyName] = compositeRule; }
 
-    public addPropertyDisplayName = (propertyName: string, displayName) : string =>
+    public addPropertyDisplayName = (propertyName: string, displayName: string) : string =>
     { return this.propertyDisplayNames[propertyName] = displayName; }
 
     public getRulesForProperty = (property: string): Array<any> =>

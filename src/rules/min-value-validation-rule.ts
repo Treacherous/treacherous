@@ -5,7 +5,7 @@ export class MinValueValidationRule implements IValidationRule
 {
     public ruleName = "minValue";
 
-    public async validate(modelResolver: IModelResolver, propertyName: string, minValue): Promise<boolean>
+    public async validate(modelResolver: IModelResolver, propertyName: string, minValue: any): Promise<boolean>
     {
         let value = modelResolver.resolve(propertyName);
 

@@ -1,6 +1,6 @@
 export class ComparerHelper
 {
-    public static simpleTypeComparer(value1: (string | number), value2: (string | number), isWeak): boolean
+    public static simpleTypeComparer(value1: (string | number), value2: (string | number), isWeak: boolean): boolean
     {
         if(isWeak)
         { return (value1 == value2); }
