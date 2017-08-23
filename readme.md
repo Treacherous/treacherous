@@ -12,17 +12,39 @@ It is an attempt to bring some consistency to validation in the javascript world
 validation rules in a single way a single time and re-use it anywhere you want without worrying about
 each framework/platforms many different validation paradigms or libraries.
 
-## Features / Benefits
+## Benefits
 
 - Fully async validation
 - Separation of rules and validation allowing composable rule sets
 - Supports nested complex objects/arrays
-- Optional Reactive validation, can monitor your model and re-validate automatically
 - Outside in validation, does not augment your models in any way
-- Can be integrated with any front end framework`*`
 - Works in browser or server
+- Can be integrated with any view framework (i.e vue, knockout, aurelia etc)
 
-`*` = Currently supports [knockout](https://github.com/grofit/treacherous-knockout), [aurelia](https://github.com/grofit/treacherous-aurelia), others coming soon i.e vuejs, ng.
+
+## Features
+
+### Reactive Validation
+
+Treacherous can optionally watch your model to see if any properties it is validating change and automatically re-validate those fields when changed, even in nested objects or arrays.
+
+### Composite Rules / Virtual Properties
+
+Support for validating at property level using normal rules or for creating composite rules which are applied at the model level, allowing you to validate multiple properties within the same context.
+
+### Predicate Based Validation
+
+You can specify predicates to only apply certain validation rules when criteria are met allowing your model validity to be contextual and flexible.
+
+### Property Alias'
+
+This is mainly for when you are using treacherous within the browser, but you can provide alias' to properties so when errors are reported the property alias is displayed rather than the actual property name, as who wants to see `hasConfirmedTermsAndConditions` when you could just alias that field as `T&Cs`.
+
+### Full Support for Typescript
+
+The whole of Treacherous was written in typescript and can bring some nice time saving features to typescript users like `async/await` and lambda style interactions.
+
+Don't worry if you dont use/like typescript, you can still use all of treacherous' features as if it were a native javascript framework.
 
 ---
 
@@ -143,6 +165,13 @@ var ruleset = Treacherous.createRuleset<SomeModel>()
     .build();
 ```
 
+You can also make use of `async/await` for almost all async methods like so:
+
+```ts
+let modelErrors = await validationGroup.getModelErrors();
+console.log(modelErrors);
+```
+
 ---
 
 ## Validation rules
@@ -179,6 +208,22 @@ To find out more read the [Custom Rules](docs/custom-rules.md) docs.
 
 Just look in the `docs` folder for more documentation on certain scenarios or subject matters.
 
+[DOCS ARE HERE](https://github.com/grofit/treacherous/tree/master/docs)
+
+---
+
+## Related Libraries
+
+This library is the core treacherous framework, which purely handles the validation of models, however there are a few other libraries which build on top of this such as:
+
+- [treacherous-view](https://github.com/grofit/treacherous-view) (Convention based classes for view framework integration)
+
+- [treacherous-knockout](https://github.com/grofit/treacherous-knockout) (Knockout bindings for treacherous)
+
+- [treacherous-vue](https://github.com/grofit/treacherous-vue) (Vue plugin for treacherous)
+
+- [treacherous-aurelia](https://github.com/grofit/treacherous-aurelia) (Aurelia plugin for treacherous)
+
 ---
 
 ## Developing
@@ -195,34 +240,6 @@ This is a todo, if needed this will probably be implemented by having a class re
 validation message for a given language linked via the `ruleName` for now all messages are in 
 english but feel free to raise this if you need this functionality sooner rather than later.
 
----
-
-## Why should I use it?
-
-There are LOTS of validation frameworks out currently, some synchronous, some are async, 
-some work off the DOM some work off models. Some of them are tied to specific front end frameworks, 
-others are mainly for the node world.
-
-However in most cases you will be hard pressed to find a easy to use async based one which is 
-agnostic of frameworks/platforms but can be plugged into them. This was the idea behind Treacherous, 
-a simple validation framework which could be shared between browser and server as well as 
-being able to expose MVVM style subscriptions for other frameworks to hook into.
-
-If you share code between multiple worlds (i.e nodejs, browser, mobile) then you may have had
-issues before where you are tied into a specific framework for your front ends and want to 
-re-use your models in the back end as a contractual layer or something. In these cases 
-you often either end up maintaining 2 sets of validation which is ok, but it could be better, 
-and this is where Treacherous attempts to improve this approach.
-
-It is also useful for libraries which contain pure data concerns and have no notion 
-of front end frameworks, so you may have one central library and have one front end
-using ng and one front end using aurelia or knockout for different devices etc. 
-In this case you can have validation as a pure data concern and just plug the validation 
-logic into your MVVM framework so it will automatically listen for the validation concerns 
-letting you re-use more of your code base in a more consistent way.
-
-Ultimately each framework tends to have it's own validation system, but with Treacherous you 
-can write your validation rules once, and consume them anywhere (that has a compatible binding layer).
 
 [build-status-image]: https://travis-ci.org/grofit/treacherous.svg
 [build-status-url]: https://travis-ci.org/grofit/treacherous
