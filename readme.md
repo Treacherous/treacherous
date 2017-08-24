@@ -1,16 +1,15 @@
 # Treacherous
 
-A modern async validation system to be used on the server or in the browser as well as with or without 
-view frameworks.
+![treacherous-image](https://user-images.githubusercontent.com/927201/29661471-03b5ee16-88bc-11e7-880d-d8c027b264c8.png)
+
+A modern async validation library with a raft of features for node or the browser.
 
 [![Build Status][build-status-image]][build-status-url]
 [![Npm Version][npm-version-image]][npm-version-url]
 [![Npm Downloads][npm-downloads-image]][npm-version-url]
 [![Join Gitter Chat][gitter-image]][gitter-url]
 
-It is an attempt to bring some consistency to validation in the javascript world you can write your 
-validation rules in a single way a single time and re-use it anywhere you want without worrying about
-each framework/platforms many different validation paradigms or libraries.
+Treacherous is an attempt to bring some consistency to validation in the javascript world, allowing you to write your validation rules for your models once, and re-use them on any platform with any framework.
 
 ## Benefits
 
@@ -19,6 +18,7 @@ each framework/platforms many different validation paradigms or libraries.
 - Supports nested complex objects/arrays
 - Outside in validation, does not augment your models in any way
 - Works in browser or server
+- Write once, use anywhere
 - Can be integrated with any view framework (i.e vue, knockout, aurelia etc)
 
 
@@ -50,8 +50,6 @@ Don't worry if you dont use/like typescript, you can still use all of treacherou
 
 ## Installing
 
-By default the module is exposed as a `commonjs` module, however the dist folder also contains support for `amd` and `system` module types.
-
 ### Via NPM
 
 Just do an `npm install treacherous`
@@ -70,12 +68,14 @@ this functionality for UMD modules out of the box.
 ### Validating simple models
 
 ```js
-var simpleModel = {
+import {createRuleset, createGroup} from "treacherous";
+
+let simpleModel = {
     foo: 20,
     bar: "hello"
 };
 
-var ruleset = Treacherous.createRuleset()
+let ruleset = createRuleset()
     .forProperty("foo")
         .addRule("required")        // The property is required
         .addRule("maxValue", 20)    // The property needs a value <= 20
@@ -83,11 +83,11 @@ var ruleset = Treacherous.createRuleset()
         .addRule("maxLength", 5)     // The property neds a length <= 5
     .build();
     
-var validationGroup = Treacherous.createGroup()
+let validationGroup = createGroup()
     .build(simpleModel, ruleset);
 
 validationGroup.validate()
-    .then(function(isValid){
+    .then((isValid) => {
         console.log(isValid); // should write true
     });
 ```
@@ -95,23 +95,21 @@ validationGroup.validate()
 ### Validating simple arrays in models
 
 ```js
-var Treacherous = require("treacherous");
-
-var simpleModel = {
+let simpleModel = {
     foo: [10, 20, 30]
 };
 
-var ruleset = Treacherous.createRuleset()
+let ruleset = createRuleset()
     .forProperty("foo")
         .addRule("maxLength", 5)        // The array can only contain <= 5 elements
         .addRuleForEach("maxValue", 20) // Each element needs a value <= 20
     .build();
     
-var validationGroup = Treacherous.createGroup()
+let validationGroup = createGroup()
     .build(simpleModel, ruleset);
 
 validationGroup.getModelErrors(true) // the true value indicates a full revalidation
-    .then(function(errors){
+    .then((errors) => {
         console.log(errors); // should contain { "foo[2]": "<some error about max value>" }
     });
 ```
@@ -127,30 +125,30 @@ Here are a few simple examples to save you trawling the docs.
 
 ### Check current validity
 ```js
-var validationGroup = Treacherous.createGroup()
+let validationGroup = createGroup()
     .build(...);
 
 validationGroup.validate()
-    .then(function(isValid){
+    .then((isValid) => {
         // true is valid, false is invalid
     ));
 ```
 
 ### Get all errors
 ```js
-var validationGroup = Treacherous.createGroup()
+let validationGroup = createGroup()
     .build(...);
 
 validationGroup.getModelErrors()
-    .then(function(propertyErrors){...));
+    .then((propertyErrors) => {...));
 ```
 
 ### Subscribe validation changes
 ```js
-var validationGroup = Treacherous.createGroup()
+let validationGroup = createGroup()
     .build(...);
 
-validationGroup.propertyStateChangedEvent.subscribe(function(propertyValidationChangedEvent){...));
+validationGroup.propertyStateChangedEvent.subscribe((propertyValidationChangedEvent) => {...));
 ```
 
 ## Typescript users
@@ -159,7 +157,7 @@ As typescript users you can get some nicer features and intellisense so you can 
 you to use lambda style property location like so:
 
 ```ts
-var ruleset = Treacherous.createRuleset<SomeModel>()
+let ruleset = createRuleset<SomeModel>()
     .addProperty(x => x.SomeProperty)
     .addRule("required")
     .build();
@@ -240,6 +238,11 @@ This is a todo, if needed this will probably be implemented by having a class re
 validation message for a given language linked via the `ruleName` for now all messages are in 
 english but feel free to raise this if you need this functionality sooner rather than later.
 
+---
+
+## Credits
+
+"Mountains" Icon courtesy of [The Noun Project](https://thenounproject.com/), by Aleksandr Vector, under [CC 3.0](http://creativecommons.org/licenses/by/3.0/us/)
 
 [build-status-image]: https://travis-ci.org/grofit/treacherous.svg
 [build-status-url]: https://travis-ci.org/grofit/treacherous
