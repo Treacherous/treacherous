@@ -214,6 +214,8 @@ Just look in the `docs` folder for more documentation on certain scenarios or su
 
 This library is the core treacherous framework, which purely handles the validation of models, however there are a few other libraries which build on top of this such as:
 
+- [treacherous-decorators](https://github.com/grofit/treacherous-decorators) (Allows validation rules to be defined by decorators i.e `@withRule(..)`)
+
 - [treacherous-view](https://github.com/grofit/treacherous-view) (Convention based classes for view framework integration)
 
 - [treacherous-knockout](https://github.com/grofit/treacherous-knockout) (Knockout bindings for treacherous)
