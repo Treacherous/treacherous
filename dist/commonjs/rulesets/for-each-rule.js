@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var ForEachRule = (function () {
+var ForEachRule = /** @class */ (function () {
     function ForEachRule(internalRule) {
         this.internalRule = internalRule;
         this.isForEach = true;

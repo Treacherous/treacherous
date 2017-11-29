@@ -25,9 +25,4 @@ export class NotEqualValidationRule implements IValidationRule
         else
         { return !ComparerHelper.simpleTypeComparer(value, comparison, weakEquality); }
     }
-
-    public getMessage(modelResolver: IModelResolver, propertyName: string, optionsOrValue: any) {
-        let value = modelResolver.resolve(propertyName);
-        return `This field is ${value} but should not be equal to ${optionsOrValue.value || optionsOrValue}`;
-    }
 }

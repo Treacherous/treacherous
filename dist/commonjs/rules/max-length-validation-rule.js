@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = require("tslib");
-var MaxLengthValidationRule = (function () {
+var MaxLengthValidationRule = /** @class */ (function () {
     function MaxLengthValidationRule() {
         this.ruleName = "maxLength";
     }
@@ -16,10 +16,6 @@ var MaxLengthValidationRule = (function () {
                 return [2 /*return*/, value.length <= maxLength];
             });
         });
-    };
-    MaxLengthValidationRule.prototype.getMessage = function (modelResolver, propertyName, maxLength) {
-        var value = modelResolver.resolve(propertyName);
-        return "This field has a length of " + value.length + " but should contain no more than " + maxLength;
     };
     return MaxLengthValidationRule;
 }());

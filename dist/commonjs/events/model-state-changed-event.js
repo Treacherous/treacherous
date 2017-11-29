@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var ModelStateChangedEvent = (function () {
+var ModelStateChangedEvent = /** @class */ (function () {
     function ModelStateChangedEvent(isValid) {
         this.isValid = isValid;
     }

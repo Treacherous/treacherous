@@ -26,7 +26,7 @@ describe('Model Watcher', function () {
 
         var modelWatcher = new ModelWatcher();
         modelWatcher.setupWatcher(dummyModel, ruleset, 50);
-        var spySubscription = spy(function(eventArgs){});
+        var spySubscription = spy(function(eventArgs: any){});
 
         modelWatcher.onPropertyChanged.subscribe(spySubscription);
 
@@ -66,7 +66,7 @@ describe('Model Watcher', function () {
 
         var modelWatcher = new ModelWatcher();
         modelWatcher.setupWatcher(dummyModel, ruleset, 50);
-        var spySubscription = spy(function(eventArgs){});
+        var spySubscription = spy(function(eventArgs: any){});
 
         modelWatcher.onPropertyChanged.subscribe(spySubscription);
 
@@ -96,7 +96,7 @@ describe('Model Watcher', function () {
 
         var modelWatcher = new ModelWatcher();
         modelWatcher.setupWatcher(dummyModel, ruleset, 50);
-        var spySubscription = spy(function(eventArgs){});
+        var spySubscription = spy(function(eventArgs: any){});
 
         modelWatcher.onPropertyChanged.subscribe(spySubscription);
 
@@ -192,7 +192,7 @@ describe('Model Watcher', function () {
             bar: [11, 12]
         };
 
-        var spySubscription = spy(function(eventArgs){console.log("event", eventArgs);});
+        var spySubscription = spy(function(eventArgs: any){console.log("event", eventArgs);});
         modelWatcher.onPropertyChanged.subscribe(spySubscription);
         modelWatcher.changeWatcherTarget(newModel);
 
@@ -218,7 +218,7 @@ describe('Model Watcher', function () {
         var modelWatcher = new ModelWatcher();
         modelWatcher.setupWatcher(dummyModel, ruleset, 50);
 
-        var spySubscription = spy(function(eventArgs){ console.log("event", eventArgs); });
+        var spySubscription = spy(function(eventArgs: any){ console.log("event", eventArgs); });
         modelWatcher.onPropertyChanged.subscribe(spySubscription);
 
         dummyModel.foo = 11;

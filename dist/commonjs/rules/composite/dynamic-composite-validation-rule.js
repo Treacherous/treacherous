@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var DynamicCompositeValidationRule = (function () {
+var DynamicCompositeValidationRule = /** @class */ (function () {
     function DynamicCompositeValidationRule(virtualPropertyName, validate, message) {
         this.virtualPropertyName = virtualPropertyName;
         this.validate = validate;

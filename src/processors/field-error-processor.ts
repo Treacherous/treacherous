@@ -1,3 +1,4 @@
+import {ILocaleHandler} from '../localization/ilocale-handler';
 import {RuleRegistry} from "../rules/rule-registry";
 import {RuleLink} from "../rulesets/rule-link";
 import {FieldHasError} from "./field-has-error";
@@ -6,7 +7,7 @@ import {IModelResolver} from "../resolvers/imodel-resolver";
 
 export class FieldErrorProcessor implements IFieldErrorProcessor
 {
-    constructor(public ruleRegistry: RuleRegistry){}
+    constructor(public ruleRegistry: RuleRegistry, public localeHandler: ILocaleHandler){}
 
     // Validates a single property against a model
     public async processRuleLink(modelResolver: IModelResolver, propertyName: any, ruleLink: RuleLink): Promise<any>{
@@ -33,7 +34,7 @@ export class FieldErrorProcessor implements IFieldErrorProcessor
             { error = ruleLink.messageOverride; }
         }
         else
-        { error = validator.getMessage(modelResolver, propertyName, ruleLink.ruleOptions); }
+        { error = await this.localeHandler.getMessage(ruleLink.ruleName, ruleLink.ruleOptions, modelResolver, propertyName); }
 
         throw new FieldHasError(error);
     }

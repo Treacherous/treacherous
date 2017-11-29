@@ -14,9 +14,4 @@ export class DecimalValidationRule implements IValidationRule
 
         return this.decimalRegex.test(value);
     }
-
-    public getMessage(modelResolver: IModelResolver, propertyName: string) {
-        let value = modelResolver.resolve(propertyName);
-        return `This field contains ${value} which is not a decimal value`;
-    }
 }

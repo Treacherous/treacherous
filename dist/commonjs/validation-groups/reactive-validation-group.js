@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = require("tslib");
 var rule_resolver_1 = require("../rulesets/rule-resolver");
 var validation_group_1 = require("./validation-group");
-var ReactiveValidationGroup = (function (_super) {
+var ReactiveValidationGroup = /** @class */ (function (_super) {
     tslib_1.__extends(ReactiveValidationGroup, _super);
     function ReactiveValidationGroup(fieldErrorProcessor, ruleResolver, modelResolverFactory, modelWatcherFactory, model, ruleset, refreshRate) {
         if (ruleResolver === void 0) { ruleResolver = new rule_resolver_1.RuleResolver(); }

@@ -25,9 +25,4 @@ export class EqualValidationRule implements IValidationRule
         else
         { return ComparerHelper.simpleTypeComparer(value, comparison, weakEquality); }
     }
-
-    public getMessage(modelResolver: IModelResolver, propertyName: string, optionsOrValue: any) {
-        var value = modelResolver.resolve(propertyName);
-        return `This field is ${value} but should be equal to ${optionsOrValue.value || optionsOrValue}`;
-    }
 }

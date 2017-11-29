@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = require("tslib");
 var type_helper_1 = require("../helpers/type-helper");
 var comparer_helper_1 = require("../helpers/comparer-helper");
-var MatchesValidationRule = (function () {
+var MatchesValidationRule = /** @class */ (function () {
     function MatchesValidationRule() {
         this.ruleName = "matches";
     }
@@ -27,12 +27,6 @@ var MatchesValidationRule = (function () {
                 return [2 /*return*/];
             });
         });
-    };
-    MatchesValidationRule.prototype.getMessage = function (modelResolver, propertyName, optionsOrProperty) {
-        var value = modelResolver.resolve(propertyName);
-        var fieldToMatch = optionsOrProperty.property || optionsOrProperty;
-        var matchingFieldValue = modelResolver.resolve(fieldToMatch);
-        return "This field is " + value + " but should match " + matchingFieldValue;
     };
     return MatchesValidationRule;
 }());

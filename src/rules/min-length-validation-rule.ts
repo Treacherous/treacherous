@@ -14,9 +14,4 @@ export class MinLengthValidationRule implements IValidationRule
 
         return value.length >= minLength;
     }
-
-    public getMessage(modelResolver: IModelResolver, propertyName: string, minLength: number) {
-        let value = modelResolver.resolve(propertyName);
-        return `This field has a length of ${value.length} but should more than ${minLength}`;
-    }
 }

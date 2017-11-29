@@ -14,9 +14,4 @@ export class MaxLengthValidationRule implements IValidationRule
 
         return value.length <= maxLength;
     }
-
-    public getMessage(modelResolver: IModelResolver, propertyName: string, maxLength: number) {
-        let value = modelResolver.resolve(propertyName);
-        return `This field has a length of ${value.length} but should contain no more than ${maxLength}`;
-    }
 }

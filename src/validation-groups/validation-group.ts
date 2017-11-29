@@ -13,7 +13,7 @@ import {ModelStateChangedEvent} from "../events/model-state-changed-event";
 import {EventHandler} from "event-js";
 import {ICompositeValidationRule} from "../rules/composite/icomposite-validation-rule";
 
-// TODO: This class could be simplified
+// TODO: This class should be simplified further if possible
 export class ValidationGroup implements IValidationGroup
 {
     public propertyStateChangedEvent: EventHandler;

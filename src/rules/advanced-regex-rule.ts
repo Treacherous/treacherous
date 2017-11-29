@@ -7,7 +7,7 @@ export class AdvancedRegexValidationRule implements IValidationRule
     public expression: string;
     public message: (value: any) => string;
 
-    constructor(ruleName: string, expression: string, message: string | ((value: any)=>string)) {
+    constructor(ruleName: string, expression: string) {
 
         if(!ruleName || ruleName.length == 0)
         { throw new Error("ruleName is required, an empty rule name is invalid"); }
@@ -17,7 +17,6 @@ export class AdvancedRegexValidationRule implements IValidationRule
 
         this.ruleName = ruleName;
         this.expression = expression;
-        this.message = (typeof message === "function") ? message : (): string => { return <string>message; };
     }
 
     public async validate(modelResolver: IModelResolver, propertyName: string, regexPattern: RegExp): Promise<boolean>
@@ -28,10 +27,5 @@ export class AdvancedRegexValidationRule implements IValidationRule
         { return true; }
 
         return value.toString().match(this.expression) !== null;
-    }
-
-    public getMessage(modelResolver: IModelResolver, propertyName: string, regexPattern: RegExp) {
-        let value = modelResolver.resolve(propertyName);
-        return this.message(value);
     }
 }

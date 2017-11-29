@@ -9,11 +9,17 @@ import {IValidationGroup} from "../../src/validation-groups/ivalidation-group";
 import {ModelResolverFactory} from "../../src/factories/model-resolver-factory";
 import {DynamicCompositeValidationRule} from "../../src/index";
 import {PropertyStateChangedEvent} from "../../src/events/property-state-changed-event";
+import {DefaultLocaleHandler} from "../../src/localization/default-locale-handler";
+import {Locale as DefaultLocale} from "../../src/locales/en-us";
 
 describe('Validation Group', function () {
 
-    var createValidationGroupFor = (model, ruleset) : IValidationGroup => {
-        var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry);
+    var createValidationGroupFor = (model: any, ruleset: any) : IValidationGroup => {
+        var defaultLocaleHandler = new DefaultLocaleHandler();
+        defaultLocaleHandler.registerLocale("en-us", DefaultLocale);
+        defaultLocaleHandler.useLocale("en-us");
+
+        var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry, defaultLocaleHandler);
         var ruleResolver = new RuleResolver();
         var modelResolverFactory = new ModelResolverFactory();
         return new ValidationGroup(fieldErrorProcessor, ruleResolver, modelResolverFactory, model, ruleset);
@@ -21,13 +27,12 @@ describe('Validation Group', function () {
 
     var delayedRequiresValid = (retval:any = true, delay:number = 100) => { return {
         ruleName: "delayed",
-        validate: function(modelResolver: IModelResolver, propertyName: string, options){
+        validate: function(modelResolver: IModelResolver, propertyName: string, options: any){
             return new Promise(function(resolve, reject){
                 console.log("validating", modelResolver.resolve(propertyName));
                 setTimeout(function() { resolve(modelResolver.resolve(propertyName) == "valid"); }, delay);
             });
-        },
-        getMessage: function(value, options) { return "delayed rule: " + value; }
+        }
     }};
 
     it('should correctly get errors', function (done) {
@@ -475,12 +480,11 @@ describe('Validation Group', function () {
         // This basically delays validation so others stack
         var delayedRequiresValid: any = {
             ruleName: "delayed",
-            validate: function(modelResolver: IModelResolver, prop: string, options){
+            validate: function(modelResolver: IModelResolver, prop: string, options: any){
                 return new Promise(function(resolve, reject){
                     setTimeout(function() { resolve(modelResolver.resolve(prop) == "valid"); }, 200);
                 });
-            },
-            getMessage: function(value, options) { return "delayed rule: " + value; }
+            }
         };
 
         ruleRegistry.registerRule(delayedRequiresValid);
@@ -540,12 +544,11 @@ describe('Validation Group', function () {
 
         var delayedRequires10Rule: any = {
             ruleName: "delayed",
-            validate: function(mr, prop, options){
+            validate: function(mr: any, prop: any, options: any){
                 return new Promise(function(resolve, reject){
                     setTimeout(function() { resolve(mr.resolve(prop) == 10); }, 100);
                 });
-            },
-            getMessage: function(value, options) { return "delayed rule: " + value; }
+            }
         };
 
         ruleRegistry.registerRule(delayedRequires10Rule);
@@ -702,6 +705,7 @@ describe('Validation Group', function () {
 
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
         validationGroup.propertyStateChangedEvent.subscribe(function(args){
+            console.log("DATA", args);
             expect(args.isValid).to.be.false;
             expect(args.error).contains("15");
             expect(args.property).to.equal("foo");

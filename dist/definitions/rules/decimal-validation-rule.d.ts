@@ -4,5 +4,4 @@ export declare class DecimalValidationRule implements IValidationRule {
     ruleName: string;
     private decimalRegex;
     validate(modelResolver: IModelResolver, propertyName: string): Promise<boolean>;
-    getMessage(modelResolver: IModelResolver, propertyName: string): string;
 }

@@ -7,8 +7,8 @@ var promise_counter_1 = require("../promises/promise-counter");
 var property_state_changed_event_1 = require("../events/property-state-changed-event");
 var model_state_changed_event_1 = require("../events/model-state-changed-event");
 var event_js_1 = require("event-js");
-// TODO: This class could be simplified
-var ValidationGroup = (function () {
+// TODO: This class should be simplified further if possible
+var ValidationGroup = /** @class */ (function () {
     function ValidationGroup(fieldErrorProcessor, ruleResolver, modelResolverFactory, model, ruleset) {
         if (ruleResolver === void 0) { ruleResolver = new rule_resolver_1.RuleResolver(); }
         var _this = this;

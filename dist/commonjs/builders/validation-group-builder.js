@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var validation_group_1 = require("../validation-groups/validation-group");
 var reactive_validation_group_builder_1 = require("./reactive-validation-group-builder");
 var model_resolver_factory_1 = require("../factories/model-resolver-factory");
-var ValidationGroupBuilder = (function () {
+var ValidationGroupBuilder = /** @class */ (function () {
     function ValidationGroupBuilder(fieldErrorProcessor, ruleResolver) {
         var _this = this;
         this.fieldErrorProcessor = fieldErrorProcessor;

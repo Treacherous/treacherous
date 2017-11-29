@@ -11,6 +11,9 @@ import {ModelResolver} from "../../src/resolvers/model-resolver";
 import {PropertyResolver} from "property-resolver";
 import {IModelResolver} from "../../src/resolvers/imodel-resolver";
 
+import {DefaultLocaleHandler} from "../../src/localization/default-locale-handler";
+import {Locale as DefaultLocale} from "../../src/locales/en-us";
+
 use(spies);
 
 describe('Field Error Processor', function () {
@@ -20,7 +23,11 @@ describe('Field Error Processor', function () {
         ruleRegistry.registerRule(new RequiredValidationRule());
         ruleRegistry.registerRule(new MaxLengthValidationRule());
 
-        var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry);
+        var defaultLocaleHandler = new DefaultLocaleHandler();
+        defaultLocaleHandler.registerLocale("en-us", DefaultLocale);
+        defaultLocaleHandler.useLocale("en-us");
+
+        var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry, defaultLocaleHandler);
 
         var dummyModel = new ModelResolver(new PropertyResolver(),{ dummyField: "123"});
         console.log(dummyModel);
@@ -43,7 +50,11 @@ describe('Field Error Processor', function () {
         var ruleRegistry = new RuleRegistry();
         ruleRegistry.registerRule(new RequiredValidationRule());
 
-        var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry);
+        var defaultLocaleHandler = new DefaultLocaleHandler();
+        defaultLocaleHandler.registerLocale("en-us", DefaultLocale);
+        defaultLocaleHandler.useLocale("en-us");
+
+        var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry, defaultLocaleHandler);
 
         var dummyModel = new ModelResolver(new PropertyResolver(), {});
         var expectedMessage = "you should have put in some text";
@@ -65,7 +76,11 @@ describe('Field Error Processor', function () {
         var ruleRegistry = new RuleRegistry();
         ruleRegistry.registerRule(new RequiredValidationRule());
 
-        var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry);
+        var defaultLocaleHandler = new DefaultLocaleHandler();
+        defaultLocaleHandler.registerLocale("en-us", DefaultLocale);
+        defaultLocaleHandler.useLocale("en-us");
+
+        var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry, defaultLocaleHandler);
 
         var dummyModel = new ModelResolver(new PropertyResolver(),{});
         var expectedMessage = "you should have put in some text";
@@ -89,7 +104,11 @@ describe('Field Error Processor', function () {
         var ruleRegistry = new RuleRegistry();
         ruleRegistry.registerRule(new EqualValidationRule());
 
-        var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry);
+        var defaultLocaleHandler = new DefaultLocaleHandler();
+        defaultLocaleHandler.registerLocale("en-us", DefaultLocale);
+        defaultLocaleHandler.useLocale("en-us");
+
+        var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry, defaultLocaleHandler);
 
         var dummyModel = new ModelResolver(new PropertyResolver(),{ foo: "AA", bar:"BB" });
         var dummyField = "foo";
@@ -116,7 +135,11 @@ describe('Field Error Processor', function () {
         ruleRegistry.registerRule(new RequiredValidationRule());
         ruleRegistry.registerRule(new MaxLengthValidationRule());
 
-        var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry);
+        var defaultLocaleHandler = new DefaultLocaleHandler();
+        defaultLocaleHandler.registerLocale("en-us", DefaultLocale);
+        defaultLocaleHandler.useLocale("en-us");
+
+        var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry, defaultLocaleHandler);
 
         var dummyModel = new ModelResolver(new PropertyResolver(),{ dummyField : "12" });
         var dummyRules = [
@@ -140,7 +163,11 @@ describe('Field Error Processor', function () {
         var spiedValidationMethod = spy.on(maxLengthTreacherous, 'validate');
         ruleRegistry.registerRule(maxLengthTreacherous);
 
-        var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry);
+        var defaultLocaleHandler = new DefaultLocaleHandler();
+        defaultLocaleHandler.registerLocale("en-us", DefaultLocale);
+        defaultLocaleHandler.useLocale("en-us");
+
+        var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry, defaultLocaleHandler);
 
         var dummyModel = new ModelResolver(new PropertyResolver(),{});
         var dummyField = null;
@@ -165,7 +192,11 @@ describe('Field Error Processor', function () {
         var spiedValidationMethod = spy.on(requiredValidationRule, 'validate');
         ruleRegistry.registerRule(requiredValidationRule);
 
-        var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry);
+        var defaultLocaleHandler = new DefaultLocaleHandler();
+        defaultLocaleHandler.registerLocale("en-us", DefaultLocale);
+        defaultLocaleHandler.useLocale("en-us");
+        
+        var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry, defaultLocaleHandler);
 
         var dummyModel = new ModelResolver(new PropertyResolver(),{ shouldRun: false });
         var dummyField = null;

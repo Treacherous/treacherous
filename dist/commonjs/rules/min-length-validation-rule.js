@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = require("tslib");
-var MinLengthValidationRule = (function () {
+var MinLengthValidationRule = /** @class */ (function () {
     function MinLengthValidationRule() {
         this.ruleName = "minLength";
     }
@@ -16,10 +16,6 @@ var MinLengthValidationRule = (function () {
                 return [2 /*return*/, value.length >= minLength];
             });
         });
-    };
-    MinLengthValidationRule.prototype.getMessage = function (modelResolver, propertyName, minLength) {
-        var value = modelResolver.resolve(propertyName);
-        return "This field has a length of " + value.length + " but should more than " + minLength;
     };
     return MinLengthValidationRule;
 }());

@@ -15,9 +15,4 @@ export class ISODateValidationRule implements IValidationRule
 
         return this.isoDateRegex.test(value);
     }
-
-    public getMessage(modelResolver: IModelResolver, propertyName: string) {
-        let value = modelResolver.resolve(propertyName);
-        return `This field contains "${value}" which is not a valid ISO date`;
-    }
 }

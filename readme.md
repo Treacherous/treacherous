@@ -20,7 +20,7 @@ Treacherous is an attempt to bring some consistency to validation in the javascr
 - Works in browser or server
 - Write once, use anywhere
 - Can be integrated with any view framework (i.e vue, knockout, aurelia etc)
-
+- Generic pipeline for localization customization
 
 ## Features
 
@@ -194,13 +194,21 @@ The framework comes with built in validators for the following:
 
 ### Creating custom rules
 
-So if you want to make your own rule you need to do 2 things, one is create the rule handler class
-which should conform to the `IValidationRule` interface, once you have done the validator you then need to register it so the validation system is aware of it,
-to do that you need to call `Treacherous.ruleRegistry.registerRule(new SomeCustomValidator());`.
+Creating custom rules is pretty easy, you need to:
 
-To find out more read the [Custom Rules](docs/custom-rules.md) docs.
+- Implement `IValidationRule` with your custom logic (JS users just match the signatures of the interface)
+- Add validation messages for supported locales
+- Register your rule with the ruleRegistry
+
+There is a whole doc on the subject which can be found in the docs section.
 
 --- 
+
+### Localization
+
+There is a whole doc on the subject, but at a high level *BY DEFAULT* treacherous will pre-load the `en-us` locale for you which will be used by the library, but you can easily supplement that locale, or register and use new locales. You can also completely replace the default localization handler, but see the docs for more info on this.
+
+---
 
 ## Documentation
 
@@ -233,12 +241,6 @@ a working version to play with. If you want to minify it you can do `gulp minify
 output files, we don't minify by default.
 
 You can also run `gulp run-tests` which will run the tests to make sure everythign works as expected.
-
-### Translations
-
-This is a todo, if needed this will probably be implemented by having a class representing the 
-validation message for a given language linked via the `ruleName` for now all messages are in 
-english but feel free to raise this if you need this functionality sooner rather than later.
 
 ---
 

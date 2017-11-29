@@ -15,9 +15,4 @@ export class DateValidationRule implements IValidationRule
 
         return !this.invalidObjectRegex.test(<any>new Date(value));
     }
-
-    public getMessage(modelResolver: IModelResolver, propertyName: string) {
-        let value = modelResolver.resolve(propertyName);
-        return `This field contains "${value}" which is not a valid date`;
-    }
 }

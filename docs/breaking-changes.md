@@ -2,6 +2,10 @@
 
 Wherever possible breaking changes are avoided but in some cases its going to happen.
 
+## 0.17.0
+
+- Changed `IValidationRule` to separate the messages out
+
 ## 0.12.0
 
 - Removed `IValidationSettings`

@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = require("tslib");
-var AdvancedRegexValidationRule = (function () {
-    function AdvancedRegexValidationRule(ruleName, expression, message) {
+var AdvancedRegexValidationRule = /** @class */ (function () {
+    function AdvancedRegexValidationRule(ruleName, expression) {
         if (!ruleName || ruleName.length == 0) {
             throw new Error("ruleName is required, an empty rule name is invalid");
         }
@@ -11,7 +11,6 @@ var AdvancedRegexValidationRule = (function () {
         }
         this.ruleName = ruleName;
         this.expression = expression;
-        this.message = (typeof message === "function") ? message : function () { return message; };
     }
     AdvancedRegexValidationRule.prototype.validate = function (modelResolver, propertyName, regexPattern) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
@@ -24,10 +23,6 @@ var AdvancedRegexValidationRule = (function () {
                 return [2 /*return*/, value.toString().match(this.expression) !== null];
             });
         });
-    };
-    AdvancedRegexValidationRule.prototype.getMessage = function (modelResolver, propertyName, regexPattern) {
-        var value = modelResolver.resolve(propertyName);
-        return this.message(value);
     };
     return AdvancedRegexValidationRule;
 }());

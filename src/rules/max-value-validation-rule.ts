@@ -13,9 +13,4 @@ export class MaxValueValidationRule implements IValidationRule
 
         return value <= maxValue;
     }
-
-    public getMessage(modelResolver: IModelResolver, propertyName: string, maxValue: any) {
-        let value = modelResolver.resolve(propertyName);
-        return `This field has a value of ${value} but should be less than or equal to ${maxValue}`;
-    }
 }

@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = require("tslib");
-var RegexValidationRule = (function () {
+var RegexValidationRule = /** @class */ (function () {
     function RegexValidationRule() {
         this.ruleName = "regex";
     }
@@ -16,9 +16,6 @@ var RegexValidationRule = (function () {
                 return [2 /*return*/, value.toString().match(regexPattern) !== null];
             });
         });
-    };
-    RegexValidationRule.prototype.getMessage = function (modelResolver, propertyName, regexPattern) {
-        return "This field does not match the expected format";
     };
     return RegexValidationRule;
 }());

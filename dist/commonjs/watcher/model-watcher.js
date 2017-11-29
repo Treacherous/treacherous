@@ -5,7 +5,7 @@ var event_js_1 = require("event-js");
 var type_helper_1 = require("../helpers/type-helper");
 var property_watcher_1 = require("./property-watcher");
 var property_changed_event_1 = require("../events/property-changed-event");
-var ModelWatcher = (function () {
+var ModelWatcher = /** @class */ (function () {
     function ModelWatcher(propertyResolver) {
         if (propertyResolver === void 0) { propertyResolver = new property_resolver_1.PropertyResolver(); }
         var _this = this;

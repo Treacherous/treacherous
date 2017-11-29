@@ -8,11 +8,17 @@ import {IReactiveValidationGroup} from "../../src/validation-groups/ireactive-va
 import {ruleRegistry} from "../../src/rule-registry-setup";
 import {ModelResolverFactory} from "../../src/factories/model-resolver-factory";
 import {ModelWatcherFactory} from "../../src/factories/model-watcher-factory";
+import {DefaultLocaleHandler} from "../../src/localization/default-locale-handler";
+import {Locale as DefaultLocale} from "../../src/locales/en-us";
 
 describe('Reactive Validation Group', function () {
 
-    var createValidationGroupFor = (model, ruleset) : IReactiveValidationGroup => {
-        var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry);
+    var createValidationGroupFor = (model: any, ruleset: any) : IReactiveValidationGroup => {
+        var defaultLocaleHandler = new DefaultLocaleHandler();
+        defaultLocaleHandler.registerLocale("en-us", DefaultLocale);
+        defaultLocaleHandler.useLocale("en-us");
+        
+        var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry, defaultLocaleHandler);
         var ruleResolver = new RuleResolver();
         var modelResolverFactory = new ModelResolverFactory();
         var modelWatcherFactory = new ModelWatcherFactory();

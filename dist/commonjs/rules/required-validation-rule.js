@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = require("tslib");
-var RequiredValidationRule = (function () {
+var RequiredValidationRule = /** @class */ (function () {
     function RequiredValidationRule() {
         this.ruleName = "required";
     }
@@ -29,9 +29,6 @@ var RequiredValidationRule = (function () {
                 return [2 /*return*/, (testValue + '').length > 0];
             });
         });
-    };
-    RequiredValidationRule.prototype.getMessage = function (modelResolver, propertyName, isRequired) {
-        return "This field is required";
     };
     return RequiredValidationRule;
 }());

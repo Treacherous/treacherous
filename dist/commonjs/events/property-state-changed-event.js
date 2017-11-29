@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var PropertyStateChangedEvent = (function () {
+var PropertyStateChangedEvent = /** @class */ (function () {
     function PropertyStateChangedEvent(property, isValid, error) {
         this.property = property;
         this.isValid = isValid;

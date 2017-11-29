@@ -14,8 +14,4 @@ export class RegexValidationRule implements IValidationRule
 
         return value.toString().match(regexPattern) !== null;
     }
-
-    public getMessage(modelResolver: IModelResolver, propertyName: string, regexPattern: RegExp) {
-        return `This field does not match the expected format`;
-    }
 }
