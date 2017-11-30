@@ -10,6 +10,7 @@ module.exports = function(config) {
         },
 
         webpack: {
+            devtool: "source-map",
             module: {
                 loaders: [
                     { test: /\.tsx?$/, loader: 'ts-loader', exclude: /node_modules/}
@@ -46,6 +47,13 @@ module.exports = function(config) {
         mime: {
             'text/x-typescript': ['ts','tsx']
         },
+
+        customLaunchers: {
+            'ChromeDebug': {
+              base: 'Chrome',
+              flags: [ '--remote-debugging-port=9333' ]
+            }
+          },
 
         phantomjsLauncher: {
             // Have phantomjs exit if a ResourceError is encountered (useful if karma exits without killing phantom)

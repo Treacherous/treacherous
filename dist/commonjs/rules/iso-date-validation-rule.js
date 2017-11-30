@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = require("tslib");
-var ISODateValidationRule = (function () {
+var ISODateValidationRule = /** @class */ (function () {
     function ISODateValidationRule() {
         this.ruleName = "isoDate";
         this.isoDateRegex = /(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z))/;
@@ -17,10 +17,6 @@ var ISODateValidationRule = (function () {
                 return [2 /*return*/, this.isoDateRegex.test(value)];
             });
         });
-    };
-    ISODateValidationRule.prototype.getMessage = function (modelResolver, propertyName) {
-        var value = modelResolver.resolve(propertyName);
-        return "This field contains \"" + value + "\" which is not a valid ISO date";
     };
     return ISODateValidationRule;
 }());

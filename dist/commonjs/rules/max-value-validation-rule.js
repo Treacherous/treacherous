@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = require("tslib");
-var MaxValueValidationRule = (function () {
+var MaxValueValidationRule = /** @class */ (function () {
     function MaxValueValidationRule() {
         this.ruleName = "maxValue";
     }
@@ -16,10 +16,6 @@ var MaxValueValidationRule = (function () {
                 return [2 /*return*/, value <= maxValue];
             });
         });
-    };
-    MaxValueValidationRule.prototype.getMessage = function (modelResolver, propertyName, maxValue) {
-        var value = modelResolver.resolve(propertyName);
-        return "This field has a value of " + value + " but should be less than or equal to " + maxValue;
     };
     return MaxValueValidationRule;
 }());

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var ValidationError = (function () {
+var ValidationError = /** @class */ (function () {
     function ValidationError(propertyName, message) {
         this.propertyName = propertyName;
         this.message = message;

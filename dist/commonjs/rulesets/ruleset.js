@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var Ruleset = (function () {
+var Ruleset = /** @class */ (function () {
     function Ruleset() {
         var _this = this;
         this.rules = {};

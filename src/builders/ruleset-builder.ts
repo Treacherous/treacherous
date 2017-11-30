@@ -16,8 +16,8 @@ export class RulesetBuilder<T>
     constructor(private ruleRegistry?: RuleRegistry) {}
 
     protected extractPropertyName(predicate: (model: T) => any) : string {
-        let regex = /.*\.([\w]*);/;
-        let predicateString = predicate.toString();
+        const regex = /.*\.([\w]*);/;
+        const predicateString = predicate.toString();
         return regex.exec(predicateString)[1];
     }
 
@@ -75,8 +75,8 @@ export class RulesetBuilder<T>
         return this;
     }
 
-    public addDynamicRule = (virtualPropertyName: string, validate: ICompositeValidationRule["validate"], getMessage: ((modelResolver: IModelResolver) => string) | string) => {
-        let compositeRule = new DynamicCompositeValidationRule(virtualPropertyName, validate, getMessage);
+    public addDynamicRule = (virtualPropertyName: string, validate: ICompositeValidationRule["validate"]) => {
+        const compositeRule = new DynamicCompositeValidationRule(virtualPropertyName, validate);
         this.internalRuleset.compositeRules[virtualPropertyName] = compositeRule;
         return this;
     }
@@ -100,7 +100,7 @@ export class RulesetBuilder<T>
         this.verifyRuleNameIsValid(rule);
         this.verifyExistingProperty();
 
-        let ruleLink = new RuleLink(rule, ruleOptions);
+        const ruleLink = new RuleLink(rule, ruleOptions);
         this.currentRule = ruleLink;
         this.internalRuleset.addRule(this.currentProperty, new ForEachRule<RuleLink>(ruleLink));
 

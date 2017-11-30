@@ -9,13 +9,13 @@ export class EqualValidationRule implements IValidationRule
 
     public async validate(modelResolver: IModelResolver, propertyName: string, optionsOrValue: any): Promise<boolean>
     {
-        let value = modelResolver.resolve(propertyName);
+        const value = modelResolver.resolve(propertyName);
 
         if (value === undefined || value === null)
         { return true; }
 
         let comparison = optionsOrValue.value || optionsOrValue;
-        let weakEquality = optionsOrValue.weakEquality || false;
+        const weakEquality = optionsOrValue.weakEquality || false;
 
         if(TypeHelper.isFunctionType(comparison))
         { comparison = comparison(); }
@@ -24,10 +24,5 @@ export class EqualValidationRule implements IValidationRule
         { return ComparerHelper.dateTimeCompararer(value, comparison); }
         else
         { return ComparerHelper.simpleTypeComparer(value, comparison, weakEquality); }
-    }
-
-    public getMessage(modelResolver: IModelResolver, propertyName: string, optionsOrValue: any) {
-        var value = modelResolver.resolve(propertyName);
-        return `This field is ${value} but should be equal to ${optionsOrValue.value || optionsOrValue}`;
     }
 }

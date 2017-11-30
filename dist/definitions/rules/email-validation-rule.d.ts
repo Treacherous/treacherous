@@ -4,5 +4,4 @@ export declare class EmailValidationRule implements IValidationRule {
     ruleName: string;
     private emailRegex;
     validate(modelResolver: IModelResolver, propertyName: string): Promise<boolean>;
-    getMessage(modelResolver: IModelResolver, propertyName: string): string;
 }

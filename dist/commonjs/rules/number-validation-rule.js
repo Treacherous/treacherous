@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = require("tslib");
-var NumberValidationRule = (function () {
+var NumberValidationRule = /** @class */ (function () {
     function NumberValidationRule() {
         this.ruleName = "number";
         this.numberRegex = /^\d+$/;
@@ -17,10 +17,6 @@ var NumberValidationRule = (function () {
                 return [2 /*return*/, this.numberRegex.test(value)];
             });
         });
-    };
-    NumberValidationRule.prototype.getMessage = function (modelResolver, propertyName) {
-        var value = modelResolver.resolve(propertyName);
-        return "This field contains " + value + " which is not a numeric value";
     };
     return NumberValidationRule;
 }());

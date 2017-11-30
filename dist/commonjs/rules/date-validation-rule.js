@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = require("tslib");
-var DateValidationRule = (function () {
+var DateValidationRule = /** @class */ (function () {
     function DateValidationRule() {
         this.ruleName = "date";
         this.invalidObjectRegex = /Invalid|NaN/;
@@ -17,10 +17,6 @@ var DateValidationRule = (function () {
                 return [2 /*return*/, !this.invalidObjectRegex.test(new Date(value))];
             });
         });
-    };
-    DateValidationRule.prototype.getMessage = function (modelResolver, propertyName) {
-        var value = modelResolver.resolve(propertyName);
-        return "This field contains \"" + value + "\" which is not a valid date";
     };
     return DateValidationRule;
 }());

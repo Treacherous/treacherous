@@ -6,7 +6,7 @@ export class PromiseCounter
     public waitForCompletion = async() : Promise<any> => {
         if(!this.validationCounter) { return; }
 
-        let resolver = (resolve: Function) => {
+        const resolver = (resolve: Function) => {
             this.promiseCallbacks.push(() => resolve());
         };
         return new Promise(resolver);
@@ -14,10 +14,10 @@ export class PromiseCounter
 
     public countPromise = async(promise: Promise<any>) => {
         if(!promise) { return; }
-        if(!promise.then) { throw new Error("Non-Promise pass in: " + promise) }
+        if(!promise.then) { throw new Error("Non-Promise pass in: " + promise); }
 
         this.incrementCounter();
-        let result = await promise;
+        const result = await promise;
         this.decrementCounter();
         return result;
     }
@@ -30,5 +30,5 @@ export class PromiseCounter
         { this.promiseCallbacks.shift()(); }
     }
 
-    private incrementCounter = () => { this.validationCounter++; }
+    private incrementCounter = () => { this.validationCounter++; };
 }

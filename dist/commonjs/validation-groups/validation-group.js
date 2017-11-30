@@ -7,14 +7,15 @@ var promise_counter_1 = require("../promises/promise-counter");
 var property_state_changed_event_1 = require("../events/property-state-changed-event");
 var model_state_changed_event_1 = require("../events/model-state-changed-event");
 var event_js_1 = require("event-js");
-// TODO: This class could be simplified
-var ValidationGroup = (function () {
-    function ValidationGroup(fieldErrorProcessor, ruleResolver, modelResolverFactory, model, ruleset) {
+// TODO: This class should be simplified further if possible
+var ValidationGroup = /** @class */ (function () {
+    function ValidationGroup(fieldErrorProcessor, ruleResolver, modelResolverFactory, localeHandler, model, ruleset) {
         if (ruleResolver === void 0) { ruleResolver = new rule_resolver_1.RuleResolver(); }
         var _this = this;
         this.fieldErrorProcessor = fieldErrorProcessor;
         this.ruleResolver = ruleResolver;
         this.modelResolverFactory = modelResolverFactory;
+        this.localeHandler = localeHandler;
         this.ruleset = ruleset;
         this.propertyErrors = {};
         this.validatePropertyWithRuleLinks = function (propertyName, propertyRules) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
@@ -106,7 +107,7 @@ var ValidationGroup = (function () {
             return tslib_1.__generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (!(this.ruleset.compositeRules !== {})) return [3 /*break*/, 2];
+                        if (!(Object.keys(this.ruleset.compositeRules).length > 0)) return [3 /*break*/, 2];
                         return [4 /*yield*/, this.validateCompositeRules()];
                     case 1:
                         _a.sent();
@@ -145,7 +146,9 @@ var ValidationGroup = (function () {
                             return [2 /*return*/];
                         }
                         previousError = this.propertyErrors[compositeRule.virtualPropertyName];
-                        currentError = compositeRule.getMessage(this.modelResolver);
+                        return [4 /*yield*/, this.localeHandler.getMessage(compositeRule.virtualPropertyName, compositeRule, this.modelResolver, null)];
+                    case 2:
+                        currentError = _a.sent();
                         this.propertyErrors[compositeRule.virtualPropertyName] = currentError;
                         if (currentError != previousError) {
                             eventArgs = new property_state_changed_event_1.PropertyStateChangedEvent(compositeRule.virtualPropertyName, false, currentError);
@@ -159,20 +162,54 @@ var ValidationGroup = (function () {
             });
         }); };
         this.validateCompositeRules = function () { return tslib_1.__awaiter(_this, void 0, void 0, function () {
-            var propertyName, compositeRule;
-            return tslib_1.__generator(this, function (_a) {
-                for (propertyName in this.ruleset.compositeRules) {
-                    compositeRule = this.ruleset.compositeRules[propertyName];
-                    this.validateCompositeRule(compositeRule);
+            var _a, _b, _i, propertyName, compositeRule;
+            return tslib_1.__generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0:
+                        _a = [];
+                        for (_b in this.ruleset.compositeRules)
+                            _a.push(_b);
+                        _i = 0;
+                        _c.label = 1;
+                    case 1:
+                        if (!(_i < _a.length)) return [3 /*break*/, 4];
+                        propertyName = _a[_i];
+                        compositeRule = this.ruleset.compositeRules[propertyName];
+                        return [4 /*yield*/, this.validateCompositeRule(compositeRule)];
+                    case 2:
+                        _c.sent();
+                        _c.label = 3;
+                    case 3:
+                        _i++;
+                        return [3 /*break*/, 1];
+                    case 4: return [2 /*return*/];
                 }
-                return [2 /*return*/];
             });
         }); };
-        this.startValidateModel = function () {
-            for (var parameterName in _this.ruleset.rules) {
-                _this.startValidateProperty(parameterName);
-            }
-        };
+        this.startValidateModel = function () { return tslib_1.__awaiter(_this, void 0, void 0, function () {
+            var _a, _b, _i, parameterName;
+            return tslib_1.__generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0:
+                        _a = [];
+                        for (_b in this.ruleset.rules)
+                            _a.push(_b);
+                        _i = 0;
+                        _c.label = 1;
+                    case 1:
+                        if (!(_i < _a.length)) return [3 /*break*/, 4];
+                        parameterName = _a[_i];
+                        return [4 /*yield*/, this.startValidateProperty(parameterName)];
+                    case 2:
+                        _c.sent();
+                        _c.label = 3;
+                    case 3:
+                        _i++;
+                        return [3 /*break*/, 1];
+                    case 4: return [2 /*return*/];
+                }
+            });
+        }); };
         this.changeValidationTarget = function (model) {
             _this.modelResolver = _this.modelResolverFactory.createModelResolver(model);
         };
@@ -227,11 +264,13 @@ var ValidationGroup = (function () {
                 return tslib_1.__generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
-                            if (revalidate) {
-                                this.startValidateProperty(propertyRoute);
-                            }
-                            return [4 /*yield*/, this.promiseCounter.waitForCompletion()];
+                            if (!revalidate) return [3 /*break*/, 2];
+                            return [4 /*yield*/, this.startValidateProperty(propertyRoute)];
                         case 1:
+                            _a.sent();
+                            _a.label = 2;
+                        case 2: return [4 /*yield*/, this.promiseCounter.waitForCompletion()];
+                        case 3:
                             _a.sent();
                             return [2 /*return*/, this.propertyErrors[propertyRoute]];
                     }

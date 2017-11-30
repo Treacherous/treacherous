@@ -2,11 +2,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = require("tslib");
 var field_has_error_1 = require("./field-has-error");
-var FieldErrorProcessor = (function () {
-    function FieldErrorProcessor(ruleRegistry) {
+var FieldErrorProcessor = /** @class */ (function () {
+    function FieldErrorProcessor(ruleRegistry, localeHandler) {
         this.ruleRegistry = ruleRegistry;
+        this.localeHandler = localeHandler;
     }
-    // Validates a single property against a model
     FieldErrorProcessor.prototype.processRuleLink = function (modelResolver, propertyName, ruleLink) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             var shouldRuleApply, validator, options, isValid, error;
@@ -28,24 +28,23 @@ var FieldErrorProcessor = (function () {
                         if (isValid) {
                             return [2 /*return*/];
                         }
-                        if (ruleLink.messageOverride) {
-                            if (typeof (ruleLink.messageOverride) === "function") {
-                                error = (ruleLink.messageOverride)(modelResolver, propertyName, ruleLink.ruleOptions);
-                            }
-                            else {
-                                error = ruleLink.messageOverride;
-                            }
+                        if (!ruleLink.messageOverride) return [3 /*break*/, 2];
+                        if (typeof (ruleLink.messageOverride) === "function") {
+                            error = (ruleLink.messageOverride)(modelResolver, propertyName, ruleLink.ruleOptions);
                         }
                         else {
-                            error = validator.getMessage(modelResolver, propertyName, ruleLink.ruleOptions);
+                            error = ruleLink.messageOverride;
                         }
-                        throw new field_has_error_1.FieldHasError(error);
+                        return [3 /*break*/, 4];
+                    case 2: return [4 /*yield*/, this.localeHandler.getMessage(ruleLink.ruleName, ruleLink.ruleOptions, modelResolver, propertyName)];
+                    case 3:
+                        error = _a.sent();
+                        _a.label = 4;
+                    case 4: throw new field_has_error_1.FieldHasError(error);
                 }
             });
         });
     };
-    // Loops through each rule on a property, adds it to a chain, then calls Promise.all
-    // Probably not correct, as they won't fire sequentially? Promises need to be chained
     FieldErrorProcessor.prototype.checkFieldForErrors = function (modelResolver, propertyName, rules) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             var _this = this;

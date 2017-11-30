@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = require("tslib");
-var MinValueValidationRule = (function () {
+var MinValueValidationRule = /** @class */ (function () {
     function MinValueValidationRule() {
         this.ruleName = "minValue";
     }
@@ -16,10 +16,6 @@ var MinValueValidationRule = (function () {
                 return [2 /*return*/, value >= minValue];
             });
         });
-    };
-    MinValueValidationRule.prototype.getMessage = function (modelResolver, propertyName, minValue) {
-        var value = modelResolver.resolve(propertyName);
-        return "This field has a value of " + value + " but should be greater than or equal to " + minValue;
     };
     return MinValueValidationRule;
 }());

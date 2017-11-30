@@ -7,7 +7,7 @@ use(spies);
 describe('Model Watcher', function () {
 
     it('should correctly watch model changes', function (done) {
-        var dummyModel = {
+        const dummyModel = {
             foo: 10,
             bar: [ 10, 20, 30, 40 ],
             woo: {
@@ -15,8 +15,8 @@ describe('Model Watcher', function () {
             }
         };
 
-        var rulesetBuilder = new RulesetBuilder();
-        var ruleset = rulesetBuilder.create()
+        const rulesetBuilder = new RulesetBuilder();
+        const ruleset = rulesetBuilder.create()
             .forProperty("foo")
                 .addRule("required", true)
             .forProperty("bar")
@@ -24,9 +24,9 @@ describe('Model Watcher', function () {
                 .addRuleForEach("maxValue", 20)
             .build();
 
-        var modelWatcher = new ModelWatcher();
+        const modelWatcher = new ModelWatcher();
         modelWatcher.setupWatcher(dummyModel, ruleset, 50);
-        var spySubscription = spy(function(eventArgs){});
+        const spySubscription = spy(function(eventArgs: any){});
 
         modelWatcher.onPropertyChanged.subscribe(spySubscription);
 
@@ -44,7 +44,7 @@ describe('Model Watcher', function () {
 
 
     it('should correctly watch model with nested rules', function (done) {
-        var dummyModel = {
+        const dummyModel = {
             bar: [
                 { val: 10 },
                 { val: 20 },
@@ -53,20 +53,20 @@ describe('Model Watcher', function () {
             ]
         };
 
-        var rulesetBuilder = new RulesetBuilder();
-        var nestedRuleset = rulesetBuilder.create()
+        const rulesetBuilder = new RulesetBuilder();
+        const nestedRuleset = rulesetBuilder.create()
             .forProperty("val")
             .addRule("maxValue", 30)
             .build();
 
-        var ruleset = rulesetBuilder.create()
+        const ruleset = rulesetBuilder.create()
             .forProperty("bar")
             .addRulesetForEach(nestedRuleset)
             .build();
 
-        var modelWatcher = new ModelWatcher();
+        const modelWatcher = new ModelWatcher();
         modelWatcher.setupWatcher(dummyModel, ruleset, 50);
-        var spySubscription = spy(function(eventArgs){});
+        const spySubscription = spy(function(eventArgs: any){});
 
         modelWatcher.onPropertyChanged.subscribe(spySubscription);
 
@@ -80,13 +80,13 @@ describe('Model Watcher', function () {
     });
 
     it('should correctly notice array size changes', function (done) {
-        var dummyModel = {
+        const dummyModel = {
             foo: 10,
             bar: [ 10, 20 ]
         };
 
-        var rulesetBuilder = new RulesetBuilder();
-        var ruleset = rulesetBuilder.create()
+        const rulesetBuilder = new RulesetBuilder();
+        const ruleset = rulesetBuilder.create()
             .forProperty("foo")
             .addRule("required", true)
             .forProperty("bar")
@@ -94,9 +94,9 @@ describe('Model Watcher', function () {
             .addRuleForEach("maxValue", 20)
             .build();
 
-        var modelWatcher = new ModelWatcher();
+        const modelWatcher = new ModelWatcher();
         modelWatcher.setupWatcher(dummyModel, ruleset, 50);
-        var spySubscription = spy(function(eventArgs){});
+        const spySubscription = spy(function(eventArgs: any){});
 
         modelWatcher.onPropertyChanged.subscribe(spySubscription);
 
@@ -110,7 +110,7 @@ describe('Model Watcher', function () {
     });
 
     it('should only watch properties with rules', function () {
-        var dummyModel = {
+        const dummyModel = {
             foo: 0,
             bar: [
                 { val: 10 },
@@ -121,26 +121,26 @@ describe('Model Watcher', function () {
             }
         };
 
-        var rulesetBuilder = new RulesetBuilder();
-        var woopRuleset = rulesetBuilder.create()
+        const rulesetBuilder = new RulesetBuilder();
+        const woopRuleset = rulesetBuilder.create()
             .forProperty("woop")
             .addRule("maxValue", 10)
             .build();
 
-        var testRuleset = rulesetBuilder.create()
+        const testRuleset = rulesetBuilder.create()
             .forProperty("test")
             .addRuleset(woopRuleset)
             .build();
 
-        var ruleset = rulesetBuilder.create()
+        const ruleset = rulesetBuilder.create()
             .forProperty("blah")
             .addRuleset(testRuleset)
             .build();
 
-        var modelWatcher = new ModelWatcher();
+        const modelWatcher = new ModelWatcher();
         modelWatcher.setupWatcher(dummyModel, ruleset, 50);
 
-        var watchCache = modelWatcher["watchCache"];
+        const watchCache = modelWatcher["watchCache"];
         expect(watchCache.length).to.equal(1);
         expect(watchCache[0].propertyPath).to.equal("blah.test.woop");
         expect(watchCache[0].previousValue).to.equal(20);
@@ -149,15 +149,15 @@ describe('Model Watcher', function () {
 
 
     it('should correctly update when model is changed', function (done) {
-        var dummyModel = { foo: 0 };
+        const dummyModel = { foo: 0 };
 
-        var rulesetBuilder = new RulesetBuilder();
-        var ruleset = rulesetBuilder.create()
+        const rulesetBuilder = new RulesetBuilder();
+        const ruleset = rulesetBuilder.create()
             .forProperty("foo")
             .addRule("maxValue", 10)
             .build();
 
-        var modelWatcher = new ModelWatcher();
+        const modelWatcher = new ModelWatcher();
         modelWatcher.setupWatcher(dummyModel, ruleset, 50);
 
         modelWatcher.onPropertyChanged.subscribe(function(data){
@@ -167,16 +167,16 @@ describe('Model Watcher', function () {
             done();
         });
 
-        var newModel = { foo: 10 };
+        const newModel = { foo: 10 };
         modelWatcher.changeWatcherTarget(newModel);
         modelWatcher.stopWatching();
     });
 
     it('should correctly cope with null model setup and replacement', function (done) {
-        var dummyModel = null;
+        const dummyModel: any = null;
 
-        var rulesetBuilder = new RulesetBuilder();
-        var ruleset = rulesetBuilder.create()
+        const rulesetBuilder = new RulesetBuilder();
+        const ruleset = rulesetBuilder.create()
             .forProperty("foo")
                 .addRule("maxValue", 10)
             .forProperty("bar")
@@ -184,15 +184,15 @@ describe('Model Watcher', function () {
                 .addRuleForEach("maxValue", 10)
             .build();
 
-        var modelWatcher = new ModelWatcher();
+        const modelWatcher = new ModelWatcher();
         modelWatcher.setupWatcher(dummyModel, ruleset, 50);
 
-        var newModel = {
+        const newModel = {
             foo: 11,
             bar: [11, 12]
         };
 
-        var spySubscription = spy(function(eventArgs){console.log("event", eventArgs);});
+        const spySubscription = spy(function(eventArgs: any){console.log("event", eventArgs);});
         modelWatcher.onPropertyChanged.subscribe(spySubscription);
         modelWatcher.changeWatcherTarget(newModel);
 
@@ -205,20 +205,20 @@ describe('Model Watcher', function () {
     });
 
     it('should correctly cope with empty model which is updated', function (done) {
-        var dummyModel: any = {};
+        const dummyModel: any = {};
 
-        var rulesetBuilder = new RulesetBuilder();
-        var ruleset = rulesetBuilder.create()
+        const rulesetBuilder = new RulesetBuilder();
+        const ruleset = rulesetBuilder.create()
             .forProperty("foo")
             .addRule("maxValue", 10)
             .forProperty("bar")
             .addRuleForEach("maxValue", 10)
             .build();
 
-        var modelWatcher = new ModelWatcher();
+        const modelWatcher = new ModelWatcher();
         modelWatcher.setupWatcher(dummyModel, ruleset, 50);
 
-        var spySubscription = spy(function(eventArgs){ console.log("event", eventArgs); });
+        const spySubscription = spy(function(eventArgs: any){ console.log("event", eventArgs); });
         modelWatcher.onPropertyChanged.subscribe(spySubscription);
 
         dummyModel.foo = 11;

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var ComparerHelper = (function () {
+var ComparerHelper = /** @class */ (function () {
     function ComparerHelper() {
     }
     ComparerHelper.simpleTypeComparer = function (value1, value2, isWeak) {

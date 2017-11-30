@@ -7,10 +7,10 @@ describe("Validation Rules", function(){
     describe('Date Rule', function () {
 
         it('should be valid when date is provided', function (done) {
-            var modelResolver = new ModelResolver(new PropertyResolver(), {});
+            const modelResolver = new ModelResolver(new PropertyResolver(), {});
             modelResolver.model.validDate = Date.now();
 
-            var rule = new DateValidationRule();
+            const rule = new DateValidationRule();
             rule.validate(modelResolver,'validDate').then(function(isValid){
                 expect(isValid).to.be.true;
                 done();
@@ -18,10 +18,10 @@ describe("Validation Rules", function(){
         });
 
         it('should be valid when provided a null value', function (done) {
-            var modelResolver = new ModelResolver(new PropertyResolver(), {});
+            const modelResolver = new ModelResolver(new PropertyResolver(), {});
             modelResolver.model.invalidDate = null;
 
-            var rule = new DateValidationRule();
+            const rule = new DateValidationRule();
             rule.validate(modelResolver,'invalidDate').then(function(isValid){
                 expect(isValid).to.be.true;
                 done();
@@ -29,10 +29,10 @@ describe("Validation Rules", function(){
         });
 
         it('should be invalid when non date is provided', function (done) {
-            var modelResolver = new ModelResolver(new PropertyResolver(), {});
+            const modelResolver = new ModelResolver(new PropertyResolver(), {});
             modelResolver.model.invalidDate = "this isn't a date";
 
-            var rule = new DateValidationRule();
+            const rule = new DateValidationRule();
             rule.validate(modelResolver,'invalidDate').then(function(isValid){
                 expect(isValid).to.be.false;
                 done();

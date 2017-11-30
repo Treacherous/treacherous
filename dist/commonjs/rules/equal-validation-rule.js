@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = require("tslib");
 var type_helper_1 = require("../helpers/type-helper");
 var comparer_helper_1 = require("../helpers/comparer-helper");
-var EqualValidationRule = (function () {
+var EqualValidationRule = /** @class */ (function () {
     function EqualValidationRule() {
         this.ruleName = "equal";
     }
@@ -29,10 +29,6 @@ var EqualValidationRule = (function () {
                 return [2 /*return*/];
             });
         });
-    };
-    EqualValidationRule.prototype.getMessage = function (modelResolver, propertyName, optionsOrValue) {
-        var value = modelResolver.resolve(propertyName);
-        return "This field is " + value + " but should be equal to " + (optionsOrValue.value || optionsOrValue);
     };
     return EqualValidationRule;
 }());

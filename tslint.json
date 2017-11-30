@@ -1,0 +1,9 @@
+{
+	"rules": {
+        "member-access": true,
+        "no-reference": true,
+		"semicolon": true,
+        "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore"]
+	},
+	"defaultSeverity": "warning"
+}

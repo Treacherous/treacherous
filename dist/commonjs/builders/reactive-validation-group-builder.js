@@ -3,11 +3,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var reactive_validation_group_1 = require("../validation-groups/reactive-validation-group");
 var model_watcher_factory_1 = require("../factories/model-watcher-factory");
 var model_resolver_factory_1 = require("../factories/model-resolver-factory");
-var ReactiveValidationGroupBuilder = (function () {
-    function ReactiveValidationGroupBuilder(fieldErrorProcessor, ruleResolver) {
+var ReactiveValidationGroupBuilder = /** @class */ (function () {
+    function ReactiveValidationGroupBuilder(fieldErrorProcessor, ruleResolver, localeHandler) {
         var _this = this;
         this.fieldErrorProcessor = fieldErrorProcessor;
         this.ruleResolver = ruleResolver;
+        this.localeHandler = localeHandler;
         this.create = function () {
             _this.refreshRate = 500;
             _this.validateOnStart = false;
@@ -32,7 +33,7 @@ var ReactiveValidationGroupBuilder = (function () {
             return _this;
         };
         this.build = function (model, ruleset) {
-            var validationGroup = new reactive_validation_group_1.ReactiveValidationGroup(_this.fieldErrorProcessor, _this.ruleResolver, _this.modelResolverFactory, _this.modelWatcherFactory, model, ruleset, _this.refreshRate);
+            var validationGroup = new reactive_validation_group_1.ReactiveValidationGroup(_this.fieldErrorProcessor, _this.ruleResolver, _this.modelResolverFactory, _this.modelWatcherFactory, _this.localeHandler, model, ruleset, _this.refreshRate);
             if (_this.validateOnStart) {
                 validationGroup.validate();
             }

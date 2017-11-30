@@ -7,16 +7,11 @@ export class MaxLengthValidationRule implements IValidationRule
 
     public async validate(modelResolver: IModelResolver, propertyName: string, maxLength: number): Promise<boolean>
     {
-        let value = modelResolver.resolve(propertyName);
+        const value = modelResolver.resolve(propertyName);
 
         if (value === undefined || value === null || value.length == 0)
         { return true; }
 
         return value.length <= maxLength;
-    }
-
-    public getMessage(modelResolver: IModelResolver, propertyName: string, maxLength: number) {
-        let value = modelResolver.resolve(propertyName);
-        return `This field has a length of ${value.length} but should contain no more than ${maxLength}`;
     }
 }

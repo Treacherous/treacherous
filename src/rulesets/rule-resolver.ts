@@ -16,10 +16,10 @@ export class RuleResolver implements IRuleResolver
     }
 
     public resolvePropertyRules = (propertyRoute: string, ruleset: Ruleset) => {
-        let propertyRouteSections = this.propertyResolver.decomposePropertyRoute(propertyRoute);
-        let finalProperty = propertyRouteSections[propertyRouteSections.length-1];
+        const propertyRouteSections = this.propertyResolver.decomposePropertyRoute(propertyRoute);
+        const finalProperty = propertyRouteSections[propertyRouteSections.length-1];
 
-        let matchingRules = this.traverseRulesForRoutes(propertyRouteSections, ruleset);
+        const matchingRules = this.traverseRulesForRoutes(propertyRouteSections, ruleset);
         if(!matchingRules) { return null; }
 
         if(matchingRules.getRulesForProperty)
@@ -42,7 +42,7 @@ export class RuleResolver implements IRuleResolver
     }
 
     private traverseRulesForRoutes = (propertyRouteSections: Array<string>, ruleset: any): any => {
-        let currentProperty = propertyRouteSections.shift();
+        const currentProperty = propertyRouteSections.shift();
 
         let childRules = ruleset;
         if(ruleset.rules)
@@ -54,14 +54,14 @@ export class RuleResolver implements IRuleResolver
         if(propertyRouteSections.length == 0)
         { return childRules; }
 
-        let nextProperty = propertyRouteSections[0];
+        const nextProperty = propertyRouteSections[0];
         if(!nextProperty)
         { return ruleset; }
 
         if (this.isIndexRoute(nextProperty)) {
             propertyRouteSections.shift();
 
-            let applicableRules: Array<any> = [];
+            const applicableRules: Array<any> = [];
             childRules.forEach((internalRules: any) => {
                if(internalRules.isForEach) {
                    applicableRules.push(internalRules.internalRule);
@@ -70,10 +70,10 @@ export class RuleResolver implements IRuleResolver
 
             if(propertyRouteSections.length > 0)
             {
-                let totalRules: Array<any> = [];
+                const totalRules: Array<any> = [];
                 applicableRules.forEach((applicableRule: any) => {
-                    let currentRouteSection = propertyRouteSections.slice();
-                    let outputRules = this.traverseRulesForRoutes(currentRouteSection, applicableRule);
+                    const currentRouteSection = propertyRouteSections.slice();
+                    const outputRules = this.traverseRulesForRoutes(currentRouteSection, applicableRule);
                     outputRules.forEach((outputRule: any) => {
                         totalRules.push(outputRule);
                     });
@@ -86,7 +86,7 @@ export class RuleResolver implements IRuleResolver
         if(propertyRouteSections.length == 0)
         { return childRules; }
 
-        let nextChildRule = this.getMatchingRuleForProperty(nextProperty, childRules);
+        const nextChildRule = this.getMatchingRuleForProperty(nextProperty, childRules);
 
         if(propertyRouteSections.length > 0)
         { return this.traverseRulesForRoutes(propertyRouteSections, nextChildRule); }

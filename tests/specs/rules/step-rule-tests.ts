@@ -7,10 +7,10 @@ describe("Validation Rules", function(){
     describe('Step Rule', function () {
 
         it('should be valid when number is valid increment', function (done) {
-            var modelResolver = new ModelResolver(new PropertyResolver(), {});
+            const modelResolver = new ModelResolver(new PropertyResolver(), {});
             modelResolver.model.validIncrement = 10;
 
-            var rule = new StepValidationRule();
+            const rule = new StepValidationRule();
             rule.validate(modelResolver,'validIncrement', 5).then(function(isValid){
                 expect(isValid).to.be.true;
                 done();
@@ -18,10 +18,10 @@ describe("Validation Rules", function(){
         });
 
         it('should be valid when string number is valid increment', function (done) {
-            var modelResolver = new ModelResolver(new PropertyResolver(), {});
+            const modelResolver = new ModelResolver(new PropertyResolver(), {});
             modelResolver.model.validNumberString = "10";
 
-            var rule = new StepValidationRule();
+            const rule = new StepValidationRule();
             rule.validate(modelResolver,'validNumberString', 5).then(function(isValid){
                 expect(isValid).to.be.true;
                 done();
@@ -29,10 +29,10 @@ describe("Validation Rules", function(){
         });
 
         it('should be valid when provided a null value', function (done) {
-            var modelResolver = new ModelResolver(new PropertyResolver(), {});
+            const modelResolver = new ModelResolver(new PropertyResolver(), {});
             modelResolver.model.a = null;
 
-            var rule = new StepValidationRule();
+            const rule = new StepValidationRule();
             rule.validate(modelResolver, 'a', 5).then(function(isValid){
                 expect(isValid).to.be.true;
                 done();
@@ -40,10 +40,10 @@ describe("Validation Rules", function(){
         });
 
         it('should be invalid when number is not valid increment', function (done) {
-            var modelResolver = new ModelResolver(new PropertyResolver(), {});
+            const modelResolver = new ModelResolver(new PropertyResolver(), {});
             modelResolver.model.invalidIncrement = 12;
 
-            var rule = new StepValidationRule();
+            const rule = new StepValidationRule();
             rule.validate(modelResolver,'invalidIncrement', 5).then(function(isValid){
                 expect(isValid).to.be.false;
                 done();
@@ -51,10 +51,10 @@ describe("Validation Rules", function(){
         });
 
         it('should be invalid when string number is not valid increment', function (done) {
-            var modelResolver = new ModelResolver(new PropertyResolver(), {});
+            const modelResolver = new ModelResolver(new PropertyResolver(), {});
             modelResolver.model.invalidIncrement = "12";
 
-            var rule = new StepValidationRule();
+            const rule = new StepValidationRule();
             rule.validate(modelResolver,'invalidIncrement', 5).then(function(isValid){
                 expect(isValid).to.be.false;
                 done();

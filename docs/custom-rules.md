@@ -26,12 +26,6 @@ export class HelloValidationRule implements IValidationRule
         var value = modelResolver.resolve(propertyName);
         return Promise.resolve(value == "hello"); 
     }
-
-    public getMessage(modelResolver: IModelResolver, propertyName: string, optionsOrValue: any) 
-    { 
-        var value = modelResolver.resolve(propertyName);
-        return `This field is ${value} but should be hello`; 
-    }
 }
 ```
 
@@ -46,16 +40,31 @@ function HelloValidationRule()
         var value = modelResolver.resolve(propertyName);
         return Promise.resolve(value == "hello"); 
     }
-
-    this.getMessage(value, optionsOrValue) 
-    { 
-        var value = modelResolver.resolve(propertyName);
-        return "This field is " + value + "but should be hello"; 
-    }
 }
 ```
 
 This rule now can be used within the Treacherous system by registering it within the `ruleRegistry`.
+
+### Creating a custom error message
+
+Since `0.17.0` Treacherous has a localization handler which takes care of resolving messages for rules asynchronously.
+
+You can see the [doc on localization](./localization.md) for more information on how to set this up, but the simple use case is to supplement the current locale with your custom validation rule. This can be done like so:
+
+```ts
+import {localeHandler, supplementLocale} from "treacherous"
+
+const currentLocale = localeHandler.getCurrentLocale(); // Incase you dont know what you are using, which is en-us by default
+supplementLocale(currentLocale, {
+    "hello": (value: any) => `This field is ${value} but should be hello`
+});
+```
+
+This will get the current locale being used (its defaulted to `en-us`) and register a message for the `hello` rule.
+
+As mentioned if you view the [doc on localization](./localization.md) you can see more in depth options for custom messages, as well as registering messages in multiple languages or with other use cases where you would not be augmenting languages locally like with i18n systems with its own back end.
+
+---
 
 ### Extra Info
 
@@ -63,7 +72,6 @@ To provide some more information on each property:
 
 * `ruleName`    - The name of the rule to be used within the `addRule` statements
 * `validate`    - The validation method where you should verify the value and return a promise with true/false
-* `getMessage`  - The getMessage method should return a string providing information related to the validation error
 
 (It is also worth mentioning that at some point the message will be pulled out when internationalisation occurs)
 
@@ -103,15 +111,26 @@ export interface ICompositeValidationRule
 {
     virtualPropertyName: string;
     validate(modelResolver: IModelResolver): Promise<boolean>;
-    getMessage(modelResolver: IModelResolver): string;
 }
 ```
 
-The `virtualPropertyName` is the property name you would provide on any calls to check validity of a property, it can be any value but should be unique per model.
+The `virtualPropertyName` is the property name you would provide on any calls to check validity of a property, it can be any value but should be unique.
 
 The `validate` provides you a way to resolve properties on the model using the `modelResolver` and should return a promise containin a true or false depending on if it is valid or not.
 
-The `getMessage` should output an error message which explains what is wrong and why it failed validation.
+As with normal rules, you will need to register the error message with the localization handler, as this is not a regular rule with a name the `virtualPropertyName` should be used as the key for the message, you can have this as a raw string or a method which is passed the `modelResolver` for you to generate your message i.e:
+
+```ts
+import {localeHandler, supplementLocale} from "treacherous"
+
+const currentLocale = localeHandler.getCurrentLocale(); // Incase you dont know what you are using, which is en-us by default
+supplementLocale(currentLocale, {
+    "myVirtualPropertyName": "The model has some invalid details related to ...",
+    "someFancyVirtualPropertyName": (modelResolver: any, compositeRule: any) => { /*...*/ }
+});
+```
+
+As you can see you can use a simple string, or take in the model resolver and the composite rule being used (incase you need any configuration data on the composite rule).
 
 ### Using Composite Rules
 

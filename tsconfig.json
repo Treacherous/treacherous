@@ -3,7 +3,8 @@
     "moduleResolution": "node",
     "lib": ["es2016", "dom"],
     "importHelpers": true,
-    "noImplicitAny": true
+    "noImplicitAny": true,
+    "sourceMap": true
   },
   "exclude": [
     "node_modules"

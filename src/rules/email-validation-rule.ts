@@ -8,15 +8,10 @@ export class EmailValidationRule implements IValidationRule
 
     public async validate(modelResolver: IModelResolver, propertyName: string): Promise<boolean>
     {
-        let value = modelResolver.resolve(propertyName);
+        const value = modelResolver.resolve(propertyName);
         if (value === undefined || value === null || value === "")
         { return true; }
 
         return this.emailRegex.test(value);
-    }
-
-    public getMessage(modelResolver: IModelResolver, propertyName: string) {
-        let value = modelResolver.resolve(propertyName);
-        return `This field contains "${value}" which is not a valid email address`;
     }
 }

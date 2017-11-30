@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var PropertyChangedEvent = (function () {
+var PropertyChangedEvent = /** @class */ (function () {
     function PropertyChangedEvent(propertyPath, newValue, oldValue) {
         this.propertyPath = propertyPath;
         this.newValue = newValue;

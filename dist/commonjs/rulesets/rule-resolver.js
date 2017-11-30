@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var property_resolver_1 = require("property-resolver");
-var RuleResolver = (function () {
+var RuleResolver = /** @class */ (function () {
     function RuleResolver(propertyResolver) {
         if (propertyResolver === void 0) { propertyResolver = new property_resolver_1.PropertyResolver(); }
         var _this = this;

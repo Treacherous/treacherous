@@ -11,10 +11,10 @@ export class MatchesValidationRule implements IValidationRule
 
     public async validate(modelResolver: IModelResolver, propertyName: string, optionsOrProperty: any): Promise<boolean>
     {
-        let fieldToMatch = optionsOrProperty.property || optionsOrProperty;
-        let weakEquality = optionsOrProperty.weakEquality || false;
-        let value = modelResolver.resolve(propertyName);
-        let matchingFieldValue = modelResolver.resolve(fieldToMatch);
+        const fieldToMatch = optionsOrProperty.property || optionsOrProperty;
+        const weakEquality = optionsOrProperty.weakEquality || false;
+        const value = modelResolver.resolve(propertyName);
+        const matchingFieldValue = modelResolver.resolve(fieldToMatch);
 
         if (value === undefined || value === null)
         { return (matchingFieldValue === undefined || matchingFieldValue === null); }
@@ -22,13 +22,5 @@ export class MatchesValidationRule implements IValidationRule
         { return ComparerHelper.dateTimeCompararer(value, matchingFieldValue); }
         else
         { return ComparerHelper.simpleTypeComparer(value, matchingFieldValue, weakEquality); }
-    }
-
-    public getMessage(modelResolver: IModelResolver, propertyName: string, optionsOrProperty: any) {
-        let value = modelResolver.resolve(propertyName);
-        let fieldToMatch = optionsOrProperty.property || optionsOrProperty;
-        let matchingFieldValue = modelResolver.resolve(fieldToMatch);
-
-        return `This field is ${value} but should match ${matchingFieldValue}`;
     }
 }

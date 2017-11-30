@@ -4,5 +4,4 @@ export declare class DateValidationRule implements IValidationRule {
     ruleName: string;
     private invalidObjectRegex;
     validate(modelResolver: IModelResolver, propertyName: string): Promise<boolean>;
-    getMessage(modelResolver: IModelResolver, propertyName: string): string;
 }

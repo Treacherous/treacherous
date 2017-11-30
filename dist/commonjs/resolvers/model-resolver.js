@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var ModelResolver = (function () {
+var ModelResolver = /** @class */ (function () {
     function ModelResolver(propertyResolver, model) {
         this.propertyResolver = propertyResolver;
         this.model = model;
@@ -8,7 +8,6 @@ var ModelResolver = (function () {
     ModelResolver.prototype.resolve = function (propertyName) {
         return this.propertyResolver.resolveProperty(this.model, propertyName);
     };
-    ;
     return ModelResolver;
 }());
 exports.ModelResolver = ModelResolver;
