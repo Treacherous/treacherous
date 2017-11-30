@@ -23,6 +23,4 @@ setup stuff or heavily customise any part of the system, just make your own entr
 make sure you adhere to the interfaces, you can make your own `IValidationGroup` or any other 
 interface if you want.
 
-The whole system was written in a very separated way making sure IoC was adhered to every step of the 
-way, so you can tear out chunks and put your own stuff in if you want, however in most cases you won't 
-need to, you will just want to do `createRuleset` and `createGroup` and be done with it.
+The whole system was written in a very separated way making sure IoC was adhered to every step of the way, so you can tear out chunks and put your own stuff in if you want, the defaults are there to have a low entry bar, however in most cases you won't need to, you will just want to do `createRuleset` and `createGroup` and be done with it.

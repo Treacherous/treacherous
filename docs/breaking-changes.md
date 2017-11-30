@@ -5,6 +5,10 @@ Wherever possible breaking changes are avoided but in some cases its going to ha
 ## 0.17.0
 
 - Changed `IValidationRule` to separate the messages out
+- Changed `ICompositeRule` to separate the messages out
+- Made `ValidationGroup` dependent on `ILocaleHandler`
+- Made `FieldErrorProcessor` dependent on `ILocaleHandler`
+- Made `ReactiveValidationGroup` dependent on `ILocaleHandler`
 
 ## 0.12.0
 

@@ -61,7 +61,7 @@ So inside the validation group there are a few components which do some importan
 - FieldErrorProcessor
 - PropertyResolver
 - RuleResolver
-- ModelWatcher (Only in reactive groups)
+- *ModelWatcher* (Only in reactive groups)
 
 As mentioned previously this is the *DEFAULT* ValidationGroup implementation, you are free to make your own, 
 however in most cases you can just swap out the dependent components and solve your problems.
