@@ -3,7 +3,7 @@ import {RulesetBuilder} from "../../src/builders/ruleset-builder";
 import {ModelWatcher} from "../../src/watcher/model-watcher";
 import {DefaultLocaleHandler} from "../../src/localization/default-locale-handler";
 
-import {Locale as DefaultLocale} from "../../src/locales/en-us";
+import {locale as defaultLocale} from "../../src/locales/en-us";
 import { IModelResolver } from '../../dist/definitions/index';
 
 describe('Default Locale Handler Tests', function () {
@@ -11,13 +11,13 @@ describe('Default Locale Handler Tests', function () {
     it('should correctly load locale module', async function () {
         const localeCode = "en-us";
         const moduleResourceLoader = new DefaultLocaleHandler();
-        moduleResourceLoader.registerLocale(localeCode, DefaultLocale);
+        moduleResourceLoader.registerLocale(localeCode, defaultLocale);
         moduleResourceLoader.useLocale(localeCode);
         console.log("Loaded Resource", moduleResourceLoader["localeResources"]);
 
         expect(moduleResourceLoader.getCurrentLocale()).to.equal("en-us");
         expect(moduleResourceLoader["localeResources"]).to.have.property(localeCode);
-        expect(moduleResourceLoader["localeResources"][localeCode]).to.equal(DefaultLocale);
+        expect(moduleResourceLoader["localeResources"][localeCode]).to.equal(defaultLocale);
     });
 
     it('should correctly supplement locale', async function () {
@@ -27,7 +27,7 @@ describe('Default Locale Handler Tests', function () {
         };
 
         const moduleResourceLoader = new DefaultLocaleHandler();
-        moduleResourceLoader.registerLocale(localeCode, DefaultLocale);
+        moduleResourceLoader.registerLocale(localeCode, defaultLocale);
         moduleResourceLoader.supplementLocaleFrom(localeCode, supplementLocale);   
 
         moduleResourceLoader.useLocale(localeCode);
@@ -36,7 +36,7 @@ describe('Default Locale Handler Tests', function () {
         expect(moduleResourceLoader.getCurrentLocale()).to.equal("en-us");
         expect(moduleResourceLoader["localeResources"]).to.have.property(localeCode);
 
-        for(var propertyName in DefaultLocale) {
+        for(const propertyName in defaultLocale) {
             expect(moduleResourceLoader["localeResources"][localeCode]).to.have.property(propertyName);
         }
 
@@ -49,11 +49,11 @@ describe('Default Locale Handler Tests', function () {
     it('should correctly get locale message', async function () {
         const localeCode = "en-us";
         const moduleResourceLoader = new DefaultLocaleHandler();
-        moduleResourceLoader.registerLocale(localeCode, DefaultLocale);
+        moduleResourceLoader.registerLocale(localeCode, defaultLocale);
         moduleResourceLoader.useLocale(localeCode);
         
         const message = await moduleResourceLoader.getMessage("required", null, null, null);
-        expect(message).to.equal(DefaultLocale.required);
+        expect(message).to.equal(defaultLocale.required);
     });
 
     it('should correctly flag error with non registered locale', function (done) {
@@ -92,8 +92,8 @@ describe('Default Locale Handler Tests', function () {
         moduleResourceLoader.supplementLocaleFrom(localeCode, exampleLocale);
         moduleResourceLoader.useLocale(localeCode);
 
-        const fakeResolver: IModelResolver = { model: null, resolve: (properyName: any): any => { return 10; }}
-        const message = await moduleResourceLoader.getMessage("example", null, fakeResolver, null);
+        const fakeResolver: IModelResolver = { model: null, resolve: (properyName: any): any => { return 10; }};
+        const message = await moduleResourceLoader.getMessage("example", null, fakeResolver, "someProperty");
         console.log(`message is: ${message}`);
         expect(message).to.equal(exampleLocale.example(10));
     });
@@ -102,7 +102,7 @@ describe('Default Locale Handler Tests', function () {
         const localeCode = "en-us";
         const exampleLocale = {
             "example": (modelResolver: any, propertyName: string, option: any) => {
-                var resolvedValue = modelResolver.resolve(propertyName);
+                const resolvedValue = modelResolver.resolve(propertyName);
                 return `message has value been called with [${propertyName}]:[${option}] = [${resolvedValue}]`;
             }
         };
@@ -111,7 +111,7 @@ describe('Default Locale Handler Tests', function () {
         moduleResourceLoader.supplementLocaleFrom(localeCode, exampleLocale);
         moduleResourceLoader.useLocale(localeCode);
 
-        const fakeResolver: IModelResolver = { model: null, resolve: (properyName: any): string => { return "some-value"; }}
+        const fakeResolver: IModelResolver = { model: null, resolve: (properyName: any): string => { return "some-value"; }};
         const message = await moduleResourceLoader.getMessage("example", "options", fakeResolver, "name");
         console.log(`message is: ${message}`);
         expect(message).to.equal(exampleLocale.example(fakeResolver, "name", "options"));

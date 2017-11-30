@@ -6,27 +6,27 @@ import {RulesetBuilder} from "./builders/ruleset-builder";
 
 import {ILocaleHandler} from "./localization/ilocale-handler";
 import {DefaultLocaleHandler} from "./localization/default-locale-handler";
-import {Locale as DefaultLocale} from "./locales/en-us"
+import {locale as defaultLocale} from "./locales/en-us";
 
-const defaultLocale = "en-us";
+const defaultLocaleCode = "en-us";
 
 const defaultLocaleHandler = new DefaultLocaleHandler();
-defaultLocaleHandler.registerLocale(defaultLocale, DefaultLocale);
-defaultLocaleHandler.useLocale(defaultLocale);
+defaultLocaleHandler.registerLocale(defaultLocaleCode, defaultLocale);
+defaultLocaleHandler.useLocale(defaultLocaleCode);
 
-let fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry, defaultLocaleHandler);
+const fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry, defaultLocaleHandler);
 const ruleResolver = new RuleResolver();
 
 export function createRuleset<T>(withRuleVerification = false): RulesetBuilder<T>
 {
-    var rulesetBuilder = withRuleVerification ? new RulesetBuilder<T>(ruleRegistry) : new RulesetBuilder<T>();
+    const rulesetBuilder = withRuleVerification ? new RulesetBuilder<T>(ruleRegistry) : new RulesetBuilder<T>();
     return rulesetBuilder.create();
 }
 
 export function createGroup(): ValidationGroupBuilder
-{ return new ValidationGroupBuilder(fieldErrorProcessor, ruleResolver).create(); }
+{ return new ValidationGroupBuilder(fieldErrorProcessor, ruleResolver, defaultLocaleHandler).create(); }
 
-export var localeHandler: ILocaleHandler = defaultLocaleHandler;
+export const localeHandler: ILocaleHandler = defaultLocaleHandler;
 
 export function supplementLocale(localeCode: string, localeResource: any) {
     defaultLocaleHandler.supplementLocaleFrom(localeCode, localeResource);

@@ -47,6 +47,13 @@ module.exports = function(config) {
             'text/x-typescript': ['ts','tsx']
         },
 
+        customLaunchers: {
+            'Chrome_debug': {
+              base: 'Chrome',
+              flags: [ '--remote-debugging-port=9333' ]
+            }
+          },
+
         phantomjsLauncher: {
             // Have phantomjs exit if a ResourceError is encountered (useful if karma exits without killing phantom)
             exitOnResourceError: true

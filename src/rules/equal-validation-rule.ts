@@ -9,13 +9,13 @@ export class EqualValidationRule implements IValidationRule
 
     public async validate(modelResolver: IModelResolver, propertyName: string, optionsOrValue: any): Promise<boolean>
     {
-        let value = modelResolver.resolve(propertyName);
+        const value = modelResolver.resolve(propertyName);
 
         if (value === undefined || value === null)
         { return true; }
 
         let comparison = optionsOrValue.value || optionsOrValue;
-        let weakEquality = optionsOrValue.weakEquality || false;
+        const weakEquality = optionsOrValue.weakEquality || false;
 
         if(TypeHelper.isFunctionType(comparison))
         { comparison = comparison(); }

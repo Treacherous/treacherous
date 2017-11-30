@@ -7,7 +7,7 @@ export class RequiredValidationRule implements IValidationRule
 
     public async validate(modelResolver: IModelResolver, propertyName: string, isRequired: boolean = true): Promise<boolean>
     {
-        let value = modelResolver.resolve(propertyName);
+        const value = modelResolver.resolve(propertyName);
 
         if (value === undefined || value === null)
         { return !isRequired; }

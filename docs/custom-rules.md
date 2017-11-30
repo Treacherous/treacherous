@@ -118,16 +118,19 @@ The `virtualPropertyName` is the property name you would provide on any calls to
 
 The `validate` provides you a way to resolve properties on the model using the `modelResolver` and should return a promise containin a true or false depending on if it is valid or not.
 
-As with normal rules, you will need to register the error message with the localization handler, as this is not a regular rule with a name the `virtualPropertyName` should be used as the key for the message, i.e:
+As with normal rules, you will need to register the error message with the localization handler, as this is not a regular rule with a name the `virtualPropertyName` should be used as the key for the message, you can have this as a raw string or a method which is passed the `modelResolver` for you to generate your message i.e:
 
 ```ts
 import {localeHandler, supplementLocale} from "treacherous"
 
 const currentLocale = localeHandler.getCurrentLocale(); // Incase you dont know what you are using, which is en-us by default
 supplementLocale(currentLocale, {
-    "myVirtualPropertyName": "The model has some invalid details related to ..."
+    "myVirtualPropertyName": "The model has some invalid details related to ...",
+    "someFancyVirtualPropertyName": (modelResolver: any, compositeRule: any) => { /*...*/ }
 });
 ```
+
+As you can see you can use a simple string, or take in the model resolver and the composite rule being used (incase you need any configuration data on the composite rule).
 
 ### Using Composite Rules
 

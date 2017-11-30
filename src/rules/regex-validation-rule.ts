@@ -7,7 +7,7 @@ export class RegexValidationRule implements IValidationRule
 
     public async validate(modelResolver: IModelResolver, propertyName: string, regexPattern: RegExp): Promise<boolean>
     {
-        let value = modelResolver.resolve(propertyName);
+        const value = modelResolver.resolve(propertyName);
 
         if (value === undefined || value === null || value.length == 0)
         { return true; }

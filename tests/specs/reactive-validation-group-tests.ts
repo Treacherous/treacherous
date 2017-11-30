@@ -9,35 +9,36 @@ import {ruleRegistry} from "../../src/rule-registry-setup";
 import {ModelResolverFactory} from "../../src/factories/model-resolver-factory";
 import {ModelWatcherFactory} from "../../src/factories/model-watcher-factory";
 import {DefaultLocaleHandler} from "../../src/localization/default-locale-handler";
-import {Locale as DefaultLocale} from "../../src/locales/en-us";
+import {locale as defaultLocale} from "../../src/locales/en-us";
 
 describe('Reactive Validation Group', function () {
 
-    var createValidationGroupFor = (model: any, ruleset: any) : IReactiveValidationGroup => {
-        var defaultLocaleHandler = new DefaultLocaleHandler();
-        defaultLocaleHandler.registerLocale("en-us", DefaultLocale);
+    const createValidationGroupFor = (model: any, ruleset: any) : IReactiveValidationGroup => {
+        const defaultLocaleHandler = new DefaultLocaleHandler();
+        defaultLocaleHandler.registerLocale("en-us", defaultLocale);
         defaultLocaleHandler.useLocale("en-us");
         
-        var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry, defaultLocaleHandler);
-        var ruleResolver = new RuleResolver();
-        var modelResolverFactory = new ModelResolverFactory();
-        var modelWatcherFactory = new ModelWatcherFactory();
-        return new ReactiveValidationGroup(fieldErrorProcessor, ruleResolver, modelResolverFactory, modelWatcherFactory, model, ruleset, 50);
+        const fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry, defaultLocaleHandler);
+        const ruleResolver = new RuleResolver();
+        const modelResolverFactory = new ModelResolverFactory();
+        const modelWatcherFactory = new ModelWatcherFactory();
+        return new ReactiveValidationGroup(fieldErrorProcessor, ruleResolver, modelResolverFactory, 
+            modelWatcherFactory, defaultLocaleHandler, model, ruleset, 50);
     }
 
     it('should correctly notify on property validation change', function (done) {
 
-        var rulesetBuilder = new RulesetBuilder();
-        var ruleset = rulesetBuilder.create()
+        const rulesetBuilder = new RulesetBuilder();
+        const ruleset = rulesetBuilder.create()
             .forProperty("foo")
             .addRule("maxLength", 15)
             .build();
 
-        var dummyModel = {
+        const dummyModel = {
             foo: "hello"
         };
 
-        var validationGroup = createValidationGroupFor(dummyModel, ruleset);
+        const validationGroup = createValidationGroupFor(dummyModel, ruleset);
         validationGroup.propertyStateChangedEvent.subscribe(function(args){
             expect(args.isValid).to.be.false;
             expect(args.error).contains("15");
@@ -59,24 +60,24 @@ describe('Reactive Validation Group', function () {
 
     it('should correctly notify on property in nested object validation change', function (done) {
 
-        var rulesetBuilder = new RulesetBuilder();
-        var childRuleset = rulesetBuilder.create()
+        const rulesetBuilder = new RulesetBuilder();
+        const childRuleset = rulesetBuilder.create()
             .forProperty("bar")
                 .addRule("maxLength", 5)
             .build();
 
-        var ruleset = rulesetBuilder.create()
+        const ruleset = rulesetBuilder.create()
             .forProperty("foo")
                 .addRuleset(childRuleset)
             .build();
 
-        var dummyModel = {
+        const dummyModel = {
             foo: {
                 bar: "fine"
             }
         };
 
-        var validationGroup = createValidationGroupFor(dummyModel, ruleset);
+        const validationGroup = createValidationGroupFor(dummyModel, ruleset);
         validationGroup.propertyStateChangedEvent.subscribe(function(args){
             expect(args.isValid).to.be.false;
             expect(args.error).contains("27");
@@ -96,17 +97,17 @@ describe('Reactive Validation Group', function () {
 
     it('should correctly notify on array property validation change', function (done) {
 
-        var rulesetBuilder = new RulesetBuilder();
-        var ruleset = rulesetBuilder.create()
+        const rulesetBuilder = new RulesetBuilder();
+        const ruleset = rulesetBuilder.create()
             .forProperty("foo")
             .addRuleForEach("maxValue", 15)
             .build();
 
-        var dummyModel = {
+        const dummyModel = {
             foo: [10, 15, 10]
         };
 
-        var validationGroup = createValidationGroupFor(dummyModel, ruleset);
+        const validationGroup = createValidationGroupFor(dummyModel, ruleset);
         validationGroup.propertyStateChangedEvent.subscribe(function(args){
             console.log("args", args);
             expect(args.isValid).to.be.false;
@@ -130,17 +131,17 @@ describe('Reactive Validation Group', function () {
 
     it('should only notify array and not properties with validation change', function (done) {
 
-        var rulesetBuilder = new RulesetBuilder();
-        var ruleset = rulesetBuilder.create()
+        const rulesetBuilder = new RulesetBuilder();
+        const ruleset = rulesetBuilder.create()
             .forProperty("foo")
             .addRule("maxLength", 2)
             .build();
 
-        var dummyModel = {
+        const dummyModel = {
             foo: [10, 15]
         };
 
-        var validationGroup = createValidationGroupFor(dummyModel, ruleset);
+        const validationGroup = createValidationGroupFor(dummyModel, ruleset);
         validationGroup.propertyStateChangedEvent.subscribe(function(args){
             console.log("triggered", args);
             expect(args.isValid).to.be.false;
@@ -156,17 +157,17 @@ describe('Reactive Validation Group', function () {
 
     it('should correctly notify on validation change', function (done) {
 
-        var rulesetBuilder = new RulesetBuilder();
-        var ruleset = rulesetBuilder.create()
+        const rulesetBuilder = new RulesetBuilder();
+        const ruleset = rulesetBuilder.create()
             .forProperty("foo")
             .addRule("maxLength", 15)
             .build();
 
-        var dummyModel = {
+        const dummyModel = {
             foo: "hello"
         };
 
-        var validationGroup = createValidationGroupFor(dummyModel, ruleset);
+        const validationGroup = createValidationGroupFor(dummyModel, ruleset);
         validationGroup.modelStateChangedEvent.subscribe(function(args){
             expect(args.isValid).to.be.false;
             validationGroup.release();

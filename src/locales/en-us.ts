@@ -1,6 +1,6 @@
 import {IModelResolver} from "../resolvers/imodel-resolver";
 
-export var Locale =
+export const locale =
 {
     "default": "This field is invalid",
     "required": "This field is required",
@@ -17,9 +17,9 @@ export var Locale =
     "regex": "This field does not match the expected format",
     "step": (value: any, step: number) => `This field has a value of ${value} and should be an increment of ${step}`,
     "matches": (modelResolver: IModelResolver, propertyName: string, optionsOrProperty: any) => {
-        let value = modelResolver.resolve(propertyName);
-        let fieldToMatch = optionsOrProperty.property || optionsOrProperty;
-        let matchingFieldValue = modelResolver.resolve(fieldToMatch);
+        const value = modelResolver.resolve(propertyName);
+        const fieldToMatch = optionsOrProperty.property || optionsOrProperty;
+        const matchingFieldValue = modelResolver.resolve(fieldToMatch);
         return `This field is ${value} but should match ${matchingFieldValue}`;
     },
-}
+};

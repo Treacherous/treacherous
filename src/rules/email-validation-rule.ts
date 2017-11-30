@@ -8,7 +8,7 @@ export class EmailValidationRule implements IValidationRule
 
     public async validate(modelResolver: IModelResolver, propertyName: string): Promise<boolean>
     {
-        let value = modelResolver.resolve(propertyName);
+        const value = modelResolver.resolve(propertyName);
         if (value === undefined || value === null || value === "")
         { return true; }
 

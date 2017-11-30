@@ -9,19 +9,18 @@ export class FieldErrorProcessor implements IFieldErrorProcessor
 {
     constructor(public ruleRegistry: RuleRegistry, public localeHandler: ILocaleHandler){}
 
-    // Validates a single property against a model
     public async processRuleLink(modelResolver: IModelResolver, propertyName: any, ruleLink: RuleLink): Promise<any>{
 
-        let shouldRuleApply = ruleLink.appliesIf === true
+        const shouldRuleApply = ruleLink.appliesIf === true
             || ((typeof(ruleLink.appliesIf) === "function")
                 ? (<((model:any, value: any, ruleOptions?: any) => boolean)>(ruleLink.appliesIf))(modelResolver, propertyName, ruleLink.ruleOptions)
                 : false);
 
         if (!shouldRuleApply) { return; }
 
-        let validator = this.ruleRegistry.getRuleNamed(ruleLink.ruleName);
-        let options = (typeof ruleLink.ruleOptions == "function") ? ruleLink.ruleOptions() : ruleLink.ruleOptions;
-        let isValid = await validator.validate(modelResolver, propertyName, options);
+        const validator = this.ruleRegistry.getRuleNamed(ruleLink.ruleName);
+        const options = (typeof ruleLink.ruleOptions == "function") ? ruleLink.ruleOptions() : ruleLink.ruleOptions;
+        const isValid = await validator.validate(modelResolver, propertyName, options);
 
         if(isValid){ return; }
 
@@ -39,16 +38,14 @@ export class FieldErrorProcessor implements IFieldErrorProcessor
         throw new FieldHasError(error);
     }
 
-    // Loops through each rule on a property, adds it to a chain, then calls Promise.all
-    // Probably not correct, as they won't fire sequentially? Promises need to be chained
     public async checkFieldForErrors(modelResolver: IModelResolver, propertyName: any, rules: any): Promise<string>
     {
-        let ruleCheck = (ruleLinkOrSet: any): Promise<any>  => {
+        const ruleCheck = (ruleLinkOrSet: any): Promise<any>  => {
             return this.processRuleLink(modelResolver, propertyName, ruleLinkOrSet);
         };
 
-        let checkEachRule = (rules: any) => {
-            let promises: Array<any> = [];
+        const checkEachRule = (rules: any) => {
+            const promises: Array<any> = [];
             rules.forEach((rule: any) => {
                 promises.push(ruleCheck(rule));
             });

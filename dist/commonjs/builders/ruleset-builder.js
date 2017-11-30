@@ -54,8 +54,8 @@ var RulesetBuilder = /** @class */ (function () {
             _this.internalRuleset.propertyDisplayNames[_this.currentProperty] = displayName;
             return _this;
         };
-        this.addDynamicRule = function (virtualPropertyName, validate, getMessage) {
-            var compositeRule = new dynamic_composite_validation_rule_1.DynamicCompositeValidationRule(virtualPropertyName, validate, getMessage);
+        this.addDynamicRule = function (virtualPropertyName, validate) {
+            var compositeRule = new dynamic_composite_validation_rule_1.DynamicCompositeValidationRule(virtualPropertyName, validate);
             _this.internalRuleset.compositeRules[virtualPropertyName] = compositeRule;
             return _this;
         };

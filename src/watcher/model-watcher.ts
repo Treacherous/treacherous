@@ -41,15 +41,15 @@ export class ModelWatcher implements IModelWatcher
     public startWatching = () => {
         this.stopWatching();
         this.watcherInterval = setInterval(this.scanProperties, this.scanInterval);
-    };
+    }
 
     public stopWatching = () => {
       if(this.watcherInterval) { clearInterval(this.watcherInterval); }
-    };
+    }
 
     private updateAndNotifyDifferences = () => {
-        let previousKeyCache = this.watchCacheKeys;
-        let previousWatchCache = this.watchCache;
+        const previousKeyCache = this.watchCacheKeys;
+        const previousWatchCache = this.watchCache;
 
         this.watchCache = [];
         this.watchCacheKeys = [];
@@ -60,16 +60,16 @@ export class ModelWatcher implements IModelWatcher
 
             if(previousKeyCache.indexOf(key) == -1) {
                 previousValue = this.watchCache[index].previousValue;
-                let propertyChangedArgs = new PropertyChangedEvent(key, previousValue, null);
+                const propertyChangedArgs = new PropertyChangedEvent(key, previousValue, null);
                 setTimeout(() => { this.onPropertyChanged.publish(propertyChangedArgs); }, 1);
             }
             else if(previousWatchCache[index].previousValue && previousWatchCache[index].previousValue.isArray)
             {
                 if(previousWatchCache[index].previousValue.length != this.watchCache[index].previousValue.length)
                 {
-                    let newValue = this.watchCache[index].previousValue;
+                    const newValue = this.watchCache[index].previousValue;
                     previousValue = previousWatchCache[index].previousValue;
-                    let propertyChangedArgs = new PropertyChangedEvent(key, newValue, previousValue);
+                    const propertyChangedArgs = new PropertyChangedEvent(key, newValue, previousValue);
                     setTimeout(() => { this.onPropertyChanged.publish(propertyChangedArgs); }, 1);
                 }
             }
@@ -80,7 +80,7 @@ export class ModelWatcher implements IModelWatcher
 
         if(this.watchCacheKeys.indexOf(watchRoute) == -1)
         {
-            let propertyWatcher = new PropertyWatcher(watchRoute, previousData);
+            const propertyWatcher = new PropertyWatcher(watchRoute, previousData);
             this.watchCache.push(propertyWatcher);
             this.watchCacheKeys.push(watchRoute);
         }
@@ -91,7 +91,7 @@ export class ModelWatcher implements IModelWatcher
         let anyRulesAreForEach: any, anyRulesAreSets: any;
         let hasValue: any, currentValue: any;
 
-        for(let param in ruleset.rules)
+        for(const param in ruleset.rules)
         {
             paramRoute = propertyStack ? propertyStack + "." + param : param;
             parameterRules = ruleset.rules[param];
@@ -120,10 +120,10 @@ export class ModelWatcher implements IModelWatcher
 
             parameterRules.forEach((rule: any) => {
 
-                let isArray = TypeHelper.isArrayType(currentValue);
+                const isArray = TypeHelper.isArrayType(currentValue);
                 if(isArray)
                 {
-                    let cachedArrayInfo = { length: currentValue.length, isArray: true };
+                    const cachedArrayInfo = { length: currentValue.length, isArray: true };
                     this.watchProperty(paramRoute, cachedArrayInfo);
                 }
 
@@ -162,7 +162,7 @@ export class ModelWatcher implements IModelWatcher
                 }
             });
         }
-    };
+    }
 
     private scanProperties = () => {
         if(this.onPropertyChanged.getSubscriptionCount() == 0) { return; }
@@ -184,12 +184,12 @@ export class ModelWatcher implements IModelWatcher
 
             if(propertyWatcher.previousValue && propertyWatcher.previousValue.isArray)
             {
-                let currentLength = currentValue.length || 0;
+                const currentLength = currentValue.length || 0;
                 if(currentLength != propertyWatcher.previousValue.length)
                 { hasChanged = true; }
             }
             else if (currentValue !== propertyWatcher.previousValue) {
-                let propertyChangedArgs = new PropertyChangedEvent(propertyWatcher.propertyPath, currentValue, propertyWatcher.previousValue);
+                const propertyChangedArgs = new PropertyChangedEvent(propertyWatcher.propertyPath, currentValue, propertyWatcher.previousValue);
                 setTimeout(() => { this.onPropertyChanged.publish(propertyChangedArgs); }, 1);
                 propertyWatcher.previousValue = currentValue;
             }
@@ -200,5 +200,5 @@ export class ModelWatcher implements IModelWatcher
 
         if(refreshOnNextCycle)
         { setTimeout(this.updateAndNotifyDifferences, 1); }
-    };
+    }
 }

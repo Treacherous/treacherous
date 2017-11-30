@@ -1,2 +1,2 @@
 import { RuleRegistry } from "./rules/rule-registry";
-export declare var ruleRegistry: RuleRegistry;
+export declare let ruleRegistry: RuleRegistry;

@@ -7,7 +7,6 @@ var FieldErrorProcessor = /** @class */ (function () {
         this.ruleRegistry = ruleRegistry;
         this.localeHandler = localeHandler;
     }
-    // Validates a single property against a model
     FieldErrorProcessor.prototype.processRuleLink = function (modelResolver, propertyName, ruleLink) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             var shouldRuleApply, validator, options, isValid, error;
@@ -46,8 +45,6 @@ var FieldErrorProcessor = /** @class */ (function () {
             });
         });
     };
-    // Loops through each rule on a property, adds it to a chain, then calls Promise.all
-    // Probably not correct, as they won't fire sequentially? Promises need to be chained
     FieldErrorProcessor.prototype.checkFieldForErrors = function (modelResolver, propertyName, rules) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             var _this = this;

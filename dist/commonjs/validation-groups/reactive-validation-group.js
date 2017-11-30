@@ -5,11 +5,12 @@ var rule_resolver_1 = require("../rulesets/rule-resolver");
 var validation_group_1 = require("./validation-group");
 var ReactiveValidationGroup = /** @class */ (function (_super) {
     tslib_1.__extends(ReactiveValidationGroup, _super);
-    function ReactiveValidationGroup(fieldErrorProcessor, ruleResolver, modelResolverFactory, modelWatcherFactory, model, ruleset, refreshRate) {
+    function ReactiveValidationGroup(fieldErrorProcessor, ruleResolver, modelResolverFactory, modelWatcherFactory, localeHandler, model, ruleset, refreshRate) {
         if (ruleResolver === void 0) { ruleResolver = new rule_resolver_1.RuleResolver(); }
         if (refreshRate === void 0) { refreshRate = 500; }
-        var _this = _super.call(this, fieldErrorProcessor, ruleResolver, modelResolverFactory, model, ruleset) || this;
+        var _this = _super.call(this, fieldErrorProcessor, ruleResolver, modelResolverFactory, localeHandler, model, ruleset) || this;
         _this.modelWatcherFactory = modelWatcherFactory;
+        _this.localeHandler = localeHandler;
         _this.refreshRate = refreshRate;
         _this.onModelChanged = function (eventArgs) {
             _this.startValidateProperty(eventArgs.propertyPath);

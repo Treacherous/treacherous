@@ -8,7 +8,6 @@ var ModelResolver = /** @class */ (function () {
     ModelResolver.prototype.resolve = function (propertyName) {
         return this.propertyResolver.resolveProperty(this.model, propertyName);
     };
-    ;
     return ModelResolver;
 }());
 exports.ModelResolver = ModelResolver;

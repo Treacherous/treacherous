@@ -12,26 +12,26 @@ import {PropertyResolver} from "property-resolver";
 import {IModelResolver} from "../../src/resolvers/imodel-resolver";
 
 import {DefaultLocaleHandler} from "../../src/localization/default-locale-handler";
-import {Locale as DefaultLocale} from "../../src/locales/en-us";
+import {locale as defaultLocale} from "../../src/locales/en-us";
 
 use(spies);
 
 describe('Field Error Processor', function () {
 
     it('should correctly return an error for the field', function (done) {
-        var ruleRegistry = new RuleRegistry();
+        const ruleRegistry = new RuleRegistry();
         ruleRegistry.registerRule(new RequiredValidationRule());
         ruleRegistry.registerRule(new MaxLengthValidationRule());
 
-        var defaultLocaleHandler = new DefaultLocaleHandler();
-        defaultLocaleHandler.registerLocale("en-us", DefaultLocale);
+        const defaultLocaleHandler = new DefaultLocaleHandler();
+        defaultLocaleHandler.registerLocale("en-us", defaultLocale);
         defaultLocaleHandler.useLocale("en-us");
 
-        var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry, defaultLocaleHandler);
+        const fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry, defaultLocaleHandler);
 
-        var dummyModel = new ModelResolver(new PropertyResolver(),{ dummyField: "123"});
+        const dummyModel = new ModelResolver(new PropertyResolver(), { dummyField: "123"});
         console.log(dummyModel);
-        var dummyRules = [
+        const dummyRules = [
             new RuleLink("required", true),
             new RuleLink("maxLength", 2)
         ];
@@ -47,21 +47,21 @@ describe('Field Error Processor', function () {
 
 
     it('should correctly return a custom error message function for the field', function (done) {
-        var ruleRegistry = new RuleRegistry();
+        const ruleRegistry = new RuleRegistry();
         ruleRegistry.registerRule(new RequiredValidationRule());
 
-        var defaultLocaleHandler = new DefaultLocaleHandler();
-        defaultLocaleHandler.registerLocale("en-us", DefaultLocale);
+        const defaultLocaleHandler = new DefaultLocaleHandler();
+        defaultLocaleHandler.registerLocale("en-us", defaultLocale);
         defaultLocaleHandler.useLocale("en-us");
 
-        var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry, defaultLocaleHandler);
+        const fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry, defaultLocaleHandler);
 
-        var dummyModel = new ModelResolver(new PropertyResolver(), {});
-        var expectedMessage = "you should have put in some text";
-        var dummyField = "";
-        var rule = new RuleLink("required", true);
+        const dummyModel = new ModelResolver(new PropertyResolver(), {});
+        const expectedMessage = "you should have put in some text";
+        const dummyField = "";
+        const rule = new RuleLink("required", true);
         rule.messageOverride = function() { return expectedMessage; };
-        var dummyRules = [rule];
+        const dummyRules = [rule];
 
         fieldErrorProcessor
             .checkFieldForErrors(dummyModel, dummyField, dummyRules)
@@ -73,21 +73,21 @@ describe('Field Error Processor', function () {
     });
 
     it('should correctly return a custom error message for the field', function (done) {
-        var ruleRegistry = new RuleRegistry();
+        const ruleRegistry = new RuleRegistry();
         ruleRegistry.registerRule(new RequiredValidationRule());
 
-        var defaultLocaleHandler = new DefaultLocaleHandler();
-        defaultLocaleHandler.registerLocale("en-us", DefaultLocale);
+        const defaultLocaleHandler = new DefaultLocaleHandler();
+        defaultLocaleHandler.registerLocale("en-us", defaultLocale);
         defaultLocaleHandler.useLocale("en-us");
 
-        var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry, defaultLocaleHandler);
+        const fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry, defaultLocaleHandler);
 
-        var dummyModel = new ModelResolver(new PropertyResolver(),{});
-        var expectedMessage = "you should have put in some text";
-        var dummyField = "";
-        var rule = new RuleLink("required", true);
+        const dummyModel = new ModelResolver(new PropertyResolver(),{});
+        const expectedMessage = "you should have put in some text";
+        const dummyField = "";
+        const rule = new RuleLink("required", true);
         rule.messageOverride = expectedMessage;
-        var dummyRules = [
+        const dummyRules = [
             rule
         ];
 
@@ -101,22 +101,22 @@ describe('Field Error Processor', function () {
     });
 
     it('should correctly return a custom error message with model and value data', function (done) {
-        var ruleRegistry = new RuleRegistry();
+        const ruleRegistry = new RuleRegistry();
         ruleRegistry.registerRule(new EqualValidationRule());
 
-        var defaultLocaleHandler = new DefaultLocaleHandler();
-        defaultLocaleHandler.registerLocale("en-us", DefaultLocale);
+        const defaultLocaleHandler = new DefaultLocaleHandler();
+        defaultLocaleHandler.registerLocale("en-us", defaultLocale);
         defaultLocaleHandler.useLocale("en-us");
 
-        var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry, defaultLocaleHandler);
+        const fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry, defaultLocaleHandler);
 
-        var dummyModel = new ModelResolver(new PropertyResolver(),{ foo: "AA", bar:"BB" });
-        var dummyField = "foo";
-        var rule = new RuleLink("equal", "bar");
-        var expectedMessage = "Should have had foo (AA) == bar (BB)";
+        const dummyModel = new ModelResolver(new PropertyResolver(),{ foo: "AA", bar:"BB" });
+        const dummyField = "foo";
+        const rule = new RuleLink("equal", "bar");
+        const expectedMessage = "Should have had foo (AA) == bar (BB)";
         rule.messageOverride = (m,v,o) => `Should have had ${v} (${m.resolve(v)}) == ${o} (${m.resolve(o)})`;
 
-        var dummyRules = [
+        const dummyRules = [
             rule
         ];
 
@@ -131,18 +131,18 @@ describe('Field Error Processor', function () {
     });
 
     it('should correctly return no error for the field', function (done) {
-        var ruleRegistry = new RuleRegistry();
+        const ruleRegistry = new RuleRegistry();
         ruleRegistry.registerRule(new RequiredValidationRule());
         ruleRegistry.registerRule(new MaxLengthValidationRule());
 
-        var defaultLocaleHandler = new DefaultLocaleHandler();
-        defaultLocaleHandler.registerLocale("en-us", DefaultLocale);
+        const defaultLocaleHandler = new DefaultLocaleHandler();
+        defaultLocaleHandler.registerLocale("en-us", defaultLocale);
         defaultLocaleHandler.useLocale("en-us");
 
-        var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry, defaultLocaleHandler);
+        const fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry, defaultLocaleHandler);
 
-        var dummyModel = new ModelResolver(new PropertyResolver(),{ dummyField : "12" });
-        var dummyRules = [
+        const dummyModel = new ModelResolver(new PropertyResolver(),{ dummyField : "12" });
+        const dummyRules = [
             new RuleLink("required", true),
             new RuleLink("maxLength", 2)
         ];
@@ -156,22 +156,22 @@ describe('Field Error Processor', function () {
     });
 
     it('should stop looking for errors on first fail', function (done) {
-        var ruleRegistry = new RuleRegistry();
+        const ruleRegistry = new RuleRegistry();
         ruleRegistry.registerRule(new RequiredValidationRule());
 
-        var maxLengthTreacherous = new MaxLengthValidationRule();
-        var spiedValidationMethod = spy.on(maxLengthTreacherous, 'validate');
+        const maxLengthTreacherous = new MaxLengthValidationRule();
+        const spiedValidationMethod = spy.on(maxLengthTreacherous, 'validate');
         ruleRegistry.registerRule(maxLengthTreacherous);
 
-        var defaultLocaleHandler = new DefaultLocaleHandler();
-        defaultLocaleHandler.registerLocale("en-us", DefaultLocale);
+        const defaultLocaleHandler = new DefaultLocaleHandler();
+        defaultLocaleHandler.registerLocale("en-us", defaultLocale);
         defaultLocaleHandler.useLocale("en-us");
 
-        var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry, defaultLocaleHandler);
+        const fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry, defaultLocaleHandler);
 
-        var dummyModel = new ModelResolver(new PropertyResolver(),{});
-        var dummyField = null;
-        var dummyRules = [
+        const dummyModel = new ModelResolver(new PropertyResolver(),{});
+        const dummyField: any = null;
+        const dummyRules = [
             new RuleLink("required", true),
             new RuleLink("maxLength", 2)
         ];
@@ -186,22 +186,22 @@ describe('Field Error Processor', function () {
     });
 
     it('should only run rule if appliesIf is undefined or returns truthy', function (done) {
-        var ruleRegistry = new RuleRegistry();
+        const ruleRegistry = new RuleRegistry();
 
-        var requiredValidationRule = new RequiredValidationRule();
-        var spiedValidationMethod = spy.on(requiredValidationRule, 'validate');
+        const requiredValidationRule = new RequiredValidationRule();
+        const spiedValidationMethod = spy.on(requiredValidationRule, 'validate');
         ruleRegistry.registerRule(requiredValidationRule);
 
-        var defaultLocaleHandler = new DefaultLocaleHandler();
-        defaultLocaleHandler.registerLocale("en-us", DefaultLocale);
+        const defaultLocaleHandler = new DefaultLocaleHandler();
+        defaultLocaleHandler.registerLocale("en-us", defaultLocale);
         defaultLocaleHandler.useLocale("en-us");
         
-        var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry, defaultLocaleHandler);
+        const fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry, defaultLocaleHandler);
 
-        var dummyModel = new ModelResolver(new PropertyResolver(),{ shouldRun: false });
-        var dummyField = null;
+        const dummyModel = new ModelResolver(new PropertyResolver(),{ shouldRun: false });
+        const dummyField: any = null;
 
-        var requireRule = new RuleLink("required", true);
+        const requireRule = new RuleLink("required", true);
         requireRule.appliesIf = (modelResolver: IModelResolver) => { return modelResolver.resolve("shouldRun"); };;
 
         fieldErrorProcessor

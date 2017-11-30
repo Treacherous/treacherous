@@ -6,7 +6,7 @@ export class PromiseCounter
     public waitForCompletion = async() : Promise<any> => {
         if(!this.validationCounter) { return; }
 
-        let resolver = (resolve: Function) => {
+        const resolver = (resolve: Function) => {
             this.promiseCallbacks.push(() => resolve());
         };
         return new Promise(resolver);
@@ -17,7 +17,7 @@ export class PromiseCounter
         if(!promise.then) { throw new Error("Non-Promise pass in: " + promise) }
 
         this.incrementCounter();
-        let result = await promise;
+        const result = await promise;
         this.decrementCounter();
         return result;
     }

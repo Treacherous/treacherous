@@ -6,6 +6,7 @@ import {IValidationGroup} from "../validation-groups/ivalidation-group";
 import {ReactiveValidationGroupBuilder} from "./reactive-validation-group-builder";
 import {IModelResolverFactory} from "../factories/imodel-resolver-factory";
 import {ModelResolverFactory} from "../factories/model-resolver-factory";
+import {ILocaleHandler} from "../localization/ilocale-handler";
 
 export class ValidationGroupBuilder
 {
@@ -13,7 +14,8 @@ export class ValidationGroupBuilder
     private validateOnStart: boolean;
 
     constructor(private fieldErrorProcessor: FieldErrorProcessor,
-                private ruleResolver: RuleResolver) {}
+                private ruleResolver: RuleResolver,
+                private localeHandler: ILocaleHandler) {}
 
     public create = (): ValidationGroupBuilder =>
     {
@@ -24,7 +26,7 @@ export class ValidationGroupBuilder
 
     public asReactiveGroup = ():  ReactiveValidationGroupBuilder =>
     {
-        var reactiveBuilder = new ReactiveValidationGroupBuilder(this.fieldErrorProcessor, this.ruleResolver)
+        const reactiveBuilder = new ReactiveValidationGroupBuilder(this.fieldErrorProcessor, this.ruleResolver, this.localeHandler)
             .create()
             .withModelResolverFactory(this.modelResolverFactory);
 
@@ -44,7 +46,8 @@ export class ValidationGroupBuilder
 
     public build = (model: any, ruleset: Ruleset): IValidationGroup =>
     {
-        var validationGroup = new ValidationGroup(this.fieldErrorProcessor, this.ruleResolver, this.modelResolverFactory, model, ruleset);
+        const validationGroup = new ValidationGroup(this.fieldErrorProcessor, this.ruleResolver, 
+            this.modelResolverFactory, this.localeHandler, model, ruleset);
 
         if(this.validateOnStart)
         { validationGroup.validate(); }

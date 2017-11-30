@@ -10,44 +10,49 @@ import {ModelResolverFactory} from "../../src/factories/model-resolver-factory";
 import {DynamicCompositeValidationRule} from "../../src/index";
 import {PropertyStateChangedEvent} from "../../src/events/property-state-changed-event";
 import {DefaultLocaleHandler} from "../../src/localization/default-locale-handler";
-import {Locale as DefaultLocale} from "../../src/locales/en-us";
+import {locale as defaultLocale} from "../../src/locales/en-us";
 
 describe('Validation Group', function () {
 
-    var createValidationGroupFor = (model: any, ruleset: any) : IValidationGroup => {
-        var defaultLocaleHandler = new DefaultLocaleHandler();
-        defaultLocaleHandler.registerLocale("en-us", DefaultLocale);
-        defaultLocaleHandler.useLocale("en-us");
+    const defaultLocaleCode = "en-us";
 
-        var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry, defaultLocaleHandler);
-        var ruleResolver = new RuleResolver();
-        var modelResolverFactory = new ModelResolverFactory();
-        return new ValidationGroup(fieldErrorProcessor, ruleResolver, modelResolverFactory, model, ruleset);
-    }
+    const createValidationGroupFor = (model: any, ruleset: any) : IValidationGroup => {
+        const defaultLocaleHandler = new DefaultLocaleHandler();
+        defaultLocaleHandler.registerLocale(defaultLocaleCode, defaultLocale);
+        defaultLocaleHandler.useLocale(defaultLocaleCode);
 
-    var delayedRequiresValid = (retval:any = true, delay:number = 100) => { return {
-        ruleName: "delayed",
-        validate: function(modelResolver: IModelResolver, propertyName: string, options: any){
-            return new Promise(function(resolve, reject){
-                console.log("validating", modelResolver.resolve(propertyName));
-                setTimeout(function() { resolve(modelResolver.resolve(propertyName) == "valid"); }, delay);
-            });
-        }
-    }};
+        const fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry, defaultLocaleHandler);
+        const ruleResolver = new RuleResolver();
+        const modelResolverFactory = new ModelResolverFactory();
+        return new ValidationGroup(fieldErrorProcessor, ruleResolver, modelResolverFactory, 
+            defaultLocaleHandler, model, ruleset);
+    };
+
+    const delayedRequiresValid = (retval:any = true, delay:number = 100) => { 
+        return {
+            ruleName: "delayed",
+            validate: function(modelResolver: IModelResolver, propertyName: string, options: any){
+                return new Promise(function(resolve, reject){
+                    console.log("validating", modelResolver.resolve(propertyName));
+                    setTimeout(function() { resolve(modelResolver.resolve(propertyName) == "valid"); }, delay);
+                });
+            }
+        };
+    };
 
     it('should correctly get errors', function (done) {
-        var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
-        var rulesetBuilder = new RulesetBuilder(<any>dummyRuleRegistry);
-        var ruleset = rulesetBuilder.create()
+        const dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
+        const rulesetBuilder = new RulesetBuilder(<any>dummyRuleRegistry);
+        const ruleset = rulesetBuilder.create()
             .forProperty("foo")
             .addRule("maxLength", 2)
             .build();
 
-        var dummyModel = {
+        const dummyModel = {
             foo: "hello"
         };
 
-        var validationGroup = createValidationGroupFor(dummyModel, ruleset);
+        const validationGroup = createValidationGroupFor(dummyModel, ruleset);
         validationGroup.getModelErrors(true)
             .then(function(errors){
                 expect(errors).not.to.be.null;
@@ -60,20 +65,20 @@ describe('Validation Group', function () {
 
     it('should apply appliesIf rules correctly for TRUE', function (done) {
 
-        var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
-        var rulesetBuilder = new RulesetBuilder(<any>dummyRuleRegistry);
-        var ruleset = rulesetBuilder.create()
+        const dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
+        const rulesetBuilder = new RulesetBuilder(<any>dummyRuleRegistry);
+        const ruleset = rulesetBuilder.create()
             .forProperty("foo")
             .addRule("maxLength", 2)
-            .appliesIf((v,o) => { return dummyModel.checkFoo })
+            .appliesIf((v,o) => { return dummyModel.checkFoo; })
             .build();
 
-        var dummyModel = {
+        const dummyModel = {
             foo: "hello",
             checkFoo: true
         };
 
-        var validationGroup = createValidationGroupFor(dummyModel, ruleset);
+        const validationGroup = createValidationGroupFor(dummyModel, ruleset);
         validationGroup.getModelErrors(true)
             .then(function(errors){
                 expect(errors).not.to.be.null;
@@ -86,20 +91,20 @@ describe('Validation Group', function () {
 
     it('should apply appliesIf rules correctly for FALSE', function (done) {
 
-        var dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
-        var rulesetBuilder = new RulesetBuilder(<any>dummyRuleRegistry);
-        var ruleset = rulesetBuilder.create()
+        const dummyRuleRegistry = { hasRuleNamed: function(){ return true; }};
+        const rulesetBuilder = new RulesetBuilder(<any>dummyRuleRegistry);
+        const ruleset = rulesetBuilder.create()
             .forProperty("foo")
             .addRule("maxLength", 2)
-            .appliesIf((v,o) => { return dummyModel.checkFoo })
+            .appliesIf((v,o) => { return dummyModel.checkFoo; })
             .build();
 
-        var dummyModel = {
+        const dummyModel = {
             foo: "hello",
             checkFoo: false
         };
 
-        var validationGroup = createValidationGroupFor(dummyModel, ruleset);
+        const validationGroup = createValidationGroupFor(dummyModel, ruleset);
         validationGroup.getModelErrors()
             .then(function(errors){
                 expect(errors).not.to.be.null;
@@ -112,23 +117,23 @@ describe('Validation Group', function () {
 
     it('should correctly get errors in nested objects', function (done) {
 
-        var rulesetBuilder = new RulesetBuilder();
-        var elementRuleset = rulesetBuilder.create()
+        const rulesetBuilder = new RulesetBuilder();
+        const elementRuleset = rulesetBuilder.create()
             .forProperty("bar")
             .addRule("required", true)
             .addRule("maxLength", 5)
             .build();
 
-        var ruleset = rulesetBuilder.create()
+        const ruleset = rulesetBuilder.create()
             .forProperty("foo")
             .addRuleset(elementRuleset)
             .build();
 
-        var dummyModel = {
+        const dummyModel = {
             foo: { bar: "not valid" }
         };
 
-        var validationGroup = createValidationGroupFor(dummyModel, ruleset);
+        const validationGroup = createValidationGroupFor(dummyModel, ruleset);
         validationGroup.validate()
             .then(() => {
                 validationGroup.getModelErrors()
@@ -146,19 +151,19 @@ describe('Validation Group', function () {
 
     it('should correctly get errors in complex arrays', function (done) {
 
-        var rulesetBuilder = new RulesetBuilder();
-        var elementRuleset = rulesetBuilder.create()
+        const rulesetBuilder = new RulesetBuilder();
+        const elementRuleset = rulesetBuilder.create()
             .forProperty("bar")
             .addRule("required")
             .addRule("maxLength", 5)
             .build();
 
-        var ruleset = rulesetBuilder.create()
+        const ruleset = rulesetBuilder.create()
             .forProperty("foo")
             .addRulesetForEach(elementRuleset)
             .build();
 
-        var dummyModel = {
+        const dummyModel = {
             foo: [
                 { bar: "hello" },
                 { bar: "" },
@@ -166,7 +171,7 @@ describe('Validation Group', function () {
             ]
         };
 
-        var validationGroup = createValidationGroupFor(dummyModel, ruleset);
+        const validationGroup = createValidationGroupFor(dummyModel, ruleset);
         validationGroup.getModelErrors(true)
             .then(function(errors){
                 console.log(dummyModel);
@@ -185,17 +190,17 @@ describe('Validation Group', function () {
 
     it('should correctly get errors in simple arrays', function (done) {
 
-        var rulesetBuilder = new RulesetBuilder();
-        var ruleset = rulesetBuilder.create()
+        const rulesetBuilder = new RulesetBuilder();
+        const ruleset = rulesetBuilder.create()
             .forProperty("foo")
             .addRuleForEach("maxValue", 25)
             .build();
 
-        var dummyModel = {
+        const dummyModel = {
             foo: [ 10, 20, 30 ]
         };
 
-        var validationGroup = createValidationGroupFor(dummyModel, ruleset);
+        const validationGroup = createValidationGroupFor(dummyModel, ruleset);
         validationGroup.getModelErrors(true)
             .then(function(errors){
                 expect(errors).not.to.be.null;
@@ -209,17 +214,17 @@ describe('Validation Group', function () {
 
     it('should correctly get property error', function (done) {
 
-        var rulesetBuilder = new RulesetBuilder();
-        var ruleset = rulesetBuilder.create()
+        const rulesetBuilder = new RulesetBuilder();
+        const ruleset = rulesetBuilder.create()
             .forProperty("foo")
             .addRule("maxLength", 2)
             .build();
 
-        var dummyModel = {
+        const dummyModel = {
             foo: "hello"
         };
 
-        var validationGroup = createValidationGroupFor(dummyModel, ruleset);
+        const validationGroup = createValidationGroupFor(dummyModel, ruleset);
         validationGroup.validate().then(v => {
             validationGroup.getPropertyError("foo")
                 .then(function (error) {
@@ -229,28 +234,28 @@ describe('Validation Group', function () {
                     validationGroup.release();
                     done();
                 }).catch(done);
-        })
+        });
     });
 
     it('should correctly get nested property error', function (done) {
 
-        var rulesetBuilder = new RulesetBuilder();
-        var elementRuleset = rulesetBuilder.create()
+        const rulesetBuilder = new RulesetBuilder();
+        const elementRuleset = rulesetBuilder.create()
             .forProperty("bar")
             .addRule("required", true)
             .addRule("maxLength", 5)
             .build();
 
-        var ruleset = rulesetBuilder.create()
+        const ruleset = rulesetBuilder.create()
             .forProperty("foo")
             .addRuleset(elementRuleset)
             .build();
 
-        var dummyModel = {
+        const dummyModel = {
             foo: { bar: "not valid" }
         };
 
-        var validationGroup = createValidationGroupFor(dummyModel, ruleset);
+        const validationGroup = createValidationGroupFor(dummyModel, ruleset);
         validationGroup.validate().then(v => {
             validationGroup.getPropertyError("foo.bar")
             .then(function(error){
@@ -259,24 +264,25 @@ describe('Validation Group', function () {
                 expect(error).to.contain("5");
                 validationGroup.release();
                 done();
-            }).catch(done) });
+            }).catch(done);
+        });
     });
 
     it('should correctly get property error in complex arrays', function (done) {
 
-        var rulesetBuilder = new RulesetBuilder();
-        var elementRuleset = rulesetBuilder.create()
+        const rulesetBuilder = new RulesetBuilder();
+        const elementRuleset = rulesetBuilder.create()
             .forProperty("bar")
             .addRule("required")
             .addRule("maxLength", 5)
             .build();
 
-        var ruleset = rulesetBuilder.create()
+        const ruleset = rulesetBuilder.create()
             .forProperty("foo")
             .addRulesetForEach(elementRuleset)
             .build();
 
-        var dummyModel = {
+        const dummyModel = {
             foo: [
                 { bar: "hello" },
                 { bar: "" },
@@ -284,49 +290,51 @@ describe('Validation Group', function () {
             ]
         };
 
-        var validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        var checkOne = validationGroup.validate().then(v => {
+        const validationGroup = createValidationGroupFor(dummyModel, ruleset);
+        const checkOne = validationGroup.validate()
+        .then(v => {
             validationGroup.getPropertyError("foo[1].bar")
-            .then(function(error){
-                console.log(error);
-                expect(error).not.to.be.null;
-                expect(error).to.contain("required");
-            });
+                .then(function(error){
+                    console.log(error);
+                    expect(error).not.to.be.null;
+                    expect(error).to.contain("required");
+                });
 
-        var checkTwo = validationGroup.getPropertyError("foo[2].bar")
-            .then(function(error){
-                console.log(error);
-                expect(error).not.to.be.null;
-                expect(error).to.contain("8");
-                expect(error).to.contain("5");
-            });
+            const checkTwo = validationGroup.getPropertyError("foo[2].bar")
+                .then(function(error){
+                    console.log(error);
+                    expect(error).not.to.be.null;
+                    expect(error).to.contain("8");
+                    expect(error).to.contain("5");
+                });
 
-        Promise.all([checkOne, checkTwo])
-            .then(function() {
-                validationGroup.release();
-                done();
-            });
-    })});
+            Promise.all([checkOne, checkTwo])
+                .then(function() {
+                    validationGroup.release();
+                    done();
+                });
+        });
+    });
 
 
     it('should correctly get property error in simple array', function (done) {
 
-        var rulesetBuilder = new RulesetBuilder();
-        var ruleset = rulesetBuilder.create()
+        const rulesetBuilder = new RulesetBuilder();
+        const ruleset = rulesetBuilder.create()
             .forProperty("foo")
             .addRuleForEach("maxValue", 25)
             .build();
 
-        var dummyModel = {
+        const dummyModel = {
             foo: [ 10, 20, 30 ]
         };
 
-        var validationGroup = createValidationGroupFor(dummyModel, ruleset);
+        const validationGroup = createValidationGroupFor(dummyModel, ruleset);
         validationGroup.validate().then(v => {
             validationGroup.validateProperty("foo[2]")
             .then(v => {
                 console.log(validationGroup["propertyErrors"]);
-                return validationGroup.getPropertyError("foo[2]")
+                return validationGroup.getPropertyError("foo[2]");
             })
             .then(function(error){
                 expect(error).not.to.be.null;
@@ -334,22 +342,23 @@ describe('Validation Group', function () {
                 expect(error).to.contain("30");
                 validationGroup.release();
                 done();
-            }).catch(done); })
+            }).catch(done); 
+        });
     });
 
     it('should return undefined if no error exists for property', function (done) {
 
-        var rulesetBuilder = new RulesetBuilder();
-        var ruleset = rulesetBuilder.create()
+        const rulesetBuilder = new RulesetBuilder();
+        const ruleset = rulesetBuilder.create()
             .forProperty("foo")
             .addRule("maxLength", 2)
             .build();
 
-        var dummyModel = {
+        const dummyModel = {
             foo: "hello"
         };
 
-        var validationGroup = createValidationGroupFor(dummyModel, ruleset);
+        const validationGroup = createValidationGroupFor(dummyModel, ruleset);
         validationGroup.validateProperty("nothing")
             .then(() => validationGroup.getPropertyError("nothing"))
             .then(error => {
@@ -361,18 +370,18 @@ describe('Validation Group', function () {
 
     it('should not apply array errors to child indexes', function (done) {
 
-        var rulesetBuilder = new RulesetBuilder();
-        var ruleset = rulesetBuilder.create()
+        const rulesetBuilder = new RulesetBuilder();
+        const ruleset = rulesetBuilder.create()
             .forProperty("foo")
             .addRule("maxLength", 2)
             .addRuleForEach("maxValue", 100)
             .build();
 
-        var dummyModel = {
+        const dummyModel = {
             foo: [ 10, 20, 30 ]
         };
 
-        var validationGroup = createValidationGroupFor(dummyModel, ruleset);
+        const validationGroup = createValidationGroupFor(dummyModel, ruleset);
         validationGroup.getModelErrors(true)
             .then(function(errors){
                 console.log(errors);
@@ -388,26 +397,26 @@ describe('Validation Group', function () {
 
     it('should correctly get errors when invalid elements added to arrays', function (done) {
 
-        var rulesetBuilder = new RulesetBuilder();
-        var elementRuleset = rulesetBuilder.create()
+        const rulesetBuilder = new RulesetBuilder();
+        const elementRuleset = rulesetBuilder.create()
             .forProperty("bar")
             .addRule("required")
             .addRule("maxLength", 5)
             .build();
 
-        var ruleset = rulesetBuilder.create()
+        const ruleset = rulesetBuilder.create()
             .forProperty("foo")
             .addRulesetForEach(elementRuleset)
             .build();
 
-        var dummyModel = {
+        const dummyModel = {
             foo: [
                 { bar: "hello" },
                 { bar: "" }
             ]
         };
 
-        var validationGroup = createValidationGroupFor(dummyModel, ruleset);
+        const validationGroup = createValidationGroupFor(dummyModel, ruleset);
 
         dummyModel.foo.push({ bar: "too long" });
 
@@ -429,17 +438,17 @@ describe('Validation Group', function () {
 
     it('should correctly provide errors', function (done) {
 
-        var rulesetBuilder = new RulesetBuilder();
-        var ruleset = rulesetBuilder.create()
+        const rulesetBuilder = new RulesetBuilder();
+        const ruleset = rulesetBuilder.create()
             .forProperty("foo")
             .addRule("maxLength", 15)
             .build();
 
-        var dummyModel = {
+        const dummyModel = {
             foo: "this is not valid so should fail"
         };
 
-        var validationGroup = createValidationGroupFor(dummyModel, ruleset);
+        const validationGroup = createValidationGroupFor(dummyModel, ruleset);
         validationGroup.getModelErrors(true)
             .then((errors) => {
                 expect(errors).not.to.be.null;
@@ -453,17 +462,17 @@ describe('Validation Group', function () {
 
     it('should correctly return promise indicating validity', function (done) {
 
-        var rulesetBuilder = new RulesetBuilder();
-        var ruleset = rulesetBuilder.create()
+        const rulesetBuilder = new RulesetBuilder();
+        const ruleset = rulesetBuilder.create()
             .forProperty("foo")
             .addRule("maxLength", 15)
             .build();
 
-        var dummyModel = {
+        const dummyModel = {
             foo: "this is not valid so should fail"
         };
 
-        var validationGroup = createValidationGroupFor(dummyModel, ruleset);
+        const validationGroup = createValidationGroupFor(dummyModel, ruleset);
         validationGroup.getModelErrors(true)
             .then(function(errors){
                 expect(errors).not.to.be.null;
@@ -478,7 +487,7 @@ describe('Validation Group', function () {
     it('should only return errors when all validation events have finished', function (done) {
 
         // This basically delays validation so others stack
-        var delayedRequiresValid: any = {
+        const delayedRequiresValid: any = {
             ruleName: "delayed",
             validate: function(modelResolver: IModelResolver, prop: string, options: any){
                 return new Promise(function(resolve, reject){
@@ -489,17 +498,17 @@ describe('Validation Group', function () {
 
         ruleRegistry.registerRule(delayedRequiresValid);
 
-        var rulesetBuilder = new RulesetBuilder();
-        var ruleset = rulesetBuilder.create()
+        const rulesetBuilder = new RulesetBuilder();
+        const ruleset = rulesetBuilder.create()
             .forProperty("foo")
             .addRule("delayed")
             .build();
 
-        var dummyModel = {
+        const dummyModel = {
             foo: "invalid"
         };
 
-        var validationGroup = createValidationGroupFor(dummyModel, ruleset);
+        const validationGroup = createValidationGroupFor(dummyModel, ruleset);
         validationGroup.getModelErrors()
             .then(function(errors){
                 expect(errors).to.be.empty;
@@ -515,17 +524,17 @@ describe('Validation Group', function () {
 
         ruleRegistry.registerRule(delayedRequiresValid());
 
-        var rulesetBuilder = new RulesetBuilder();
-        var ruleset = rulesetBuilder.create()
+        const rulesetBuilder = new RulesetBuilder();
+        const ruleset = rulesetBuilder.create()
             .forProperty("foo")
             .addRule("delayed")
             .build();
 
-        var dummyModel = {
+        const dummyModel = {
             foo: "invalid"
         };
 
-        var validationGroup = createValidationGroupFor(dummyModel, ruleset);
+        const validationGroup = createValidationGroupFor(dummyModel, ruleset);
         validationGroup.validate()
             .then(function(isValid){
                 console.log("isValid", isValid);
@@ -542,7 +551,7 @@ describe('Validation Group', function () {
 
     it('should correctly delay error requests until validation has finished', function (done) {
 
-        var delayedRequires10Rule: any = {
+        const delayedRequires10Rule: any = {
             ruleName: "delayed",
             validate: function(mr: any, prop: any, options: any){
                 return new Promise(function(resolve, reject){
@@ -553,27 +562,27 @@ describe('Validation Group', function () {
 
         ruleRegistry.registerRule(delayedRequires10Rule);
 
-        var rulesetBuilder = new RulesetBuilder();
-        var ruleset = rulesetBuilder.create()
+        const rulesetBuilder = new RulesetBuilder();
+        const ruleset = rulesetBuilder.create()
             .forProperty("foo")
             .addRule("delayed")
             .build();
 
-        var dummyModel: any = {
+        const dummyModel: any = {
             foo: "hello"
         };
 
-        var validationGroup = createValidationGroupFor(dummyModel, ruleset);
+        const validationGroup = createValidationGroupFor(dummyModel, ruleset);
 
         // This starts the initial validation chain so delays it
-        var promise1 = validationGroup.getModelErrors()
+        const promise1 = validationGroup.getModelErrors()
             .then(function(errors){
                 expect(errors).to.be.empty;
             }).catch(done);
 
         dummyModel.foo = 10;
 
-        var promise2 = validationGroup.getModelErrors()
+        const promise2 = validationGroup.getModelErrors()
             .then(function(errors){
                 expect(errors).to.be.empty;
             }).catch(done);
@@ -586,18 +595,18 @@ describe('Validation Group', function () {
             .catch(function(error){
                 validationGroup.release();
                 done(error);
-            })
+            });
     });
 
     it('should correctly update errors when model changed', function (done) {
 
-        var rulesetBuilder = new RulesetBuilder();
-        var ruleset = rulesetBuilder.create()
+        const rulesetBuilder = new RulesetBuilder();
+        const ruleset = rulesetBuilder.create()
             .forProperty("foo")
             .addRule("maxLength", 2)
             .build();
 
-        var validationGroup = createValidationGroupFor({ foo: "invalid" }, ruleset);
+        const validationGroup = createValidationGroupFor({ foo: "invalid" }, ruleset);
         validationGroup.changeValidationTarget({ foo: "ok" });
         validationGroup.getModelErrors()
             .then(function(errors){
@@ -609,15 +618,15 @@ describe('Validation Group', function () {
 
     it('should correctly allow empty model then update errors when model changed', function (done) {
 
-        var rulesetBuilder = new RulesetBuilder();
-        var ruleset = rulesetBuilder.create()
+        const rulesetBuilder = new RulesetBuilder();
+        const ruleset = rulesetBuilder.create()
             .forProperty("foo")
                 .addRule("maxLength", 2)
             .forProperty("bar")
                 .addRuleForEach("maxValue", 10)
             .build();
 
-        var validationGroup = createValidationGroupFor(null, ruleset);
+        const validationGroup = createValidationGroupFor(null, ruleset);
         validationGroup.changeValidationTarget({ foo: "not ok", bar: [ 20, 10 ]  });
         validationGroup.getModelErrors(true)
             .then(function(errors){
@@ -635,16 +644,16 @@ describe('Validation Group', function () {
 
     it('should correctly report errors with empty models that later on get a schema', function (done) {
 
-        var rulesetBuilder = new RulesetBuilder();
-        var ruleset = rulesetBuilder.create()
+        const rulesetBuilder = new RulesetBuilder();
+        const ruleset = rulesetBuilder.create()
             .forProperty("foo")
             .addRule("maxLength", 2)
             .forProperty("bar")
             .addRuleForEach("maxValue", 10)
             .build();
 
-        var changingModel: any = {};
-        var validationGroup = createValidationGroupFor(changingModel, ruleset);
+        const changingModel: any = {};
+        const validationGroup = createValidationGroupFor(changingModel, ruleset);
         changingModel.foo = "not ok";
         changingModel.bar = [ 20, 10 ];
 
@@ -668,17 +677,17 @@ describe('Validation Group', function () {
     });
 
     it("should delay model errors until model watcher has updated", function(done){
-        var rulesetBuilder = new RulesetBuilder();
-        var ruleset = rulesetBuilder.create()
+        const rulesetBuilder = new RulesetBuilder();
+        const ruleset = rulesetBuilder.create()
             .forProperty("foo")
             .addRule("required")
             .build();
 
-        var model = {
+        const model: any = {
             foo: null
         };
 
-        var validationGroup = createValidationGroupFor(model, ruleset);
+        const validationGroup = createValidationGroupFor(model, ruleset);
 
         model.foo = "valid";
 
@@ -693,17 +702,17 @@ describe('Validation Group', function () {
 
     it('should correctly notify on property validation change', function (done) {
 
-        var rulesetBuilder = new RulesetBuilder();
-        var ruleset = rulesetBuilder.create()
+        const rulesetBuilder = new RulesetBuilder();
+        const ruleset = rulesetBuilder.create()
             .forProperty("foo")
             .addRule("maxLength", 15)
             .build();
 
-        var dummyModel = {
+            const dummyModel = {
             foo: "hello"
         };
 
-        var validationGroup = createValidationGroupFor(dummyModel, ruleset);
+        const validationGroup = createValidationGroupFor(dummyModel, ruleset);
         validationGroup.propertyStateChangedEvent.subscribe(function(args){
             console.log("DATA", args);
             expect(args.isValid).to.be.false;
@@ -719,17 +728,17 @@ describe('Validation Group', function () {
 
     it('should correctly notify on model validation change', function (done) {
 
-        var rulesetBuilder = new RulesetBuilder();
-        var ruleset = rulesetBuilder.create()
+        const rulesetBuilder = new RulesetBuilder();
+        const ruleset = rulesetBuilder.create()
             .forProperty("foo")
             .addRule("maxLength", 15)
             .build();
 
-        var dummyModel = {
+            const dummyModel = {
             foo: "hello"
         };
 
-        var validationGroup = createValidationGroupFor(dummyModel, ruleset);
+        const validationGroup = createValidationGroupFor(dummyModel, ruleset);
         validationGroup.modelStateChangedEvent.subscribe(function(args){
             expect(args.isValid).to.be.false;
             validationGroup.release();
@@ -741,24 +750,28 @@ describe('Validation Group', function () {
     });
 
     it('should correctly return errors for composite rules with getPropertyError', function (done) {
-        let validationName = "testCompositeRule";
-        let expectedError = "validation triggered";
+        const validationName = "testCompositeRule";
+        const expectedError = "validation triggered by getPropertyError";
 
-        let compositeRule = new DynamicCompositeValidationRule(
-            validationName,
-            () => { return Promise.resolve(false); },
-            () => { return expectedError });
+        const compositeRule = new DynamicCompositeValidationRule(
+            validationName, 
+            () => { return Promise.resolve(false); });
 
-        let rulesetBuilder = new RulesetBuilder();
-        let ruleset = rulesetBuilder.create()
+        const rulesetBuilder = new RulesetBuilder();
+        const ruleset = rulesetBuilder.create()
             .addCompositeRule(compositeRule)
             .build();
 
-        let dummyModel = {
+        const dummyModel = {
             foo: ""
         };
 
-        let validationGroup = createValidationGroupFor(dummyModel, ruleset);
+        const validationGroup = createValidationGroupFor(dummyModel, ruleset);
+        const localeHandler = <DefaultLocaleHandler>validationGroup["localeHandler"];
+
+        const compositeLocales: any = {};
+        compositeLocales[validationName] = expectedError;
+        localeHandler.supplementLocaleFrom(defaultLocaleCode, compositeLocales);
 
         validationGroup.getPropertyError(validationName, true)
             .then((error) => {
@@ -769,24 +782,29 @@ describe('Validation Group', function () {
     });
 
     it('should correctly raise model validation changes for composite rule changes', function (done) {
-        let validationName = "testCompositeRule";
-        let expectedError = "validation triggered";
+        const validationName = "testCompositeRule";
+        const expectedError = "validation triggered from rule change";
 
-        let compositeRule = new DynamicCompositeValidationRule(
+        const compositeRule = new DynamicCompositeValidationRule(
             validationName,
-            () => { return Promise.resolve(false); },
-            () => { return expectedError });
+            () => { return Promise.resolve(false); });
 
-        let rulesetBuilder = new RulesetBuilder();
-        let ruleset = rulesetBuilder.create()
+        const rulesetBuilder = new RulesetBuilder();
+        const ruleset = rulesetBuilder.create()
             .addCompositeRule(compositeRule)
             .build();
 
-        let dummyModel = {
+        const dummyModel = {
             foo: ""
         };
 
-        let validationGroup = createValidationGroupFor(dummyModel, ruleset);
+        const validationGroup = createValidationGroupFor(dummyModel, ruleset);
+        const localeHandler = <DefaultLocaleHandler>validationGroup["localeHandler"];
+
+        const compositeLocales: any = {};
+        compositeLocales[validationName] = expectedError;
+        localeHandler.supplementLocaleFrom(defaultLocaleCode, compositeLocales);
+
         validationGroup.modelStateChangedEvent.subscribe(function(args){
             expect(args.isValid).to.be.false;
             validationGroup.release();
@@ -797,24 +815,29 @@ describe('Validation Group', function () {
     });
 
     it('should correctly raise property validation changes for composite rule changes', function (done) {
-        let validationName = "testCompositeRule";
-        let expectedError = "validation triggered";
+        const validationName = "testCompositeRule";
+        const expectedError = "validation triggered by composite";
 
-        let compositeRule = new DynamicCompositeValidationRule(
+        const compositeRule = new DynamicCompositeValidationRule(
             validationName,
-            () => { return Promise.resolve(false); },
-            () => { return expectedError });
+            () => { return Promise.resolve(false); });
 
-        let rulesetBuilder = new RulesetBuilder();
-        let ruleset = rulesetBuilder.create()
+        const rulesetBuilder = new RulesetBuilder();
+        const ruleset = rulesetBuilder.create()
             .addCompositeRule(compositeRule)
             .build();
 
-        let dummyModel = {
+        const dummyModel = {
             foo: ""
         };
 
-        let validationGroup = createValidationGroupFor(dummyModel, ruleset);
+        const validationGroup = createValidationGroupFor(dummyModel, ruleset);
+        const localeHandler = <DefaultLocaleHandler>validationGroup["localeHandler"];
+
+        const compositeLocales: any = {};
+        compositeLocales[validationName] = expectedError;
+        localeHandler.supplementLocaleFrom(defaultLocaleCode, compositeLocales);
+
         validationGroup.propertyStateChangedEvent.subscribe(function(args: PropertyStateChangedEvent){
             expect(args.isValid).to.be.false;
             expect(args.property).to.equal(validationName);
@@ -826,40 +849,40 @@ describe('Validation Group', function () {
     });
 
     it('should correctly get property display name', function () {
-        let displayName = "User's name";
-        let rulesetBuilder = new RulesetBuilder();
-        let ruleset = rulesetBuilder.create()
+        const displayName = "User's name";
+        const rulesetBuilder = new RulesetBuilder();
+        const ruleset = rulesetBuilder.create()
             .forProperty("username")
                 .addRule("required")
                 .withDisplayName(displayName)
             .build();
 
-        let dummyModel = {
+        const dummyModel = {
             username: ""
         };
 
-        let validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        let actualDisplayName = validationGroup.getPropertyDisplayName("username");
+        const validationGroup = createValidationGroupFor(dummyModel, ruleset);
+        const actualDisplayName = validationGroup.getPropertyDisplayName("username");
 
         expect(actualDisplayName).to.equal(displayName);
     });
 
     it('should correctly check if property is within group', function () {
-        let rulesetBuilder = new RulesetBuilder();
-        let ruleset = rulesetBuilder.create()
+        const rulesetBuilder = new RulesetBuilder();
+        const ruleset = rulesetBuilder.create()
             .forProperty("propertyInGroup")
                 .addRule("required")
             .build();
 
-        let dummyModel = {
+        const dummyModel = {
             propertyInGroup: "",
             propertyNotInGroup: ""
         };
 
-        let validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        let shouldBeInGroup = validationGroup.isPropertyInGroup("propertyInGroup");
-        let shouldNotBeInGroup = validationGroup.isPropertyInGroup("propertyNotInGroup");
-        let shouldAlsoNotBeInGroup = validationGroup.isPropertyInGroup("notEvenARealProperty");
+        const validationGroup = createValidationGroupFor(dummyModel, ruleset);
+        const shouldBeInGroup = validationGroup.isPropertyInGroup("propertyInGroup");
+        const shouldNotBeInGroup = validationGroup.isPropertyInGroup("propertyNotInGroup");
+        const shouldAlsoNotBeInGroup = validationGroup.isPropertyInGroup("notEvenARealProperty");
         
         expect(shouldBeInGroup).to.be.true;
         expect(shouldNotBeInGroup).to.be.false;

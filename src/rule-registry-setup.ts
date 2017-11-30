@@ -16,7 +16,7 @@ import {RequiredValidationRule} from "./rules/required-validation-rule"
 import {StepValidationRule} from "./rules/step-validation-rule"
 import {MatchesValidationRule} from "./rules/matches-validation-rule";
 
-export var ruleRegistry: RuleRegistry;
+export let ruleRegistry: RuleRegistry;
 
 if(!ruleRegistry) {
     ruleRegistry = new RuleRegistry();

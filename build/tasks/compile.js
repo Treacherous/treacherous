@@ -3,8 +3,8 @@ var ts = require('gulp-typescript');
 var merge = require('merge2');
 var paths = require("../paths");
 
-var compileFor = function(moduleType, withTypings) {
-    var target = moduleType === "commonjs" || moduleType === "amd" ? "es5" : "es2017";
+var compileFor = function(moduleType, withTypings = false, target = "es2015") {
+    console.log(`Compiling for ${moduleType} - targetting ${target}`);
     var tsProject = ts.createProject('tsconfig.json', {
         declaration: withTypings || false,
         module: moduleType,
@@ -25,8 +25,7 @@ var compileFor = function(moduleType, withTypings) {
 
 gulp.task('compile', ["clean", "generate-exports"], function() {
     return merge([
-        compileFor("commonjs", true),
-        compileFor("amd"),
-        compileFor("es6")
+        compileFor("commonjs", true, "es5"),
+        compileFor("es2015")
     ]);
 });

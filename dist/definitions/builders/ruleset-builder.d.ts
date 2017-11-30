@@ -17,7 +17,7 @@ export declare class RulesetBuilder<T> {
     addRule: (rule: string, ruleOptions?: any) => RulesetBuilder<T>;
     addCompositeRule: (compositeRule: ICompositeValidationRule) => RulesetBuilder<T>;
     withDisplayName: (displayName: string) => RulesetBuilder<T>;
-    addDynamicRule: (virtualPropertyName: string, validate: (modelResolver: IModelResolver) => Promise<boolean>, getMessage: string | ((modelResolver: IModelResolver) => string)) => this;
+    addDynamicRule: (virtualPropertyName: string, validate: (modelResolver: IModelResolver) => Promise<boolean>) => this;
     withMessage: (messageOverride: string | ((value: any, ruleOptions?: any) => string)) => RulesetBuilder<T>;
     appliesIf: (appliesFunction: boolean | ((modelResolver: IModelResolver, value: any, ruleOptions?: any) => boolean)) => RulesetBuilder<T>;
     addRuleForEach: (rule: string, ruleOptions?: any) => RulesetBuilder<T>;

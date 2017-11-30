@@ -8,7 +8,7 @@ export class DefaultLocaleHandler implements ILocaleHandler
     private localeCode: string;
     private localeResources: any = {};
 
-    public getCurrentLocale = () => { return this.localeCode; }
+    public getCurrentLocale = () => { return this.localeCode; };
 
     public registerLocale = async(localeCode: string, localeResource: any) =>
     { 
@@ -28,7 +28,7 @@ export class DefaultLocaleHandler implements ILocaleHandler
         if(!this.localeResources[localeCode])
         { this.localeResources[localeCode] = {}; }
 
-        for(var propertyName in localeModule) {
+        for(const propertyName in localeModule) {
             this.localeResources[localeCode][propertyName] = localeModule[propertyName];
         } 
     }
@@ -40,7 +40,7 @@ export class DefaultLocaleHandler implements ILocaleHandler
         if(typeof ruleResource === "string")
         { return ruleResource; }
 
-        if(ruleResource.length === 3)
+        if(ruleResource.length === 3 || propertyName == null)
         { return (<RawLocaleStringGetter>ruleResource)(modelResolver, propertyName, ruleOptions); }
 
         const propertyValue = modelResolver.resolve(propertyName);

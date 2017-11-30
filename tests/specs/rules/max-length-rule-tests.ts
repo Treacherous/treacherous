@@ -7,10 +7,10 @@ describe("Validation Rules", function(){
     describe('Max Length Rule', function () {
 
         it('should be valid when string length is <= max length', function (done) {
-            var modelResolver = new ModelResolver(new PropertyResolver(), { });
+            const modelResolver = new ModelResolver(new PropertyResolver(), { });
             modelResolver.model.validString = "0123456789";
 
-            var rule = new MaxLengthValidationRule();
+            const rule = new MaxLengthValidationRule();
             rule.validate(modelResolver,'validString', 10).then(function(isValid){
                 expect(isValid).to.be.true;
                 done();
@@ -18,10 +18,10 @@ describe("Validation Rules", function(){
         });
 
         it('should be valid when array length is <= max length', function (done) {
-            var modelResolver = new ModelResolver(new PropertyResolver(), { });
+            const modelResolver = new ModelResolver(new PropertyResolver(), { });
             modelResolver.model.validArray = [0,1,2,3,4,5,6,7,8,9];
 
-            var rule = new MaxLengthValidationRule();
+            const rule = new MaxLengthValidationRule();
             rule.validate(modelResolver,'validArray', 10).then(function(isValid){
                 expect(isValid).to.be.true;
                 done();
@@ -29,10 +29,10 @@ describe("Validation Rules", function(){
         });
 
         it('should be valid when provided a null value', function (done) {
-            var modelResolver = new ModelResolver(new PropertyResolver(), { });
+            const modelResolver = new ModelResolver(new PropertyResolver(), { });
             modelResolver.model.a = null;
 
-            var rule = new MaxLengthValidationRule();
+            const rule = new MaxLengthValidationRule();
             rule.validate(modelResolver,'a', 10).then(function(isValid){
                 expect(isValid).to.be.true;
                 done();
@@ -40,10 +40,10 @@ describe("Validation Rules", function(){
         });
 
         it('should be invalid when string length is > max length', function (done) {
-            var modelResolver = new ModelResolver(new PropertyResolver(), {  });
+            const modelResolver = new ModelResolver(new PropertyResolver(), {  });
             modelResolver.model.invalidString = "0123456789";
 
-            var rule = new MaxLengthValidationRule();
+            const rule = new MaxLengthValidationRule();
             rule.validate(modelResolver,'invalidString', 9).then(function(isValid){
                 expect(isValid).to.be.false;
                 done();
@@ -51,10 +51,10 @@ describe("Validation Rules", function(){
         });
 
         it('should be invalid when array length is > max length', function (done) {
-            var modelResolver = new ModelResolver(new PropertyResolver(), { });
+            const modelResolver = new ModelResolver(new PropertyResolver(), { });
             modelResolver.model.invalidArray = [0,1,2,3,4,5,6,7,8,9];
 
-            var rule = new MaxLengthValidationRule();
+            const rule = new MaxLengthValidationRule();
             rule.validate(modelResolver,'invalidArray', 9).then(function(isValid){
                 expect(isValid).to.be.false;
                 done();
