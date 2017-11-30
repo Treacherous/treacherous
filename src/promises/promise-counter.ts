@@ -14,7 +14,7 @@ export class PromiseCounter
 
     public countPromise = async(promise: Promise<any>) => {
         if(!promise) { return; }
-        if(!promise.then) { throw new Error("Non-Promise pass in: " + promise) }
+        if(!promise.then) { throw new Error("Non-Promise pass in: " + promise); }
 
         this.incrementCounter();
         const result = await promise;
@@ -30,5 +30,5 @@ export class PromiseCounter
         { this.promiseCallbacks.shift()(); }
     }
 
-    private incrementCounter = () => { this.validationCounter++; }
+    private incrementCounter = () => { this.validationCounter++; };
 }

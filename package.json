@@ -23,7 +23,8 @@
     "validate"
   ],
   "scripts": {
-    "test": "karma start --single-run --browsers PhantomJS ./karma.conf.js"
+    "test": "karma start --single-run --browsers PhantomJS ./karma.conf.js",
+    "test-debug": "karma start --single-run --browsers ChromeDebug ./karma.conf.js"    
   },
   "repository": {
     "type": "git",

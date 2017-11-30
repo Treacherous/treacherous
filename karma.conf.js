@@ -10,6 +10,7 @@ module.exports = function(config) {
         },
 
         webpack: {
+            devtool: "source-map",
             module: {
                 loaders: [
                     { test: /\.tsx?$/, loader: 'ts-loader', exclude: /node_modules/}
@@ -48,7 +49,7 @@ module.exports = function(config) {
         },
 
         customLaunchers: {
-            'Chrome_debug': {
+            'ChromeDebug': {
               base: 'Chrome',
               flags: [ '--remote-debugging-port=9333' ]
             }
