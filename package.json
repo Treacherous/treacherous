@@ -1,6 +1,6 @@
 {
   "name": "treacherous",
-  "version": "0.16.2",
+  "version": "0.17.0",
   "license": "MIT",
   "dependencies": {
     "property-resolver": "^0.0.11",
