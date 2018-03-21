@@ -248,8 +248,8 @@ You can also run `gulp run-tests` which will run the tests to make sure everythi
 
 "Mountains" Icon courtesy of [The Noun Project](https://thenounproject.com/), by Aleksandr Vector, under [CC 3.0](http://creativecommons.org/licenses/by/3.0/us/)
 
-[build-status-image]: https://travis-ci.org/grofit/treacherous.svg
-[build-status-url]: https://travis-ci.org/grofit/treacherous
+[build-status-image]: https://travis-ci.org/Treacherous/treacherous.svg?branch=master
+[build-status-url]: https://travis-ci.org/Treacherous/treacherous
 [gitter-image]: https://badges.gitter.im/grofit/treacherous.svg
 [gitter-url]: https://gitter.im/grofit/treacherous
 [npm-version-image]: https://badge.fury.io/js/treacherous.svg
