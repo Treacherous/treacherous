@@ -12,12 +12,20 @@ module.exports = function(config) {
         webpack: {
             devtool: "source-map",
             module: {
-                loaders: [
-                    { test: /\.tsx?$/, loader: 'ts-loader', exclude: /node_modules/}
+                rules: [
+                    { 
+                        test: /\.tsx?$/, 
+                        use: {
+                            loader: 'ts-loader',
+                            options: {
+                                transpileOnly : true
+                              }
+                        }, 
+                        exclude: /node_modules/}
                 ]
             },
             resolve: {
-                extensions: ['.ts', '.js', '.tsx', '.jsx', '']
+                extensions: ['.ts', '.js', '.tsx', '.jsx']
             }
         },
 
