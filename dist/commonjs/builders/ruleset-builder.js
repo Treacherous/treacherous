@@ -92,7 +92,7 @@ var RulesetBuilder = /** @class */ (function () {
         };
     }
     RulesetBuilder.prototype.extractPropertyName = function (predicate) {
-        var regex = /.*\.([\w]*);/;
+        var regex = /.*\.([\w]*)/;
         var predicateString = predicate.toString();
         return regex.exec(predicateString)[1];
     };

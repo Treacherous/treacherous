@@ -16,7 +16,7 @@ export class RulesetBuilder<T>
     constructor(private ruleRegistry?: RuleRegistry) {}
 
     protected extractPropertyName(predicate: (model: T) => any) : string {
-        const regex = /.*\.([\w]*);/;
+        const regex = /.*\.([\w]*)/;
         const predicateString = predicate.toString();
         return regex.exec(predicateString)[1];
     }

@@ -89,7 +89,7 @@ export class RulesetBuilder {
         };
     }
     extractPropertyName(predicate) {
-        const regex = /.*\.([\w]*);/;
+        const regex = /.*\.([\w]*)/;
         const predicateString = predicate.toString();
         return regex.exec(predicateString)[1];
     }
