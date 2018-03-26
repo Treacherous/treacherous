@@ -127,4 +127,31 @@ export class RulesetBuilder<T>
     {
         return this.internalRuleset;
     }
+
+    // Shorthands
+    public required = (): RulesetBuilder<T> => this.addRule("required");
+    public date = (): RulesetBuilder<T> => this.addRule("date");
+    public decimal = (): RulesetBuilder<T> => this.addRule("decimal");
+    public email = (): RulesetBuilder<T> => this.addRule("email");
+    public isoDate = (): RulesetBuilder<T> => this.addRule("isoDate");
+    public number = (): RulesetBuilder<T> => this.addRule("number");
+    public equal = (value: any): RulesetBuilder<T> => this.addRule("equal", value);
+    public notEqual = (value: any): RulesetBuilder<T> => this.addRule("notEqual", value);
+    public minValue = (value: any): RulesetBuilder<T> => this.addRule("minValue", value);
+    public maxValue = (value: any): RulesetBuilder<T> => this.addRule("maxValue", value);
+    public minLength = (value: number): RulesetBuilder<T> => this.addRule("minLength", value);
+    public maxLength = (value: number): RulesetBuilder<T> => this.addRule("maxLength", value);
+    public regex = (pattern: string | RegExp): RulesetBuilder<T> => this.addRule("regex", pattern);
+    public step = (step: number): RulesetBuilder<T> => this.addRule("step", step);
+    public matches = (propertyNameOrPredicate: ((model: T) => any) | string): RulesetBuilder<T> => {
+        let endProperty = propertyNameOrPredicate;
+        if(TypeHelper.isFunctionType(endProperty))
+        {
+            endProperty = this.extractPropertyName(<any>propertyNameOrPredicate);
+            if(!endProperty) { throw new Error(`cannot resolve property from: ${propertyNameOrPredicate}`); }
+        }
+
+        return this.addRule("matches", endProperty);
+    }
+
 }

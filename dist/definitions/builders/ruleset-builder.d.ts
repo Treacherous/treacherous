@@ -24,4 +24,19 @@ export declare class RulesetBuilder<T> {
     addRuleset: (ruleset: Ruleset) => RulesetBuilder<T>;
     addRulesetForEach: (ruleset: Ruleset) => RulesetBuilder<T>;
     build: () => Ruleset;
+    required: () => RulesetBuilder<T>;
+    date: () => RulesetBuilder<T>;
+    decimal: () => RulesetBuilder<T>;
+    email: () => RulesetBuilder<T>;
+    isoDate: () => RulesetBuilder<T>;
+    number: () => RulesetBuilder<T>;
+    equal: (value: any) => RulesetBuilder<T>;
+    notEqual: (value: any) => RulesetBuilder<T>;
+    minValue: (value: any) => RulesetBuilder<T>;
+    maxValue: (value: any) => RulesetBuilder<T>;
+    minLength: (value: number) => RulesetBuilder<T>;
+    maxLength: (value: number) => RulesetBuilder<T>;
+    regex: (pattern: string | RegExp) => RulesetBuilder<T>;
+    step: (step: number) => RulesetBuilder<T>;
+    matches: (propertyNameOrPredicate: string | ((model: T) => any)) => RulesetBuilder<T>;
 }

@@ -70,12 +70,12 @@ this functionality for UMD modules out of the box.
 ```js
 import {createRuleset, createGroup} from "treacherous";
 
-let simpleModel = {
+const simpleModel = {
     foo: 20,
     bar: "hello"
 };
 
-let ruleset = createRuleset()
+const ruleset = createRuleset()
     .forProperty("foo")
         .addRule("required")        // The property is required
         .addRule("maxValue", 20)    // The property needs a value <= 20
@@ -83,7 +83,7 @@ let ruleset = createRuleset()
         .addRule("maxLength", 5)     // The property neds a length <= 5
     .build();
     
-let validationGroup = createGroup()
+const validationGroup = createGroup()
     .build(simpleModel, ruleset);
 
 validationGroup.validate()
@@ -92,20 +92,31 @@ validationGroup.validate()
     });
 ```
 
+### Ruleset Shorthand
+```js
+const ruleset = createRuleset()
+    .forProperty("foo")
+        .required()
+        .maxValue(20)
+    .forProperty("bar")
+        .maxLength(5)
+    .build()
+```
+
 ### Validating simple arrays in models
 
 ```js
-let simpleModel = {
+const simpleModel = {
     foo: [10, 20, 30]
 };
 
-let ruleset = createRuleset()
+const ruleset = createRuleset()
     .forProperty("foo")
         .addRule("maxLength", 5)        // The array can only contain <= 5 elements
         .addRuleForEach("maxValue", 20) // Each element needs a value <= 20
     .build();
     
-let validationGroup = createGroup()
+const validationGroup = createGroup()
     .build(simpleModel, ruleset);
 
 validationGroup.getModelErrors(true) // the true value indicates a full revalidation
@@ -125,7 +136,7 @@ Here are a few simple examples to save you trawling the docs.
 
 ### Check current validity
 ```js
-let validationGroup = createGroup()
+const validationGroup = createGroup()
     .build(...);
 
 validationGroup.validate()
@@ -136,7 +147,7 @@ validationGroup.validate()
 
 ### Get all errors
 ```js
-let validationGroup = createGroup()
+const validationGroup = createGroup()
     .build(...);
 
 validationGroup.getModelErrors()
@@ -145,7 +156,7 @@ validationGroup.getModelErrors()
 
 ### Subscribe validation changes
 ```js
-let validationGroup = createGroup()
+const validationGroup = createGroup()
     .build(...);
 
 validationGroup.propertyStateChangedEvent.subscribe((propertyValidationChangedEvent) => {...));
@@ -157,16 +168,17 @@ As typescript users you can get some nicer features and intellisense so you can 
 you to use lambda style property location like so:
 
 ```ts
-let ruleset = createRuleset<SomeModel>()
+const ruleset = createRuleset<SomeModel>()
     .addProperty(x => x.SomeProperty)
-    .addRule("required")
+        .required()
+        .matches(x => x.SomeOtherProperty)
     .build();
 ```
 
 You can also make use of `async/await` for almost all async methods like so:
 
 ```ts
-let modelErrors = await validationGroup.getModelErrors();
+const modelErrors = await validationGroup.getModelErrors();
 console.log(modelErrors);
 ```
 

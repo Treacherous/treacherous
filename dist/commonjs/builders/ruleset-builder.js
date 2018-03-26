@@ -90,6 +90,31 @@ var RulesetBuilder = /** @class */ (function () {
         this.build = function () {
             return _this.internalRuleset;
         };
+        // Shorthands
+        this.required = function () { return _this.addRule("required"); };
+        this.date = function () { return _this.addRule("date"); };
+        this.decimal = function () { return _this.addRule("decimal"); };
+        this.email = function () { return _this.addRule("email"); };
+        this.isoDate = function () { return _this.addRule("isoDate"); };
+        this.number = function () { return _this.addRule("number"); };
+        this.equal = function (value) { return _this.addRule("equal", value); };
+        this.notEqual = function (value) { return _this.addRule("notEqual", value); };
+        this.minValue = function (value) { return _this.addRule("minValue", value); };
+        this.maxValue = function (value) { return _this.addRule("maxValue", value); };
+        this.minLength = function (value) { return _this.addRule("minLength", value); };
+        this.maxLength = function (value) { return _this.addRule("maxLength", value); };
+        this.regex = function (pattern) { return _this.addRule("regex", pattern); };
+        this.step = function (step) { return _this.addRule("step", step); };
+        this.matches = function (propertyNameOrPredicate) {
+            var endProperty = propertyNameOrPredicate;
+            if (type_helper_1.TypeHelper.isFunctionType(endProperty)) {
+                endProperty = _this.extractPropertyName(propertyNameOrPredicate);
+                if (!endProperty) {
+                    throw new Error("cannot resolve property from: " + propertyNameOrPredicate);
+                }
+            }
+            return _this.addRule("matches", endProperty);
+        };
     }
     RulesetBuilder.prototype.extractPropertyName = function (predicate) {
         var regex = /.*\.([\w]*)/;

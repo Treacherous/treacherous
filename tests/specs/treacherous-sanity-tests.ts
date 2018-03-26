@@ -153,7 +153,7 @@ describe('Treacherous Sanity Checks', function () {
             number2: 0
         };
 
-        const valGroup = createGroup().build(model, ruleSet);
+        const valGroup: any = createGroup().build(model, ruleSet);
 
         const localeHandler = <DefaultLocaleHandler>valGroup["localeHandler"];
         
@@ -180,4 +180,5 @@ describe('Treacherous Sanity Checks', function () {
         expect(noErrors).to.not.include.keys("totalNumber");
         console.log("last", noErrors);
     });
+
 });

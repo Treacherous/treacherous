@@ -87,6 +87,31 @@ export class RulesetBuilder {
         this.build = () => {
             return this.internalRuleset;
         };
+        // Shorthands
+        this.required = () => this.addRule("required");
+        this.date = () => this.addRule("date");
+        this.decimal = () => this.addRule("decimal");
+        this.email = () => this.addRule("email");
+        this.isoDate = () => this.addRule("isoDate");
+        this.number = () => this.addRule("number");
+        this.equal = (value) => this.addRule("equal", value);
+        this.notEqual = (value) => this.addRule("notEqual", value);
+        this.minValue = (value) => this.addRule("minValue", value);
+        this.maxValue = (value) => this.addRule("maxValue", value);
+        this.minLength = (value) => this.addRule("minLength", value);
+        this.maxLength = (value) => this.addRule("maxLength", value);
+        this.regex = (pattern) => this.addRule("regex", pattern);
+        this.step = (step) => this.addRule("step", step);
+        this.matches = (propertyNameOrPredicate) => {
+            let endProperty = propertyNameOrPredicate;
+            if (TypeHelper.isFunctionType(endProperty)) {
+                endProperty = this.extractPropertyName(propertyNameOrPredicate);
+                if (!endProperty) {
+                    throw new Error(`cannot resolve property from: ${propertyNameOrPredicate}`);
+                }
+            }
+            return this.addRule("matches", endProperty);
+        };
     }
     extractPropertyName(predicate) {
         const regex = /.*\.([\w]*)/;
