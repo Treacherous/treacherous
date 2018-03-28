@@ -39,6 +39,17 @@ describe("Validation Rules", function(){
             }).catch(done);
         });
 
+        it('should be valid when provided an empty value', function (done) {
+            const modelResolver = new ModelResolver(new PropertyResolver(), {});
+            modelResolver.model.a = "";
+
+            const rule = new StepValidationRule();
+            rule.validate(modelResolver, 'a', 5).then(function(isValid){
+                expect(isValid).to.be.true;
+                done();
+            }).catch(done);
+        });
+
         it('should be invalid when number is not valid increment', function (done) {
             const modelResolver = new ModelResolver(new PropertyResolver(), {});
             modelResolver.model.invalidIncrement = 12;

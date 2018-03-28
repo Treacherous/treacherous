@@ -84,6 +84,17 @@ describe("Validation Rules", function(){
             }).catch(done);
         });
 
+        it('should be valid when provided an empty value', function (done) {
+            const modelResolver = new ModelResolver(new PropertyResolver(), {});
+            modelResolver.model.a = "";
+
+            const rule = new NotEqualValidationRule();
+            rule.validate(modelResolver,'a', {}).then(function(isValid){
+                expect(isValid).to.be.true;
+                done();
+            }).catch(done);
+        });
+
         it('should be invalid when number equals same number', function (done) {
             const modelResolver = new ModelResolver(new PropertyResolver(), {});
             modelResolver.model.a = 10;

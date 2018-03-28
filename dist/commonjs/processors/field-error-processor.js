@@ -4,11 +4,10 @@ var tslib_1 = require("tslib");
 var field_has_error_1 = require("./field-has-error");
 var FieldErrorProcessor = /** @class */ (function () {
     function FieldErrorProcessor(ruleRegistry, localeHandler) {
+        var _this = this;
         this.ruleRegistry = ruleRegistry;
         this.localeHandler = localeHandler;
-    }
-    FieldErrorProcessor.prototype.processRuleLink = function (modelResolver, propertyName, ruleLink) {
-        return tslib_1.__awaiter(this, void 0, void 0, function () {
+        this.processRuleLink = function (modelResolver, propertyName, ruleLink) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
             var shouldRuleApply, validator, options, isValid, error;
             return tslib_1.__generator(this, function (_a) {
                 switch (_a.label) {
@@ -21,6 +20,9 @@ var FieldErrorProcessor = /** @class */ (function () {
                             return [2 /*return*/];
                         }
                         validator = this.ruleRegistry.getRuleNamed(ruleLink.ruleName);
+                        if (!validator) {
+                            throw new field_has_error_1.FieldHasError("No validator can be found for rule [" + ruleLink.ruleName + "]");
+                        }
                         options = (typeof ruleLink.ruleOptions == "function") ? ruleLink.ruleOptions() : ruleLink.ruleOptions;
                         return [4 /*yield*/, validator.validate(modelResolver, propertyName, options)];
                     case 1:
@@ -43,10 +45,8 @@ var FieldErrorProcessor = /** @class */ (function () {
                     case 4: throw new field_has_error_1.FieldHasError(error);
                 }
             });
-        });
-    };
-    FieldErrorProcessor.prototype.checkFieldForErrors = function (modelResolver, propertyName, rules) {
-        return tslib_1.__awaiter(this, void 0, void 0, function () {
+        }); };
+        this.checkFieldForErrors = function (modelResolver, propertyName, rules) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
             var _this = this;
             var ruleCheck, checkEachRule;
             return tslib_1.__generator(this, function (_a) {
@@ -67,8 +67,8 @@ var FieldErrorProcessor = /** @class */ (function () {
                         return validationError.message;
                     })];
             });
-        });
-    };
+        }); };
+    }
     return FieldErrorProcessor;
 }());
 exports.FieldErrorProcessor = FieldErrorProcessor;

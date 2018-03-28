@@ -8,7 +8,7 @@ export class NotEqualValidationRule {
     validate(modelResolver, propertyName, optionsOrValue) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
             const value = modelResolver.resolve(propertyName);
-            if (value === undefined || value === null) {
+            if (TypeHelper.isEmptyValue(value)) {
                 return true;
             }
             let comparison = optionsOrValue.value || optionsOrValue;

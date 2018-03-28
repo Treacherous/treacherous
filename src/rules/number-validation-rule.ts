@@ -12,6 +12,9 @@ export class NumberValidationRule implements IValidationRule
         if (value === undefined || value === null)
         { return true; }
 
+        if(value === "")
+        { return true; }
+
         return this.numberRegex.test(value);
     }
 }

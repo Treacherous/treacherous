@@ -10,6 +10,9 @@ export class NumberValidationRule {
             if (value === undefined || value === null) {
                 return true;
             }
+            if (value === "") {
+                return true;
+            }
             return this.numberRegex.test(value);
         });
     }

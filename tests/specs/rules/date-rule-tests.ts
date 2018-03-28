@@ -28,6 +28,17 @@ describe("Validation Rules", function(){
             }).catch(done);
         });
 
+        it('should be valid when provided an empty value', function (done) {
+            const modelResolver = new ModelResolver(new PropertyResolver(), {});
+            modelResolver.model.invalidDate = "";
+
+            const rule = new DateValidationRule();
+            rule.validate(modelResolver,'invalidDate').then(function(isValid){
+                expect(isValid).to.be.true;
+                done();
+            }).catch(done);
+        });
+
         it('should be invalid when non date is provided', function (done) {
             const modelResolver = new ModelResolver(new PropertyResolver(), {});
             modelResolver.model.invalidDate = "this isn't a date";

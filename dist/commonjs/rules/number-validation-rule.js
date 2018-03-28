@@ -14,6 +14,9 @@ var NumberValidationRule = /** @class */ (function () {
                 if (value === undefined || value === null) {
                     return [2 /*return*/, true];
                 }
+                if (value === "") {
+                    return [2 /*return*/, true];
+                }
                 return [2 /*return*/, this.numberRegex.test(value)];
             });
         });

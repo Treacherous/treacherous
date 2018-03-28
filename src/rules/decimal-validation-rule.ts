@@ -1,5 +1,6 @@
 import {IModelResolver} from "../resolvers/imodel-resolver";
 import {IValidationRule} from "./ivalidation-rule";
+import {TypeHelper} from "../helpers/type-helper";
 
 export class DecimalValidationRule implements IValidationRule
 {
@@ -9,7 +10,7 @@ export class DecimalValidationRule implements IValidationRule
     public async validate(modelResolver: IModelResolver, propertyName: string): Promise<boolean>
     {
         const value = modelResolver.resolve(propertyName);
-        if (value === undefined || value === null)
+        if (TypeHelper.isEmptyValue(value))
         { return true; }
 
         return this.decimalRegex.test(value);

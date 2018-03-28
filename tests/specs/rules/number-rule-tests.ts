@@ -39,6 +39,17 @@ describe("Validation Rules", function(){
             }).catch(done);
         });
 
+        it('should be valid when provided an empty value', function (done) {
+            const modelResolver = new ModelResolver(new PropertyResolver(), {});
+            modelResolver.model.a = "";
+
+            const rule = new NumberValidationRule();
+            rule.validate(modelResolver,'a').then(function(isValid){
+                expect(isValid).to.be.true;
+                done();
+            }).catch(done);
+        });
+
         it('should be invalid when a valid decimal is provided', function (done) {
             const modelResolver = new ModelResolver(new PropertyResolver(), {});
             modelResolver.model.validDecimal = 10.25;

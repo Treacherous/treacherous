@@ -11,4 +11,7 @@ export class TypeHelper {
     static isArrayType(value) {
         return Object.prototype.toString.call(value) === '[object Array]';
     }
+    static isEmptyValue(value) {
+        return value === undefined || value === null || value.length == 0;
+    }
 }

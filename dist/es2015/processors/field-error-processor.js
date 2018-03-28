@@ -4,9 +4,7 @@ export class FieldErrorProcessor {
     constructor(ruleRegistry, localeHandler) {
         this.ruleRegistry = ruleRegistry;
         this.localeHandler = localeHandler;
-    }
-    processRuleLink(modelResolver, propertyName, ruleLink) {
-        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+        this.processRuleLink = (modelResolver, propertyName, ruleLink) => tslib_1.__awaiter(this, void 0, void 0, function* () {
             const shouldRuleApply = ruleLink.appliesIf === true
                 || ((typeof (ruleLink.appliesIf) === "function")
                     ? (ruleLink.appliesIf)(modelResolver, propertyName, ruleLink.ruleOptions)
@@ -15,6 +13,9 @@ export class FieldErrorProcessor {
                 return;
             }
             const validator = this.ruleRegistry.getRuleNamed(ruleLink.ruleName);
+            if (!validator) {
+                throw new FieldHasError(`No validator can be found for rule [${ruleLink.ruleName}]`);
+            }
             const options = (typeof ruleLink.ruleOptions == "function") ? ruleLink.ruleOptions() : ruleLink.ruleOptions;
             const isValid = yield validator.validate(modelResolver, propertyName, options);
             if (isValid) {
@@ -34,9 +35,7 @@ export class FieldErrorProcessor {
             }
             throw new FieldHasError(error);
         });
-    }
-    checkFieldForErrors(modelResolver, propertyName, rules) {
-        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+        this.checkFieldForErrors = (modelResolver, propertyName, rules) => tslib_1.__awaiter(this, void 0, void 0, function* () {
             const ruleCheck = (ruleLinkOrSet) => {
                 return this.processRuleLink(modelResolver, propertyName, ruleLinkOrSet);
             };

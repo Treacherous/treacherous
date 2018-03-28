@@ -1,5 +1,6 @@
 import {IValidationRule} from "./ivalidation-rule";
 import {IModelResolver} from "../resolvers/imodel-resolver";
+import {TypeHelper} from "../helpers/type-helper";
 
 export class RegexValidationRule implements IValidationRule
 {
@@ -9,7 +10,7 @@ export class RegexValidationRule implements IValidationRule
     {
         const value = modelResolver.resolve(propertyName);
 
-        if (value === undefined || value === null || value.length == 0)
+        if (TypeHelper.isEmptyValue(value))
         { return true; }
 
         return value.toString().match(regexPattern) !== null;

@@ -17,7 +17,6 @@ describe("Validation Rules", function(){
             }).catch(done);
         });
 
-
         it('should be valid when provided a null value', function (done) {
             const modelResolver = new ModelResolver(new PropertyResolver(), {});
             modelResolver.model.null = null;
@@ -28,6 +27,18 @@ describe("Validation Rules", function(){
                 done();
             }).catch(done);
         });
+
+        it('should be valid when provided an empty value', function (done) {
+            const modelResolver = new ModelResolver(new PropertyResolver(), {});
+            modelResolver.model.empty = "";
+
+            const rule = new ISODateValidationRule();
+            rule.validate(modelResolver,'empty').then(function(isValid){
+                expect(isValid).to.be.true;
+                done();
+            }).catch(done);
+        });
+
 
         it('should be invalid when non date is provided', function (done) {
             const modelResolver = new ModelResolver(new PropertyResolver(), {});

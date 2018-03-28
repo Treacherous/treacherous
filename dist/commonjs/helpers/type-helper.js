@@ -15,6 +15,9 @@ var TypeHelper = /** @class */ (function () {
     TypeHelper.isArrayType = function (value) {
         return Object.prototype.toString.call(value) === '[object Array]';
     };
+    TypeHelper.isEmptyValue = function (value) {
+        return value === undefined || value === null || value.length == 0;
+    };
     return TypeHelper;
 }());
 exports.TypeHelper = TypeHelper;

@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = require("tslib");
+var type_helper_1 = require("../helpers/type-helper");
 var AdvancedRegexValidationRule = /** @class */ (function () {
     function AdvancedRegexValidationRule(ruleName, expression) {
         if (!ruleName || ruleName.length == 0) {
@@ -17,7 +18,7 @@ var AdvancedRegexValidationRule = /** @class */ (function () {
             var value;
             return tslib_1.__generator(this, function (_a) {
                 value = modelResolver.resolve(propertyName);
-                if (value === undefined || value === null || value.length == 0) {
+                if (type_helper_1.TypeHelper.isEmptyValue(value)) {
                     return [2 /*return*/, true];
                 }
                 return [2 /*return*/, value.toString().match(this.expression) !== null];

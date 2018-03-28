@@ -1,5 +1,6 @@
 import {IValidationRule} from "./ivalidation-rule";
 import {IModelResolver} from "../resolvers/imodel-resolver";
+import {TypeHelper} from "../helpers/type-helper";
 
 export class MaxValueValidationRule implements IValidationRule
 {
@@ -8,7 +9,8 @@ export class MaxValueValidationRule implements IValidationRule
     public async validate(modelResolver: IModelResolver, propertyName: string, maxValue: any): Promise<boolean>
     {
         const value = modelResolver.resolve(propertyName);
-        if (value === undefined || value === null || value.length == 0)
+        
+        if (TypeHelper.isEmptyValue(value))
         { return true; }
 
         return value <= maxValue;

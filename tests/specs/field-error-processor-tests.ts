@@ -1,4 +1,4 @@
-import {use, expect, spy} from "chai";
+import {use, expect, assert, spy} from "chai";
 import {RuleRegistry} from "../../src/rules/rule-registry";
 import {MaxLengthValidationRule} from "../../src/rules/max-length-validation-rule";
 import {RequiredValidationRule} from "../../src/rules/required-validation-rule";
@@ -44,7 +44,6 @@ describe('Field Error Processor', function () {
                 done();
             }).catch(done);
     });
-
 
     it('should correctly return a custom error message function for the field', function (done) {
         const ruleRegistry = new RuleRegistry();
@@ -210,6 +209,31 @@ describe('Field Error Processor', function () {
                 expect(spiedValidationMethod).to.not.have.been.called;
                 done();
             }).catch(done);
+    });
+
+    it('should throw exception if invalid rule has been used', function (done) {
+        const ruleRegistry = new RuleRegistry();
+
+        const defaultLocaleHandler = new DefaultLocaleHandler();
+        defaultLocaleHandler.registerLocale("en-us", defaultLocale);
+        defaultLocaleHandler.useLocale("en-us");
+        
+        const fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry, defaultLocaleHandler);
+
+        const dummyModel = new ModelResolver(new PropertyResolver(), { something: true });
+        const fakeRuleName = "non-existant-rule";
+        const ruleLink = new RuleLink(fakeRuleName, true);
+                
+        fieldErrorProcessor
+            .processRuleLink(dummyModel, "something", ruleLink)
+            .then(function(error){
+                console.log("FAILED", error);
+                done(error);
+            }).catch(function(error){
+                console.log(error);
+                expect(error).to.match(new RegExp(fakeRuleName));
+                done();
+            });
     });
 
 });

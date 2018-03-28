@@ -1,4 +1,5 @@
 import * as tslib_1 from "tslib";
+import { TypeHelper } from "../helpers/type-helper";
 export class MaxLengthValidationRule {
     constructor() {
         this.ruleName = "maxLength";
@@ -6,7 +7,7 @@ export class MaxLengthValidationRule {
     validate(modelResolver, propertyName, maxLength) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
             const value = modelResolver.resolve(propertyName);
-            if (value === undefined || value === null || value.length == 0) {
+            if (TypeHelper.isEmptyValue(value)) {
                 return true;
             }
             return value.length <= maxLength;

@@ -1,5 +1,6 @@
 import {IModelResolver} from "../resolvers/imodel-resolver";
 import {IValidationRule} from "./ivalidation-rule";
+import {TypeHelper} from "../helpers/type-helper";
 
 export class ISODateValidationRule implements IValidationRule
 {
@@ -10,7 +11,7 @@ export class ISODateValidationRule implements IValidationRule
     {
         const value = modelResolver.resolve(propertyName);
 
-        if (value === undefined || value === null)
+        if (TypeHelper.isEmptyValue(value))
         { return true; }
 
         return this.isoDateRegex.test(value);

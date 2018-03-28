@@ -11,7 +11,7 @@ export class EqualValidationRule implements IValidationRule
     {
         const value = modelResolver.resolve(propertyName);
 
-        if (value === undefined || value === null)
+        if (TypeHelper.isEmptyValue(value))
         { return true; }
 
         let comparison = optionsOrValue.value || optionsOrValue;

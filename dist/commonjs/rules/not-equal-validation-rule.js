@@ -12,7 +12,7 @@ var NotEqualValidationRule = /** @class */ (function () {
             var value, comparison, weakEquality;
             return tslib_1.__generator(this, function (_a) {
                 value = modelResolver.resolve(propertyName);
-                if (value === undefined || value === null) {
+                if (type_helper_1.TypeHelper.isEmptyValue(value)) {
                     return [2 /*return*/, true];
                 }
                 comparison = optionsOrValue.value || optionsOrValue;

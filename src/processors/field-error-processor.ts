@@ -9,7 +9,7 @@ export class FieldErrorProcessor implements IFieldErrorProcessor
 {
     constructor(public ruleRegistry: RuleRegistry, public localeHandler: ILocaleHandler){}
 
-    public async processRuleLink(modelResolver: IModelResolver, propertyName: any, ruleLink: RuleLink): Promise<any>{
+    public processRuleLink = async(modelResolver: IModelResolver, propertyName: any, ruleLink: RuleLink): Promise<any> => {
 
         const shouldRuleApply = ruleLink.appliesIf === true
             || ((typeof(ruleLink.appliesIf) === "function")
@@ -19,6 +19,10 @@ export class FieldErrorProcessor implements IFieldErrorProcessor
         if (!shouldRuleApply) { return; }
 
         const validator = this.ruleRegistry.getRuleNamed(ruleLink.ruleName);
+
+        if(!validator)
+        { throw new FieldHasError(`No validator can be found for rule [${ruleLink.ruleName}]`); }
+
         const options = (typeof ruleLink.ruleOptions == "function") ? ruleLink.ruleOptions() : ruleLink.ruleOptions;
         const isValid = await validator.validate(modelResolver, propertyName, options);
 
@@ -38,7 +42,7 @@ export class FieldErrorProcessor implements IFieldErrorProcessor
         throw new FieldHasError(error);
     }
 
-    public async checkFieldForErrors(modelResolver: IModelResolver, propertyName: any, rules: any): Promise<string>
+    public checkFieldForErrors = async (modelResolver: IModelResolver, propertyName: any, rules: any): Promise<string> =>
     {
         const ruleCheck = (ruleLinkOrSet: any): Promise<any>  => {
             return this.processRuleLink(modelResolver, propertyName, ruleLinkOrSet);
