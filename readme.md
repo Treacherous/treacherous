@@ -1,8 +1,8 @@
 # Treacherous
 
-![treacherous-image](https://user-images.githubusercontent.com/927201/29661471-03b5ee16-88bc-11e7-880d-d8c027b264c8.png)
+A modern async validation framework with a raft of features for node or the browser.
 
-A modern async validation library with a raft of features for node or the browser.
+![treacherous-image](https://user-images.githubusercontent.com/927201/29661471-03b5ee16-88bc-11e7-880d-d8c027b264c8.png)
 
 [![Build Status][build-status-image]][build-status-url]
 [![Npm Version][npm-version-image]][npm-version-url]
