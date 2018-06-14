@@ -19,9 +19,15 @@ export class RulesetBuilder {
                 throw new Error(`The rule [${rule}] has not been registered`);
             }
         };
-        this.create = () => {
-            this.internalRuleset = new Ruleset();
+        this.create = (templateRuleset) => {
+            this.internalRuleset = templateRuleset || new Ruleset();
             this.currentProperty = null;
+            return this;
+        };
+        this.mergeInRuleset = (ruleset) => {
+            this.internalRuleset.rules = Object.assign({}, this.internalRuleset.rules, ruleset.rules);
+            this.internalRuleset.compositeRules = Object.assign({}, this.internalRuleset.compositeRules, ruleset.compositeRules);
+            this.internalRuleset.propertyDisplayNames = Object.assign({}, this.internalRuleset.propertyDisplayNames, ruleset.propertyDisplayNames);
             return this;
         };
         this.forProperty = (propertyNameOrPredicate) => {
@@ -35,6 +41,13 @@ export class RulesetBuilder {
             this.currentProperty = endProperty;
             this.currentRule = null;
             return this;
+        };
+        this.nestWithin = (builderMethod) => {
+            this.verifyExistingProperty();
+            const subBuilder = new RulesetBuilder().create();
+            builderMethod(subBuilder);
+            const ruleset = subBuilder.build();
+            return this.addRuleset(ruleset);
         };
         this.addRule = (rule, ruleOptions) => {
             this.verifyRuleNameIsValid(rule);
@@ -118,4 +131,5 @@ export class RulesetBuilder {
         const predicateString = predicate.toString();
         return regex.exec(predicateString)[1];
     }
+    static create(templateRuleset) { return new RulesetBuilder().create(templateRuleset); }
 }

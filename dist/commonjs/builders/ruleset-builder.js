@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+var tslib_1 = require("tslib");
 var ruleset_1 = require("../rulesets/ruleset");
 var rule_link_1 = require("../rulesets/rule-link");
 var for_each_rule_1 = require("../rulesets/for-each-rule");
@@ -22,9 +23,15 @@ var RulesetBuilder = /** @class */ (function () {
                 throw new Error("The rule [" + rule + "] has not been registered");
             }
         };
-        this.create = function () {
-            _this.internalRuleset = new ruleset_1.Ruleset();
+        this.create = function (templateRuleset) {
+            _this.internalRuleset = templateRuleset || new ruleset_1.Ruleset();
             _this.currentProperty = null;
+            return _this;
+        };
+        this.mergeInRuleset = function (ruleset) {
+            _this.internalRuleset.rules = tslib_1.__assign({}, _this.internalRuleset.rules, ruleset.rules);
+            _this.internalRuleset.compositeRules = tslib_1.__assign({}, _this.internalRuleset.compositeRules, ruleset.compositeRules);
+            _this.internalRuleset.propertyDisplayNames = tslib_1.__assign({}, _this.internalRuleset.propertyDisplayNames, ruleset.propertyDisplayNames);
             return _this;
         };
         this.forProperty = function (propertyNameOrPredicate) {
@@ -38,6 +45,13 @@ var RulesetBuilder = /** @class */ (function () {
             _this.currentProperty = endProperty;
             _this.currentRule = null;
             return _this;
+        };
+        this.nestWithin = function (builderMethod) {
+            _this.verifyExistingProperty();
+            var subBuilder = new RulesetBuilder().create();
+            builderMethod(subBuilder);
+            var ruleset = subBuilder.build();
+            return _this.addRuleset(ruleset);
         };
         this.addRule = function (rule, ruleOptions) {
             _this.verifyRuleNameIsValid(rule);
@@ -121,6 +135,7 @@ var RulesetBuilder = /** @class */ (function () {
         var predicateString = predicate.toString();
         return regex.exec(predicateString)[1];
     };
+    RulesetBuilder.create = function (templateRuleset) { return new RulesetBuilder().create(templateRuleset); };
     return RulesetBuilder;
 }());
 exports.RulesetBuilder = RulesetBuilder;

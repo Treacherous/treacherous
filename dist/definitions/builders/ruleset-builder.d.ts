@@ -4,7 +4,7 @@ import { RuleRegistry } from "../rules/rule-registry";
 import { IModelResolver } from "../resolvers/imodel-resolver";
 import { ICompositeValidationRule } from "../rules/composite/icomposite-validation-rule";
 export declare class RulesetBuilder<T> {
-    private ruleRegistry;
+    private ruleRegistry?;
     protected internalRuleset: Ruleset;
     protected currentProperty: string;
     protected currentRule: RuleLink;
@@ -12,8 +12,11 @@ export declare class RulesetBuilder<T> {
     protected extractPropertyName(predicate: (model: T) => any): string;
     protected verifyExistingProperty: () => void;
     protected verifyRuleNameIsValid: (rule: any) => void;
-    create: () => RulesetBuilder<T>;
+    static create<T>(templateRuleset?: Ruleset): RulesetBuilder<T>;
+    create: (templateRuleset?: Ruleset) => RulesetBuilder<T>;
+    mergeInRuleset: (ruleset: Ruleset) => RulesetBuilder<T>;
     forProperty: (propertyNameOrPredicate: string | ((model: T) => any)) => RulesetBuilder<T>;
+    nestWithin: (builderMethod: (builder: RulesetBuilder<T>) => void) => RulesetBuilder<T>;
     addRule: (rule: string, ruleOptions?: any) => RulesetBuilder<T>;
     addCompositeRule: (compositeRule: ICompositeValidationRule) => RulesetBuilder<T>;
     withDisplayName: (displayName: string) => RulesetBuilder<T>;

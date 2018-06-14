@@ -172,8 +172,8 @@ function __generator(thisArg, body) {
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
         while (_) try {
-            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [0, t.value];
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
                 case 0: case 1: t = op; break;
                 case 4: _.label++; return { value: op[1], done: false };
@@ -241,7 +241,7 @@ function __asyncGenerator(thisArg, _arguments, generator) {
     return i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i;
     function verb(n) { if (g[n]) i[n] = function (v) { return new Promise(function (a, b) { q.push([n, v, a, b]) > 1 || resume(n, v); }); }; }
     function resume(n, v) { try { step(g[n](v)); } catch (e) { settle(q[0][3], e); } }
-    function step(r) { r.value instanceof __await ? Promise.resolve(r.value.v).then(fulfill, reject) : settle(q[0][2], r);  }
+    function step(r) { r.value instanceof __await ? Promise.resolve(r.value.v).then(fulfill, reject) : settle(q[0][2], r); }
     function fulfill(value) { resume("next", value); }
     function reject(value) { resume("throw", value); }
     function settle(f, v) { if (f(v), q.shift(), q.length) resume(q[0][0], q[0][1]); }
@@ -250,13 +250,15 @@ function __asyncGenerator(thisArg, _arguments, generator) {
 function __asyncDelegator(o) {
     var i, p;
     return i = {}, verb("next"), verb("throw", function (e) { throw e; }), verb("return"), i[Symbol.iterator] = function () { return this; }, i;
-    function verb(n, f) { if (o[n]) i[n] = function (v) { return (p = !p) ? { value: __await(o[n](v)), done: n === "return" } : f ? f(v) : v; }; }
+    function verb(n, f) { i[n] = o[n] ? function (v) { return (p = !p) ? { value: __await(o[n](v)), done: n === "return" } : f ? f(v) : v; } : f; }
 }
 
 function __asyncValues(o) {
     if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
-    var m = o[Symbol.asyncIterator];
-    return m ? m.call(o) : typeof __values === "function" ? __values(o) : o[Symbol.iterator]();
+    var m = o[Symbol.asyncIterator], i;
+    return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
+    function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
+    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
 }
 
 function __makeTemplateObject(cooked, raw) {
@@ -433,10 +435,10 @@ exports.PropertyResolver = property_resolver_1.PropertyResolver;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_tslib__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__rulesets_rule_resolver__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__helpers_type_helper__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__promises_promise_counter__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__events_property_state_changed_event__ = __webpack_require__(11);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__events_model_state_changed_event__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_event_js__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__promises_promise_counter__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__events_property_state_changed_event__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__events_model_state_changed_event__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_event_js__ = __webpack_require__(14);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_event_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6_event_js__);
 
 
@@ -640,7 +642,7 @@ class ValidationGroup {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__resolvers_model_resolver__ = __webpack_require__(21);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__resolvers_model_resolver__ = __webpack_require__(22);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_property_resolver__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_property_resolver___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_property_resolver__);
 
@@ -662,8 +664,42 @@ class ModelResolverFactory {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+class Ruleset {
+    constructor() {
+        this.rules = {};
+        this.compositeRules = {};
+        this.propertyDisplayNames = {};
+        this.createPropertyEntryIfNeeded = (property) => {
+            if (!this.rules[property]) {
+                this.rules[property] = [];
+            }
+        };
+        this.addRule = (property, ruleLink) => {
+            this.createPropertyEntryIfNeeded(property);
+            this.rules[property].push(ruleLink);
+        };
+        this.addRuleset = (property, ruleset) => {
+            this.createPropertyEntryIfNeeded(property);
+            this.rules[property].push(ruleset);
+        };
+        this.addCompositeRule = (compositeRule) => { this.compositeRules[compositeRule.virtualPropertyName] = compositeRule; };
+        this.addPropertyDisplayName = (propertyName, displayName) => { return this.propertyDisplayNames[propertyName] = displayName; };
+        this.getRulesForProperty = (property) => { return this.rules[property]; };
+        this.getCompositeRulesRulesForProperty = (propertyName) => { return this.compositeRules[propertyName]; };
+        this.getPropertyDisplayName = (propertyName) => { return this.propertyDisplayNames[propertyName] || propertyName; };
+    }
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = Ruleset;
+
+
+
+/***/ }),
+/* 8 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_tslib__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__field_has_error__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__field_has_error__ = __webpack_require__(9);
 
 
 class FieldErrorProcessor {
@@ -726,7 +762,7 @@ class FieldErrorProcessor {
 
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -741,12 +777,12 @@ class FieldHasError extends Error {
 
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__validation_groups_validation_group__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__reactive_validation_group_builder__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__reactive_validation_group_builder__ = __webpack_require__(16);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__factories_model_resolver_factory__ = __webpack_require__(6);
 
 
@@ -789,7 +825,7 @@ class ValidationGroupBuilder {
 
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -837,7 +873,7 @@ class PromiseCounter {
 
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -853,7 +889,7 @@ class PropertyStateChangedEvent {
 
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -867,7 +903,7 @@ class ModelStateChangedEvent {
 
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* This is an auto-generated file by gulp-es6-exporter */
@@ -875,11 +911,11 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 __export(__webpack_require__(49));
-__export(__webpack_require__(14));
+__export(__webpack_require__(15));
 
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports) {
 
 var EventListener = (function () {
@@ -893,12 +929,12 @@ exports.EventListener = EventListener;
 
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__validation_groups_reactive_validation_group__ = __webpack_require__(16);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__factories_model_watcher_factory__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__validation_groups_reactive_validation_group__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__factories_model_watcher_factory__ = __webpack_require__(18);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__factories_model_resolver_factory__ = __webpack_require__(6);
 
 
@@ -945,7 +981,7 @@ class ReactiveValidationGroupBuilder {
 
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -976,11 +1012,11 @@ class ReactiveValidationGroup extends __WEBPACK_IMPORTED_MODULE_1__validation_gr
 
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__watcher_model_watcher__ = __webpack_require__(18);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__watcher_model_watcher__ = __webpack_require__(19);
 
 class ModelWatcherFactory {
     constructor() {
@@ -994,17 +1030,17 @@ class ModelWatcherFactory {
 
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_property_resolver__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_property_resolver___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_property_resolver__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_event_js__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_event_js__ = __webpack_require__(14);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_event_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_event_js__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__helpers_type_helper__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__property_watcher__ = __webpack_require__(19);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__events_property_changed_event__ = __webpack_require__(20);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__property_watcher__ = __webpack_require__(20);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__events_property_changed_event__ = __webpack_require__(21);
 
 
 
@@ -1185,7 +1221,7 @@ class ModelWatcher {
 
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1200,7 +1236,7 @@ class PropertyWatcher {
 
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1216,7 +1252,7 @@ class PropertyChangedEvent {
 
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1234,27 +1270,27 @@ class ModelResolver {
 
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ruleRegistry; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__rules_rule_registry__ = __webpack_require__(23);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__rules_date_validation_rule__ = __webpack_require__(24);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__rules_decimal_validation_rule__ = __webpack_require__(25);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__rules_email_validation_rule__ = __webpack_require__(26);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__rules_equal_validation_rule__ = __webpack_require__(27);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__rules_iso_date_validation_rule__ = __webpack_require__(28);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__rules_max_length_validation_rule__ = __webpack_require__(29);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__rules_max_value_validation_rule__ = __webpack_require__(30);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__rules_min_length_validation_rule__ = __webpack_require__(31);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__rules_min_value_validation_rule__ = __webpack_require__(32);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__rules_not_equal_validation_rule__ = __webpack_require__(33);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__rules_number_validation_rule__ = __webpack_require__(34);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__rules_regex_validation_rule__ = __webpack_require__(35);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__rules_required_validation_rule__ = __webpack_require__(36);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__rules_step_validation_rule__ = __webpack_require__(37);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__rules_matches_validation_rule__ = __webpack_require__(38);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__rules_rule_registry__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__rules_date_validation_rule__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__rules_decimal_validation_rule__ = __webpack_require__(26);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__rules_email_validation_rule__ = __webpack_require__(27);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__rules_equal_validation_rule__ = __webpack_require__(28);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__rules_iso_date_validation_rule__ = __webpack_require__(29);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__rules_max_length_validation_rule__ = __webpack_require__(30);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__rules_max_value_validation_rule__ = __webpack_require__(31);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__rules_min_length_validation_rule__ = __webpack_require__(32);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__rules_min_value_validation_rule__ = __webpack_require__(33);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__rules_not_equal_validation_rule__ = __webpack_require__(34);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__rules_number_validation_rule__ = __webpack_require__(35);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__rules_regex_validation_rule__ = __webpack_require__(36);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__rules_required_validation_rule__ = __webpack_require__(37);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__rules_step_validation_rule__ = __webpack_require__(38);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__rules_matches_validation_rule__ = __webpack_require__(39);
 
 
 
@@ -1293,7 +1329,7 @@ if (!ruleRegistry) {
 
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1319,7 +1355,7 @@ class RuleRegistry {
 
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1347,7 +1383,7 @@ class DateValidationRule {
 
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1375,7 +1411,7 @@ class DecimalValidationRule {
 
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1403,7 +1439,7 @@ class EmailValidationRule {
 
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1442,7 +1478,7 @@ class EqualValidationRule {
 
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1470,7 +1506,7 @@ class ISODateValidationRule {
 
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1497,7 +1533,7 @@ class MaxLengthValidationRule {
 
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1524,7 +1560,7 @@ class MaxValueValidationRule {
 
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1551,7 +1587,7 @@ class MinLengthValidationRule {
 
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1578,7 +1614,7 @@ class MinValueValidationRule {
 
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1617,7 +1653,7 @@ class NotEqualValidationRule {
 
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1645,7 +1681,7 @@ class NumberValidationRule {
 
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1672,7 +1708,7 @@ class RegexValidationRule {
 
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1709,7 +1745,7 @@ class RequiredValidationRule {
 
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1737,7 +1773,7 @@ class StepValidationRule {
 
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1774,11 +1810,11 @@ class MatchesValidationRule {
 
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__rulesets_ruleset__ = __webpack_require__(40);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__rulesets_ruleset__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__rulesets_rule_link__ = __webpack_require__(41);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__rulesets_for_each_rule__ = __webpack_require__(42);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__helpers_type_helper__ = __webpack_require__(1);
@@ -1804,9 +1840,15 @@ class RulesetBuilder {
                 throw new Error(`The rule [${rule}] has not been registered`);
             }
         };
-        this.create = () => {
-            this.internalRuleset = new __WEBPACK_IMPORTED_MODULE_0__rulesets_ruleset__["a" /* Ruleset */]();
+        this.create = (templateRuleset) => {
+            this.internalRuleset = templateRuleset || new __WEBPACK_IMPORTED_MODULE_0__rulesets_ruleset__["a" /* Ruleset */]();
             this.currentProperty = null;
+            return this;
+        };
+        this.mergeInRuleset = (ruleset) => {
+            this.internalRuleset.rules = Object.assign({}, this.internalRuleset.rules, ruleset.rules);
+            this.internalRuleset.compositeRules = Object.assign({}, this.internalRuleset.compositeRules, ruleset.compositeRules);
+            this.internalRuleset.propertyDisplayNames = Object.assign({}, this.internalRuleset.propertyDisplayNames, ruleset.propertyDisplayNames);
             return this;
         };
         this.forProperty = (propertyNameOrPredicate) => {
@@ -1820,6 +1862,13 @@ class RulesetBuilder {
             this.currentProperty = endProperty;
             this.currentRule = null;
             return this;
+        };
+        this.nestWithin = (builderMethod) => {
+            this.verifyExistingProperty();
+            const subBuilder = new RulesetBuilder().create();
+            builderMethod(subBuilder);
+            const ruleset = subBuilder.build();
+            return this.addRuleset(ruleset);
         };
         this.addRule = (rule, ruleOptions) => {
             this.verifyRuleNameIsValid(rule);
@@ -1903,42 +1952,9 @@ class RulesetBuilder {
         const predicateString = predicate.toString();
         return regex.exec(predicateString)[1];
     }
+    static create(templateRuleset) { return new RulesetBuilder().create(templateRuleset); }
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = RulesetBuilder;
-
-
-
-/***/ }),
-/* 40 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-class Ruleset {
-    constructor() {
-        this.rules = {};
-        this.compositeRules = {};
-        this.propertyDisplayNames = {};
-        this.createPropertyEntryIfNeeded = (property) => {
-            if (!this.rules[property]) {
-                this.rules[property] = [];
-            }
-        };
-        this.addRule = (property, ruleLink) => {
-            this.createPropertyEntryIfNeeded(property);
-            this.rules[property].push(ruleLink);
-        };
-        this.addRuleset = (property, ruleset) => {
-            this.createPropertyEntryIfNeeded(property);
-            this.rules[property].push(ruleset);
-        };
-        this.addCompositeRule = (compositeRule) => { this.compositeRules[compositeRule.virtualPropertyName] = compositeRule; };
-        this.addPropertyDisplayName = (propertyName, displayName) => { return this.propertyDisplayNames[propertyName] = displayName; };
-        this.getRulesForProperty = (property) => { return this.rules[property]; };
-        this.getCompositeRulesRulesForProperty = (propertyName) => { return this.compositeRules[propertyName]; };
-        this.getPropertyDisplayName = (propertyName) => { return this.propertyDisplayNames[propertyName] || propertyName; };
-    }
-}
-/* harmony export (immutable) */ __webpack_exports__["a"] = Ruleset;
 
 
 
@@ -2074,95 +2090,96 @@ const locale = {
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__exposer__ = __webpack_require__(47);
 /* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "createRuleset", function() { return __WEBPACK_IMPORTED_MODULE_0__exposer__["b"]; });
+/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "mergeRulesets", function() { return __WEBPACK_IMPORTED_MODULE_0__exposer__["d"]; });
 /* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "createGroup", function() { return __WEBPACK_IMPORTED_MODULE_0__exposer__["a"]; });
 /* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "localeHandler", function() { return __WEBPACK_IMPORTED_MODULE_0__exposer__["c"]; });
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "supplementLocale", function() { return __WEBPACK_IMPORTED_MODULE_0__exposer__["d"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__rule_registry_setup__ = __webpack_require__(22);
+/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "supplementLocale", function() { return __WEBPACK_IMPORTED_MODULE_0__exposer__["e"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__rule_registry_setup__ = __webpack_require__(23);
 /* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "ruleRegistry", function() { return __WEBPACK_IMPORTED_MODULE_1__rule_registry_setup__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__builders_reactive_validation_group_builder__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__builders_reactive_validation_group_builder__ = __webpack_require__(16);
 /* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "ReactiveValidationGroupBuilder", function() { return __WEBPACK_IMPORTED_MODULE_2__builders_reactive_validation_group_builder__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__builders_ruleset_builder__ = __webpack_require__(39);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__builders_ruleset_builder__ = __webpack_require__(40);
 /* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "RulesetBuilder", function() { return __WEBPACK_IMPORTED_MODULE_3__builders_ruleset_builder__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__builders_validation_group_builder__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__builders_validation_group_builder__ = __webpack_require__(10);
 /* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "ValidationGroupBuilder", function() { return __WEBPACK_IMPORTED_MODULE_4__builders_validation_group_builder__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__events_model_state_changed_event__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__events_model_state_changed_event__ = __webpack_require__(13);
 /* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "ModelStateChangedEvent", function() { return __WEBPACK_IMPORTED_MODULE_5__events_model_state_changed_event__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__events_property_changed_event__ = __webpack_require__(20);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__events_property_changed_event__ = __webpack_require__(21);
 /* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "PropertyChangedEvent", function() { return __WEBPACK_IMPORTED_MODULE_6__events_property_changed_event__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__events_property_state_changed_event__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__events_property_state_changed_event__ = __webpack_require__(12);
 /* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "PropertyStateChangedEvent", function() { return __WEBPACK_IMPORTED_MODULE_7__events_property_state_changed_event__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__factories_model_resolver_factory__ = __webpack_require__(6);
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "ModelResolverFactory", function() { return __WEBPACK_IMPORTED_MODULE_8__factories_model_resolver_factory__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__factories_model_watcher_factory__ = __webpack_require__(17);
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "ModelWatcherFactory", function() { return __WEBPACK_IMPORTED_MODULE_9__factories_model_watcher_factory__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__helpers_comparer_helper__ = __webpack_require__(3);
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "ComparerHelper", function() { return __WEBPACK_IMPORTED_MODULE_10__helpers_comparer_helper__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__helpers_type_helper__ = __webpack_require__(1);
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "TypeHelper", function() { return __WEBPACK_IMPORTED_MODULE_11__helpers_type_helper__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__helpers_comparer_helper__ = __webpack_require__(3);
+/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "ComparerHelper", function() { return __WEBPACK_IMPORTED_MODULE_8__helpers_comparer_helper__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__helpers_type_helper__ = __webpack_require__(1);
+/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "TypeHelper", function() { return __WEBPACK_IMPORTED_MODULE_9__helpers_type_helper__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__factories_model_resolver_factory__ = __webpack_require__(6);
+/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "ModelResolverFactory", function() { return __WEBPACK_IMPORTED_MODULE_10__factories_model_resolver_factory__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__factories_model_watcher_factory__ = __webpack_require__(18);
+/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "ModelWatcherFactory", function() { return __WEBPACK_IMPORTED_MODULE_11__factories_model_watcher_factory__["a"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__locales_en_us__ = __webpack_require__(45);
 /* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "locale", function() { return __WEBPACK_IMPORTED_MODULE_12__locales_en_us__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__localization_default_locale_handler__ = __webpack_require__(44);
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "DefaultLocaleHandler", function() { return __WEBPACK_IMPORTED_MODULE_13__localization_default_locale_handler__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__promises_promise_counter__ = __webpack_require__(10);
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "PromiseCounter", function() { return __WEBPACK_IMPORTED_MODULE_14__promises_promise_counter__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__processors_field_error_processor__ = __webpack_require__(7);
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "FieldErrorProcessor", function() { return __WEBPACK_IMPORTED_MODULE_15__processors_field_error_processor__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__processors_field_has_error__ = __webpack_require__(8);
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "FieldHasError", function() { return __WEBPACK_IMPORTED_MODULE_16__processors_field_has_error__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__processors_validation_error__ = __webpack_require__(50);
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "ValidationError", function() { return __WEBPACK_IMPORTED_MODULE_17__processors_validation_error__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__resolvers_model_resolver__ = __webpack_require__(21);
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "ModelResolver", function() { return __WEBPACK_IMPORTED_MODULE_18__resolvers_model_resolver__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_19__rules_advanced_regex_rule__ = __webpack_require__(51);
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "AdvancedRegexValidationRule", function() { return __WEBPACK_IMPORTED_MODULE_19__rules_advanced_regex_rule__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_20__rules_date_validation_rule__ = __webpack_require__(24);
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "DateValidationRule", function() { return __WEBPACK_IMPORTED_MODULE_20__rules_date_validation_rule__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_21__rules_decimal_validation_rule__ = __webpack_require__(25);
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "DecimalValidationRule", function() { return __WEBPACK_IMPORTED_MODULE_21__rules_decimal_validation_rule__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_22__rules_email_validation_rule__ = __webpack_require__(26);
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "EmailValidationRule", function() { return __WEBPACK_IMPORTED_MODULE_22__rules_email_validation_rule__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_23__rules_equal_validation_rule__ = __webpack_require__(27);
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "EqualValidationRule", function() { return __WEBPACK_IMPORTED_MODULE_23__rules_equal_validation_rule__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_24__rules_iso_date_validation_rule__ = __webpack_require__(28);
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "ISODateValidationRule", function() { return __WEBPACK_IMPORTED_MODULE_24__rules_iso_date_validation_rule__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_25__rules_matches_validation_rule__ = __webpack_require__(38);
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "MatchesValidationRule", function() { return __WEBPACK_IMPORTED_MODULE_25__rules_matches_validation_rule__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_26__rules_max_length_validation_rule__ = __webpack_require__(29);
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "MaxLengthValidationRule", function() { return __WEBPACK_IMPORTED_MODULE_26__rules_max_length_validation_rule__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_27__rules_max_value_validation_rule__ = __webpack_require__(30);
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "MaxValueValidationRule", function() { return __WEBPACK_IMPORTED_MODULE_27__rules_max_value_validation_rule__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_28__rules_min_length_validation_rule__ = __webpack_require__(31);
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "MinLengthValidationRule", function() { return __WEBPACK_IMPORTED_MODULE_28__rules_min_length_validation_rule__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_29__rules_min_value_validation_rule__ = __webpack_require__(32);
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "MinValueValidationRule", function() { return __WEBPACK_IMPORTED_MODULE_29__rules_min_value_validation_rule__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_30__rules_not_equal_validation_rule__ = __webpack_require__(33);
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "NotEqualValidationRule", function() { return __WEBPACK_IMPORTED_MODULE_30__rules_not_equal_validation_rule__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_31__rules_number_validation_rule__ = __webpack_require__(34);
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "NumberValidationRule", function() { return __WEBPACK_IMPORTED_MODULE_31__rules_number_validation_rule__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_32__rules_regex_validation_rule__ = __webpack_require__(35);
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "RegexValidationRule", function() { return __WEBPACK_IMPORTED_MODULE_32__rules_regex_validation_rule__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_33__rules_required_validation_rule__ = __webpack_require__(36);
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "RequiredValidationRule", function() { return __WEBPACK_IMPORTED_MODULE_33__rules_required_validation_rule__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_34__rules_rule_registry__ = __webpack_require__(23);
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "RuleRegistry", function() { return __WEBPACK_IMPORTED_MODULE_34__rules_rule_registry__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_35__rules_step_validation_rule__ = __webpack_require__(37);
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "StepValidationRule", function() { return __WEBPACK_IMPORTED_MODULE_35__rules_step_validation_rule__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_36__rulesets_for_each_rule__ = __webpack_require__(42);
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "ForEachRule", function() { return __WEBPACK_IMPORTED_MODULE_36__rulesets_for_each_rule__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_37__rulesets_rule_link__ = __webpack_require__(41);
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "RuleLink", function() { return __WEBPACK_IMPORTED_MODULE_37__rulesets_rule_link__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_38__rulesets_rule_resolver__ = __webpack_require__(2);
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "RuleResolver", function() { return __WEBPACK_IMPORTED_MODULE_38__rulesets_rule_resolver__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_39__rulesets_ruleset__ = __webpack_require__(40);
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "Ruleset", function() { return __WEBPACK_IMPORTED_MODULE_39__rulesets_ruleset__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_40__validation_groups_reactive_validation_group__ = __webpack_require__(16);
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "ReactiveValidationGroup", function() { return __WEBPACK_IMPORTED_MODULE_40__validation_groups_reactive_validation_group__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_41__validation_groups_validation_group__ = __webpack_require__(5);
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "ValidationGroup", function() { return __WEBPACK_IMPORTED_MODULE_41__validation_groups_validation_group__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_42__watcher_model_watcher__ = __webpack_require__(18);
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "ModelWatcher", function() { return __WEBPACK_IMPORTED_MODULE_42__watcher_model_watcher__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_43__watcher_property_watcher__ = __webpack_require__(19);
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "PropertyWatcher", function() { return __WEBPACK_IMPORTED_MODULE_43__watcher_property_watcher__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__processors_field_error_processor__ = __webpack_require__(8);
+/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "FieldErrorProcessor", function() { return __WEBPACK_IMPORTED_MODULE_13__processors_field_error_processor__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__processors_field_has_error__ = __webpack_require__(9);
+/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "FieldHasError", function() { return __WEBPACK_IMPORTED_MODULE_14__processors_field_has_error__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__processors_validation_error__ = __webpack_require__(50);
+/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "ValidationError", function() { return __WEBPACK_IMPORTED_MODULE_15__processors_validation_error__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__localization_default_locale_handler__ = __webpack_require__(44);
+/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "DefaultLocaleHandler", function() { return __WEBPACK_IMPORTED_MODULE_16__localization_default_locale_handler__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__resolvers_model_resolver__ = __webpack_require__(22);
+/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "ModelResolver", function() { return __WEBPACK_IMPORTED_MODULE_17__resolvers_model_resolver__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__promises_promise_counter__ = __webpack_require__(11);
+/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "PromiseCounter", function() { return __WEBPACK_IMPORTED_MODULE_18__promises_promise_counter__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_19__rulesets_for_each_rule__ = __webpack_require__(42);
+/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "ForEachRule", function() { return __WEBPACK_IMPORTED_MODULE_19__rulesets_for_each_rule__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_20__rulesets_rule_link__ = __webpack_require__(41);
+/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "RuleLink", function() { return __WEBPACK_IMPORTED_MODULE_20__rulesets_rule_link__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_21__rulesets_rule_resolver__ = __webpack_require__(2);
+/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "RuleResolver", function() { return __WEBPACK_IMPORTED_MODULE_21__rulesets_rule_resolver__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_22__rulesets_ruleset__ = __webpack_require__(7);
+/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "Ruleset", function() { return __WEBPACK_IMPORTED_MODULE_22__rulesets_ruleset__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_23__rules_advanced_regex_rule__ = __webpack_require__(51);
+/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "AdvancedRegexValidationRule", function() { return __WEBPACK_IMPORTED_MODULE_23__rules_advanced_regex_rule__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_24__rules_date_validation_rule__ = __webpack_require__(25);
+/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "DateValidationRule", function() { return __WEBPACK_IMPORTED_MODULE_24__rules_date_validation_rule__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_25__rules_decimal_validation_rule__ = __webpack_require__(26);
+/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "DecimalValidationRule", function() { return __WEBPACK_IMPORTED_MODULE_25__rules_decimal_validation_rule__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_26__rules_email_validation_rule__ = __webpack_require__(27);
+/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "EmailValidationRule", function() { return __WEBPACK_IMPORTED_MODULE_26__rules_email_validation_rule__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_27__rules_equal_validation_rule__ = __webpack_require__(28);
+/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "EqualValidationRule", function() { return __WEBPACK_IMPORTED_MODULE_27__rules_equal_validation_rule__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_28__rules_iso_date_validation_rule__ = __webpack_require__(29);
+/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "ISODateValidationRule", function() { return __WEBPACK_IMPORTED_MODULE_28__rules_iso_date_validation_rule__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_29__rules_matches_validation_rule__ = __webpack_require__(39);
+/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "MatchesValidationRule", function() { return __WEBPACK_IMPORTED_MODULE_29__rules_matches_validation_rule__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_30__rules_max_length_validation_rule__ = __webpack_require__(30);
+/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "MaxLengthValidationRule", function() { return __WEBPACK_IMPORTED_MODULE_30__rules_max_length_validation_rule__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_31__rules_max_value_validation_rule__ = __webpack_require__(31);
+/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "MaxValueValidationRule", function() { return __WEBPACK_IMPORTED_MODULE_31__rules_max_value_validation_rule__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_32__rules_min_length_validation_rule__ = __webpack_require__(32);
+/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "MinLengthValidationRule", function() { return __WEBPACK_IMPORTED_MODULE_32__rules_min_length_validation_rule__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_33__rules_min_value_validation_rule__ = __webpack_require__(33);
+/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "MinValueValidationRule", function() { return __WEBPACK_IMPORTED_MODULE_33__rules_min_value_validation_rule__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_34__rules_not_equal_validation_rule__ = __webpack_require__(34);
+/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "NotEqualValidationRule", function() { return __WEBPACK_IMPORTED_MODULE_34__rules_not_equal_validation_rule__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_35__rules_number_validation_rule__ = __webpack_require__(35);
+/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "NumberValidationRule", function() { return __WEBPACK_IMPORTED_MODULE_35__rules_number_validation_rule__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_36__rules_regex_validation_rule__ = __webpack_require__(36);
+/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "RegexValidationRule", function() { return __WEBPACK_IMPORTED_MODULE_36__rules_regex_validation_rule__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_37__rules_required_validation_rule__ = __webpack_require__(37);
+/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "RequiredValidationRule", function() { return __WEBPACK_IMPORTED_MODULE_37__rules_required_validation_rule__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_38__rules_rule_registry__ = __webpack_require__(24);
+/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "RuleRegistry", function() { return __WEBPACK_IMPORTED_MODULE_38__rules_rule_registry__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_39__rules_step_validation_rule__ = __webpack_require__(38);
+/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "StepValidationRule", function() { return __WEBPACK_IMPORTED_MODULE_39__rules_step_validation_rule__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_40__watcher_model_watcher__ = __webpack_require__(19);
+/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "ModelWatcher", function() { return __WEBPACK_IMPORTED_MODULE_40__watcher_model_watcher__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_41__watcher_property_watcher__ = __webpack_require__(20);
+/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "PropertyWatcher", function() { return __WEBPACK_IMPORTED_MODULE_41__watcher_property_watcher__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_42__validation_groups_reactive_validation_group__ = __webpack_require__(17);
+/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "ReactiveValidationGroup", function() { return __WEBPACK_IMPORTED_MODULE_42__validation_groups_reactive_validation_group__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_43__validation_groups_validation_group__ = __webpack_require__(5);
+/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "ValidationGroup", function() { return __WEBPACK_IMPORTED_MODULE_43__validation_groups_validation_group__["a"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_44__rules_composite_dynamic_composite_validation_rule__ = __webpack_require__(43);
 /* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "DynamicCompositeValidationRule", function() { return __WEBPACK_IMPORTED_MODULE_44__rules_composite_dynamic_composite_validation_rule__["a"]; });
 
@@ -2218,15 +2235,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["b"] = createRuleset;
+/* harmony export (immutable) */ __webpack_exports__["d"] = mergeRulesets;
 /* harmony export (immutable) */ __webpack_exports__["a"] = createGroup;
-/* harmony export (immutable) */ __webpack_exports__["d"] = supplementLocale;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__processors_field_error_processor__ = __webpack_require__(7);
+/* harmony export (immutable) */ __webpack_exports__["e"] = supplementLocale;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__processors_field_error_processor__ = __webpack_require__(8);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__rulesets_rule_resolver__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__builders_validation_group_builder__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__rule_registry_setup__ = __webpack_require__(22);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__builders_ruleset_builder__ = __webpack_require__(39);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__builders_validation_group_builder__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__rule_registry_setup__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__builders_ruleset_builder__ = __webpack_require__(40);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__localization_default_locale_handler__ = __webpack_require__(44);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__locales_en_us__ = __webpack_require__(45);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__rulesets_ruleset__ = __webpack_require__(7);
+
 
 
 
@@ -2240,9 +2260,16 @@ defaultLocaleHandler.registerLocale(defaultLocaleCode, __WEBPACK_IMPORTED_MODULE
 defaultLocaleHandler.useLocale(defaultLocaleCode);
 const fieldErrorProcessor = new __WEBPACK_IMPORTED_MODULE_0__processors_field_error_processor__["a" /* FieldErrorProcessor */](__WEBPACK_IMPORTED_MODULE_3__rule_registry_setup__["a" /* ruleRegistry */], defaultLocaleHandler);
 const ruleResolver = new __WEBPACK_IMPORTED_MODULE_1__rulesets_rule_resolver__["a" /* RuleResolver */]();
-function createRuleset(withRuleVerification = false) {
+function createRuleset(basedUpon, withRuleVerification = false) {
     const rulesetBuilder = withRuleVerification ? new __WEBPACK_IMPORTED_MODULE_4__builders_ruleset_builder__["a" /* RulesetBuilder */](__WEBPACK_IMPORTED_MODULE_3__rule_registry_setup__["a" /* ruleRegistry */]) : new __WEBPACK_IMPORTED_MODULE_4__builders_ruleset_builder__["a" /* RulesetBuilder */]();
-    return rulesetBuilder.create();
+    return rulesetBuilder.create(basedUpon);
+}
+function mergeRulesets(rulesetA, rulesetB) {
+    const newRuleset = new __WEBPACK_IMPORTED_MODULE_7__rulesets_ruleset__["a" /* Ruleset */]();
+    newRuleset.rules = Object.assign({}, rulesetA.rules, rulesetB.rules);
+    newRuleset.compositeRules = Object.assign({}, rulesetA.compositeRules, rulesetB.compositeRules);
+    newRuleset.propertyDisplayNames = Object.assign({}, rulesetA.propertyDisplayNames, rulesetB.propertyDisplayNames);
+    return newRuleset;
 }
 function createGroup() { return new __WEBPACK_IMPORTED_MODULE_2__builders_validation_group_builder__["a" /* ValidationGroupBuilder */](fieldErrorProcessor, ruleResolver, defaultLocaleHandler).create(); }
 const localeHandler = defaultLocaleHandler;
@@ -2365,7 +2392,7 @@ exports.PropertyResolver = PropertyResolver;
 /* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var event_listener_1 = __webpack_require__(14);
+var event_listener_1 = __webpack_require__(15);
 var EventHandler = (function () {
     function EventHandler(sender) {
         var _this = this;
