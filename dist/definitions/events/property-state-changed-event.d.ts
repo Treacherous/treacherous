@@ -1,6 +1,6 @@
 export declare class PropertyStateChangedEvent {
     property: string;
     isValid: boolean;
-    error: string;
+    error?: string;
     constructor(property: string, isValid: boolean, error?: string);
 }

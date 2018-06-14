@@ -7,8 +7,8 @@ var PromiseCounter = /** @class */ (function () {
         this.promiseCallbacks = [];
         this.validationCounter = 0;
         this.waitForCompletion = function () { return tslib_1.__awaiter(_this, void 0, void 0, function () {
-            var _this = this;
             var resolver;
+            var _this = this;
             return tslib_1.__generator(this, function (_a) {
                 if (!this.validationCounter) {
                     return [2 /*return*/];

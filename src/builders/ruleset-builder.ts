@@ -34,12 +34,24 @@ export class RulesetBuilder<T>
         { throw new Error(`The rule [${rule}] has not been registered`); }
     }
 
-    public create = (): RulesetBuilder<T> =>
+    public static create<T>(templateRuleset?: Ruleset): RulesetBuilder<T>
+    { return new RulesetBuilder<T>().create(templateRuleset); }
+
+    public create = (templateRuleset?: Ruleset): RulesetBuilder<T> =>
     {
-        this.internalRuleset = new Ruleset();
+        this.internalRuleset = templateRuleset || new Ruleset();
         this.currentProperty = null;
         return this;
     }
+
+    public mergeInRuleset = (ruleset: Ruleset) : RulesetBuilder<T> => {
+
+        this.internalRuleset.rules = { ...this.internalRuleset.rules, ...ruleset.rules };
+        this.internalRuleset.compositeRules = { ...this.internalRuleset.compositeRules, ...ruleset.compositeRules };
+        this.internalRuleset.propertyDisplayNames = { ...this.internalRuleset.propertyDisplayNames, ...ruleset.propertyDisplayNames };
+
+        return this;
+    };
 
     public forProperty = (propertyNameOrPredicate: ((model: T) => any) | string): RulesetBuilder<T> =>
     {
@@ -53,7 +65,18 @@ export class RulesetBuilder<T>
         this.currentProperty = <string>endProperty;
         this.currentRule = null;
         return this;
-    }
+    };
+
+    public nestWithin = (builderMethod: (builder: RulesetBuilder<T>) => void): RulesetBuilder<T> =>
+    {
+        this.verifyExistingProperty();
+
+        const subBuilder = new RulesetBuilder<T>().create();
+        builderMethod(subBuilder);
+        const ruleset = subBuilder.build();
+
+        return this.addRuleset(ruleset);
+    };
 
     public addRule = (rule: string, ruleOptions?: any): RulesetBuilder<T> =>
     {

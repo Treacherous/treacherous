@@ -3,6 +3,7 @@ import {RuleRegistry} from "../../src/rules/rule-registry";
 import {RuleLink} from "../../src/rulesets/rule-link";
 import {RulesetBuilder} from "../../src/builders/ruleset-builder";
 import {Ruleset} from "../../src/rulesets/ruleset";
+import {DynamicCompositeValidationRule} from "../../src";
 
 describe('Ruleset Builder', function () {
 
@@ -186,6 +187,55 @@ describe('Ruleset Builder', function () {
         }
 
         expect(hasFailed).to.be.false;
+    });
+
+    it('should pre populate existing ruleset when existing is provided', function () {
+        const rulesetBuilder = new RulesetBuilder();
+
+        const ruleset = new Ruleset();
+        ruleset.addRule("prop1", new RuleLink("required"));
+        rulesetBuilder.create(ruleset);
+
+        const internalRuleset = <Ruleset>rulesetBuilder["internalRuleset"];
+        expect(internalRuleset.rules).to.include.keys("prop1");
+        expect(internalRuleset.rules["prop1"][0].ruleName).to.equal("required");
+    });
+
+    it('should nest property rulesets correctly', function () {
+        const rulesetBuilder = new RulesetBuilder();
+
+        rulesetBuilder.create()
+            .forProperty("parent")
+                .nestWithin(x => {
+                    x.forProperty("child")
+                        .required()
+                });
+
+        const internalRuleset = <Ruleset>rulesetBuilder["internalRuleset"];
+        expect(internalRuleset.rules).to.include.keys("parent");
+        expect(internalRuleset.rules["parent"][0].rules).to.include.keys("child");
+        expect(internalRuleset.rules["parent"][0].rules["child"][0].ruleName).to.equal("required");
+    });
+
+    it('should merge in ruleset correctly', function () {
+        const rulesetBuilder = new RulesetBuilder();
+
+        const ruleset1 = new Ruleset();
+        ruleset1.addRule("prop1", new RuleLink("required"));
+        rulesetBuilder.create(ruleset1);
+
+        const ruleset2 = new Ruleset();
+        ruleset2.addRule("prop2", new RuleLink("required"));
+        rulesetBuilder.create(ruleset2);
+
+        rulesetBuilder.create()
+            .mergeInRuleset(ruleset1)
+            .mergeInRuleset(ruleset2);
+
+        const internalRuleset = <Ruleset>rulesetBuilder["internalRuleset"];
+        expect(internalRuleset.rules).to.include.keys("prop1", "prop2");
+        expect(internalRuleset.rules["prop1"][0].ruleName).to.equal("required");
+        expect(internalRuleset.rules["prop2"][0].ruleName).to.equal("required");
     });
 
 });

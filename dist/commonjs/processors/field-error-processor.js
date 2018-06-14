@@ -47,8 +47,8 @@ var FieldErrorProcessor = /** @class */ (function () {
             });
         }); };
         this.checkFieldForErrors = function (modelResolver, propertyName, rules) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
-            var _this = this;
             var ruleCheck, checkEachRule;
+            var _this = this;
             return tslib_1.__generator(this, function (_a) {
                 ruleCheck = function (ruleLinkOrSet) {
                     return _this.processRuleLink(modelResolver, propertyName, ruleLinkOrSet);
