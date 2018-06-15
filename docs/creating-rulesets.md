@@ -10,10 +10,18 @@ are very lightweight objects with no logic.
 
 When creating a ruleset there are the following methods:
 
-### forProperty = (propertyNameOrPredicate: ((model: T) => any) | string): RulesetBuilder<T>
+### forProperty(propertyNameOrPredicate: ((model: T) => any) | string): RulesetBuilder<T>
 
 This takes a string which should be the property name that you wish to apply rules to or a predicate which 
 links to the property, although this is mainly just for typescript users.
+
+### then(propertyBuilderMethod: (subBuilder: RulesetBuilder) => void)
+
+This allows you to create a nested builder on the fly so if you needed to you could work your way down the 
+tree without having to create a myriad of other rulesets and consume them all in a daisy chain.
+
+Although this method can be handy for simple models it can get out of hand quickly if you are using this for
+lots of larger models with larger trees, and its advised there to still use composition with existing rulesets.
 
 ### addRule(ruleType: string, ruleArgs?: any)
 
@@ -76,11 +84,19 @@ This method builds the configured ruleset for use within the validation group ob
 the scenes there is a `RulesetBuilder` which is being used to build up the concerns and this returns the ruleset 
 rather than the chainable builder.
 
-### create()
+### create(optionalRulesetTemplate?: Ruleset)
 
 This method is rarely used as it is called for you via the `Treacherous.createRuleset()` method however if 
 you were to use the `RulesetBuilder` directly without going via the mentioned method you would need to 
-call `create` before building to make sure it resets all internal configuration state.
+call `create` before building to make sure it resets all internal configuration state or copies state from the template.
+
+### mergeInRuleset(rulesetToMerge: Ruleset)
+
+This will merge the rules from the ruleset into your existing settings, this is useful for when you are 
+using mixins and want to create new single ruleset from multiple existing ruleset.
+
+There is also `mergeRulesets` which is exposed from treacherous root, which lets you just arbitrarily
+merge any rulesets together and create new ones incase you need to do it outside of the builder.
 
 ---
 

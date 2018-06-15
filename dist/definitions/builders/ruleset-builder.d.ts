@@ -16,7 +16,7 @@ export declare class RulesetBuilder<T> {
     create: (templateRuleset?: Ruleset) => RulesetBuilder<T>;
     mergeInRuleset: (ruleset: Ruleset) => RulesetBuilder<T>;
     forProperty: (propertyNameOrPredicate: string | ((model: T) => any)) => RulesetBuilder<T>;
-    nestWithin: (builderMethod: (builder: RulesetBuilder<T>) => void) => RulesetBuilder<T>;
+    then: (builderMethod: (builder: RulesetBuilder<T>) => void) => RulesetBuilder<T>;
     addRule: (rule: string, ruleOptions?: any) => RulesetBuilder<T>;
     addCompositeRule: (compositeRule: ICompositeValidationRule) => RulesetBuilder<T>;
     withDisplayName: (displayName: string) => RulesetBuilder<T>;

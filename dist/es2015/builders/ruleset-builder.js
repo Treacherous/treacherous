@@ -42,7 +42,7 @@ export class RulesetBuilder {
             this.currentRule = null;
             return this;
         };
-        this.nestWithin = (builderMethod) => {
+        this.then = (builderMethod) => {
             this.verifyExistingProperty();
             const subBuilder = new RulesetBuilder().create();
             builderMethod(subBuilder);

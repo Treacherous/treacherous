@@ -116,12 +116,36 @@ const ruleset = createRuleset()
         .addRuleForEach("maxValue", 20) // Each element needs a value <= 20
     .build();
     
-const validationGroup = createGroup()
-    .build(simpleModel, ruleset);
+const validationGroup = createGroup().build(simpleModel, ruleset);
 
 validationGroup.getModelErrors(true) // the true value indicates a full revalidation
     .then((errors) => {
         console.log(errors); // should contain { "foo[2]": "<some error about max value>" }
+    });
+```
+
+### Nested validation on the fly
+```js
+const complexObject = {
+    foo: {
+       bar: "hello"
+    }
+};
+
+const ruleset = createRuleset()
+    .forProperty("foo")
+    .then(fooBuilder => {
+        fooBuilder.forProperty("bar")
+            .required()
+            .maxLength(2)
+    })
+    .build();
+
+const validationGroup = createGroup().build(complexObject, ruleset);
+
+validationGroup.getModelErrors(true)
+    .then((errors) => {
+        console.log(errors); // should contain { "foo.bar": "<some error about max length>" }
     });
 ```
 

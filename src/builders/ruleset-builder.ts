@@ -67,7 +67,7 @@ export class RulesetBuilder<T>
         return this;
     };
 
-    public nestWithin = (builderMethod: (builder: RulesetBuilder<T>) => void): RulesetBuilder<T> =>
+    public then = (builderMethod: (builder: RulesetBuilder<T>) => void): RulesetBuilder<T> =>
     {
         this.verifyExistingProperty();
 

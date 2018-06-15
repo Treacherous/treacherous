@@ -206,7 +206,7 @@ describe('Ruleset Builder', function () {
 
         rulesetBuilder.create()
             .forProperty("parent")
-                .nestWithin(x => {
+                .then(x => {
                     x.forProperty("child")
                         .required()
                 });

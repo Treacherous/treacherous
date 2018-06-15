@@ -46,7 +46,7 @@ var RulesetBuilder = /** @class */ (function () {
             _this.currentRule = null;
             return _this;
         };
-        this.nestWithin = function (builderMethod) {
+        this.then = function (builderMethod) {
             _this.verifyExistingProperty();
             var subBuilder = new RulesetBuilder().create();
             builderMethod(subBuilder);
