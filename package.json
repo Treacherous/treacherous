@@ -23,8 +23,10 @@
     "validate"
   ],
   "scripts": {
-    "test": "karma start --single-run --browsers PhantomJS ./karma.conf.js",
-    "test-debug": "karma start --single-run --browsers ChromeDebug ./karma.conf.js"
+    "test": "karma start --single-run ./karma.conf.js",
+    "test-debug": "karma start --single-run --browsers ChromeDebug ./karma.conf.js",
+    "report-test": "mocha tests/**/*.ts",
+    "report": "nyc npm test"
   },
   "repository": {
     "type": "git",
@@ -48,7 +50,7 @@
     "karma-chrome-launcher": "^2.2.0",
     "karma-phantomjs-launcher": "^1.0.4",
     "karma-mocha": "^1.3.0",
-    "karma-webpack": "^3.0.0",
+    "karma-typescript": "^3.0.12",
     "merge2": "^1.2.1",
     "mkdirp": "^0.5.1",
     "mocha": "^5.0.4",
@@ -62,6 +64,8 @@
     "@types/bluebird": "^3.5.20",
     "@types/chai": "^4.0.6",
     "@types/chai-spies": "^0.0.0",
-    "@types/mocha": "^2.2.48"
+    "@types/mocha": "^2.2.48",
+    "nyc": "^11.6.0",
+    "ts-node": "^5.0.1"
   }
 }

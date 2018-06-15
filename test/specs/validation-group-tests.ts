@@ -6,6 +6,7 @@ import {RuleResolver} from "../../src/rulesets/rule-resolver";
 import {IModelResolver} from "../../src/resolvers/imodel-resolver";
 import {ValidationGroup} from "../../src/validation-groups/validation-group";
 import {IValidationGroup} from "../../src/validation-groups/ivalidation-group";
+import {IValidationRule} from "../../src/rules/ivalidation-rule";
 import {ModelResolverFactory} from "../../src/factories/model-resolver-factory";
 import {DynamicCompositeValidationRule} from "../../src/index";
 import {PropertyStateChangedEvent} from "../../src/events/property-state-changed-event";
@@ -29,7 +30,7 @@ describe('Validation Group', function () {
     };
 
     const delayedRequiresValid = (retval:any = true, delay:number = 100) => { 
-        return {
+        return <IValidationRule>{
             ruleName: "delayed",
             validate: function(modelResolver: IModelResolver, propertyName: string, options: any){
                 return new Promise(function(resolve, reject){
