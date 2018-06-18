@@ -43,4 +43,41 @@ describe('Model Proxy', function () {
         }, 250);
     });
 
+    it('should correctly watch model with nested rules', function (done) {
+        const dummyModel = {
+            bar: [
+                { val: 10 },
+                { val: 20 },
+                { val: 30 },
+                { val: 40 }
+            ]
+        };
+
+        const rulesetBuilder = new RulesetBuilder();
+        const nestedRuleset = rulesetBuilder.create()
+            .forProperty("val")
+            .addRule("maxValue", 30)
+            .build();
+
+        const ruleset = rulesetBuilder.create()
+            .forProperty("bar")
+            .addRulesetForEach(nestedRuleset)
+            .build();
+
+        const modelProxy = new ModelProxy();
+        const proxyModel = modelProxy.proxyObject(dummyModel, ruleset);
+        const spySubscription = spy(function(eventArgs: any){
+            console.log("Raised", eventArgs);
+        });
+
+        modelProxy.onPropertyChanged.subscribe(spySubscription);
+
+        proxyModel.bar[2].val = 10;
+
+        setTimeout(function(){
+            expect(spySubscription).to.have.been.called.once;
+            done();
+        }, 250);
+    });
+
 });

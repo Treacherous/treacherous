@@ -32,30 +32,9 @@ export class ModelProxy implements IModelProxy
         }
     };
 
-    public createValueTypeHandler = (parent: any, prop: any, propertyRoute: string): any => {
-        const propertyChangedRaiser = this.onPropertyChanged;
-        return {
-            set: function(obj: any, prop: PropertyKey, value: any){
-                const currentValue =  parent[prop];
-                if(currentValue !== value){
-                    parent[prop] = value;
-                    const propertyChangedArgs = new PropertyChangedEvent(propertyRoute, value, currentValue);
-                    setTimeout(() => { propertyChangedRaiser.publish(propertyChangedArgs); }, 1);
-                    return true;
-                }
-            },
-            get: function(obj: any, prop: PropertyKey) {
-                return parent[prop];
-            }
-        }
-    };
-
-    private proxyProperty = (parent: any, prop: PropertyKey, propertyRoute: string, isComplexType = true) => {
+    private proxyProperty = (obj: any, propertyRoute: string) => {
         console.log("PROXYING", propertyRoute);
-        if(isComplexType)
-        { parent[prop] = new Proxy(parent[prop], this.createHandler(propertyRoute)); }
-        else
-        { parent[prop] = new Proxy({}, this.createValueTypeHandler(parent, prop, propertyRoute)); }
+        return new Proxy(obj, this.createHandler(propertyRoute));
     };
 
     private walkModelAndProxy = (parent: any, currentRoute: string, ruleset: Ruleset) => {
@@ -67,35 +46,32 @@ export class ModelProxy implements IModelProxy
             paramRoute = currentRoute ? currentRoute + "." + param : param;
             parameterRules = ruleset.rules[param];
 
-            let shouldTreatAsArray = false;
-            let shouldTreatAsObject = false;
-            parameterRules.forEach(function(rule: any){
-                if(rule.isForEach) { shouldTreatAsArray = true; }
-                if(rule.getRulesForProperty) { shouldTreatAsObject = true; }
-            });
-
+            let isArray = false;
+            let isObject = false;
             parameterRules.forEach((rule: any) => {
                 const nextProperty = parent[param];
-                const isArray = rule.isForEach;
+                isArray = rule.isForEach;
                 if(isArray)
                 {
                     nextProperty.forEach((element: any, index: number) => {
                         if(rule.internalRule.getRulesForProperty)
-                        { this.walkModelAndProxy(element, `${paramRoute}[${index}]`, rule.internalRule); }
-                        else
-                        { this.proxyProperty(nextProperty, index, `${paramRoute}[${index}]`, false); }
+                        { nextProperty[index] = this.walkModelAndProxy(element, `${paramRoute}[${index}]`, rule.internalRule); }
                     });
                 }
                 else
                 {
                     if(rule.getRulesForProperty)
-                    { this.walkModelAndProxy(nextProperty, paramRoute, rule); }
+                    {
+                        isObject = true;
+                        parent[param] = this.walkModelAndProxy(nextProperty, paramRoute, rule);
+                    }
                 }
             });
 
-            this.proxyProperty(parent, param, paramRoute, shouldTreatAsArray || shouldTreatAsObject);
+            if(isArray || isObject)
+            { parent[param] = this.proxyProperty(parent[param], paramRoute); }
         }
 
-        return new Proxy(parent, this.createHandler(currentRoute));
+        return this.proxyProperty(parent, currentRoute);
     }
 }
