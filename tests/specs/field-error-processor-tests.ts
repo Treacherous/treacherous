@@ -1,3 +1,4 @@
+import 'mocha';
 import {use, expect, assert, spy} from "chai";
 import {RuleRegistry} from "../../src/rules/rule-registry";
 import {MaxLengthValidationRule} from "../../src/rules/max-length-validation-rule";
@@ -38,7 +39,7 @@ describe('Field Error Processor', function () {
 
         fieldErrorProcessor
             .checkFieldForErrors(dummyModel, 'dummyField', dummyRules)
-            .then(function(error){
+            .then(function(error: any){
                 expect(error).not.to.be.null;
                 expect(error).to.contain("3").and.to.contain("2");
                 done();
@@ -64,7 +65,7 @@ describe('Field Error Processor', function () {
 
         fieldErrorProcessor
             .checkFieldForErrors(dummyModel, dummyField, dummyRules)
-            .then(function(error){
+            .then(function(error: any){
                 expect(error).not.to.be.null;
                 expect(error).to.equal(expectedMessage);
                 done();
@@ -92,7 +93,7 @@ describe('Field Error Processor', function () {
 
         fieldErrorProcessor
             .checkFieldForErrors(dummyModel, dummyField, dummyRules)
-            .then(function(error){
+            .then(function(error: any){
                 expect(error).not.to.be.null;
                 expect(error).to.equal(expectedMessage);
                 done();
@@ -121,7 +122,7 @@ describe('Field Error Processor', function () {
 
         fieldErrorProcessor
             .checkFieldForErrors(dummyModel, dummyField, dummyRules)
-            .then(function(error){
+            .then(function(error: any){
                 console.log(error)
                 expect(error).not.to.be.null;
                 expect(error).to.equal(expectedMessage);
@@ -148,7 +149,7 @@ describe('Field Error Processor', function () {
 
         fieldErrorProcessor
             .checkFieldForErrors(dummyModel, 'dummyField', dummyRules)
-            .then(function(error){
+            .then(function(error: any){
                 expect(error).to.be.null;
                 done();
             }).catch(done);
@@ -177,7 +178,7 @@ describe('Field Error Processor', function () {
 
         fieldErrorProcessor
             .checkFieldForErrors(dummyModel, dummyField, dummyRules)
-            .then(function(error){
+            .then(function(error: any){
                 expect(error).not.to.be.null;
                 expect(spiedValidationMethod).to.not.have.been.called;
                 done();
@@ -226,10 +227,10 @@ describe('Field Error Processor', function () {
                 
         fieldErrorProcessor
             .processRuleLink(dummyModel, "something", ruleLink)
-            .then(function(error){
+            .then(function(error: any){
                 console.log("FAILED", error);
                 done(error);
-            }).catch(function(error){
+            }).catch(function(error: any){
                 console.log(error);
                 expect(error).to.match(new RegExp(fakeRuleName));
                 done();

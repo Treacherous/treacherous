@@ -1,3 +1,4 @@
+import 'mocha';
 import {expect} from "chai";
 import {createRuleset, createGroup} from "../../src/exposer";
 import {Ruleset} from "../../src/rulesets/ruleset";
@@ -47,7 +48,7 @@ describe('Treacherous Sanity Checks', function () {
 
         validationGroup.validate()
             .then(v => validationGroup.getModelErrors())
-            .then(function(errors){
+            .then(function(errors: any){
                 console.log("errors", errors);
                 expect(errors).to.include.keys("foo[1]");
                 expect(errors).to.include.keys("foo[2]");
@@ -95,7 +96,7 @@ describe('Treacherous Sanity Checks', function () {
         dummyOrder1.products.push(dummyProduct2);
 
         invoiceValidationGroup.getModelErrors(true)
-            .then(function(errors){
+            .then(function(errors: any){
                 console.log("errors", errors);
                 expect(errors).to.include.keys("orders[0].products[0].deliveryDate");
                 expect(errors).to.include.keys("orders[0].products[1].deliveryDate");

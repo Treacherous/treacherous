@@ -19,4 +19,8 @@ export class TypeHelper
     public static isEmptyValue(value: any): boolean {
         return value === undefined || value === null || value.length == 0;
     }
+
+    public static isObjectOrArray(value: any): boolean {
+        return (!!value) && (value.constructor === Array || value.constructor === Object)
+    }
 }

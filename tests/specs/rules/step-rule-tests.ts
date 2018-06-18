@@ -1,3 +1,4 @@
+import 'mocha';
 import {expect} from "chai";
 import {StepValidationRule} from "../../../src/rules/step-validation-rule";
 import {PropertyResolver} from "property-resolver";
@@ -11,7 +12,7 @@ describe("Validation Rules", function(){
             modelResolver.model.validIncrement = 10;
 
             const rule = new StepValidationRule();
-            rule.validate(modelResolver,'validIncrement', 5).then(function(isValid){
+            rule.validate(modelResolver,'validIncrement', 5).then(function(isValid: boolean){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
@@ -22,7 +23,7 @@ describe("Validation Rules", function(){
             modelResolver.model.validNumberString = "10";
 
             const rule = new StepValidationRule();
-            rule.validate(modelResolver,'validNumberString', 5).then(function(isValid){
+            rule.validate(modelResolver,'validNumberString', 5).then(function(isValid: boolean){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
@@ -33,7 +34,7 @@ describe("Validation Rules", function(){
             modelResolver.model.a = null;
 
             const rule = new StepValidationRule();
-            rule.validate(modelResolver, 'a', 5).then(function(isValid){
+            rule.validate(modelResolver, 'a', 5).then(function(isValid: boolean){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
@@ -44,7 +45,7 @@ describe("Validation Rules", function(){
             modelResolver.model.a = "";
 
             const rule = new StepValidationRule();
-            rule.validate(modelResolver, 'a', 5).then(function(isValid){
+            rule.validate(modelResolver, 'a', 5).then(function(isValid: boolean){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
@@ -55,7 +56,7 @@ describe("Validation Rules", function(){
             modelResolver.model.invalidIncrement = 12;
 
             const rule = new StepValidationRule();
-            rule.validate(modelResolver,'invalidIncrement', 5).then(function(isValid){
+            rule.validate(modelResolver,'invalidIncrement', 5).then(function(isValid: boolean){
                 expect(isValid).to.be.false;
                 done();
             }).catch(done);
@@ -66,7 +67,7 @@ describe("Validation Rules", function(){
             modelResolver.model.invalidIncrement = "12";
 
             const rule = new StepValidationRule();
-            rule.validate(modelResolver,'invalidIncrement', 5).then(function(isValid){
+            rule.validate(modelResolver,'invalidIncrement', 5).then(function(isValid: boolean){
                 expect(isValid).to.be.false;
                 done();
             }).catch(done);

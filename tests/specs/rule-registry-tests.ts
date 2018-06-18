@@ -1,3 +1,4 @@
+import 'mocha';
 import {expect} from "chai";
 import {RuleRegistry} from "../../src/rules/rule-registry";
 import {RequiredValidationRule} from "../../src/rules/required-validation-rule";
