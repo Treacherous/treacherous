@@ -24,6 +24,8 @@ export class ValidationGroup implements IValidationGroup
     protected promiseCounter: PromiseCounter;
     protected modelResolver: IModelResolver;
 
+    protected propertyNameOverrideCache: any = {};
+
     constructor(protected fieldErrorProcessor: IFieldErrorProcessor,
                 protected ruleResolver: IRuleResolver = new RuleResolver(),
                 protected modelResolverFactory: IModelResolverFactory,
@@ -37,6 +39,7 @@ export class ValidationGroup implements IValidationGroup
 
         this.promiseCounter = new PromiseCounter();
         this.modelResolver = this.modelResolverFactory.createModelResolver(model);
+        this.populateDisplayNameCache();
     }
 
     protected static isRuleset(possibleRuleset: any): boolean {
@@ -45,6 +48,32 @@ export class ValidationGroup implements IValidationGroup
 
     protected static isForEach(possibleForEach: any): boolean {
         return possibleForEach.isForEach;
+    }
+
+    protected populateDisplayNameCache = () => {
+        const recurseTree = (ruleset: Ruleset, currentPropertyRoute: string) => {
+            if(Object.keys(ruleset.propertyDisplayNames).length == 0)
+            { return; }
+
+            for (const propertyKey in ruleset.rules){
+                const nextRoute = `${currentPropertyRoute}.${propertyKey}`;
+                const nextRule = ruleset.rules[propertyKey];
+
+                if(ValidationGroup.isForEach(nextRule) && ValidationGroup.isRuleset(nextRule.internalRule))
+                { recurseTree(nextRule.internalRule, nextRoute); }
+
+                if(ValidationGroup.isRuleset(nextRule))
+                { recurseTree(nextRule, nextRoute); }
+            }
+
+            for(const propertyKey in ruleset.propertyDisplayNames)
+            {
+                const routeName = `${currentPropertyRoute}.${propertyKey}`;
+                this.propertyNameOverrideCache[routeName] = ruleset.propertyDisplayNames[propertyKey];
+            }
+        };
+
+        recurseTree(this.ruleset, "");
     }
 
     protected validatePropertyWithRuleLinks = async (propertyName: string, propertyRules: Array<RuleLink>) => {
@@ -244,7 +273,7 @@ export class ValidationGroup implements IValidationGroup
     }
 
     public getPropertyDisplayName = (propertyRoute: string): string => {
-        return this.ruleset.getPropertyDisplayName(propertyRoute);
+        return this.propertyNameOverrideCache[propertyRoute] || propertyRoute;
     }
 
     public isPropertyInGroup = (propertyRoute: string): boolean => {
