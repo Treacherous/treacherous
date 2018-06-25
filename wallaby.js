@@ -8,10 +8,9 @@ module.exports = function (wallaby) {
             {pattern: 'src/**/*.ts', load: false}
         ],
         tests: [
-            //{pattern: 'tests/specs/**/validation-group-tests.ts'}
             {pattern: 'tests/specs/**/*.ts'}
         ],
-        env: { type: "node"},
+        env: { type: "ts-node"},
         debug: true,
         testFramework: 'mocha'
     };

@@ -1,3 +1,4 @@
+import 'mocha';
 import {expect} from "chai";
 import {RegexValidationRule} from "../../../src/rules/regex-validation-rule";
 import {PropertyResolver} from "property-resolver";
@@ -12,7 +13,7 @@ describe("Validation Rules", function(){
 
             const rule = new RegexValidationRule();
             const validString = "matched-this";
-            rule.validate(modelResolver,'validString', /matched-this/).then(function(isValid){
+            rule.validate(modelResolver,'validString', /matched-this/).then(function(isValid: boolean){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
@@ -23,7 +24,7 @@ describe("Validation Rules", function(){
             modelResolver.model.a = null;
 
             const rule = new RegexValidationRule();
-            rule.validate(modelResolver,'a', /matched-this/).then(function(isValid){
+            rule.validate(modelResolver,'a', /matched-this/).then(function(isValid: boolean){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
@@ -34,7 +35,7 @@ describe("Validation Rules", function(){
             modelResolver.model.a = "";
 
             const rule = new RegexValidationRule();
-            rule.validate(modelResolver,'a', /matched-this/).then(function(isValid){
+            rule.validate(modelResolver,'a', /matched-this/).then(function(isValid: boolean){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
@@ -46,7 +47,7 @@ describe("Validation Rules", function(){
 
             const rule = new RegexValidationRule();
             const invalidString = "doesnt-match-this";
-            rule.validate(modelResolver,'invalidString', /matched-this/).then(function(isValid){
+            rule.validate(modelResolver,'invalidString', /matched-this/).then(function(isValid: boolean){
                 expect(isValid).to.be.false;
                 done();
             }).catch(done);

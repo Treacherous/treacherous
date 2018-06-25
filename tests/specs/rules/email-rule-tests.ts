@@ -1,3 +1,4 @@
+import 'mocha';
 import {expect} from "chai";
 import {EmailValidationRule} from "../../../src/rules/email-validation-rule";
 import {PropertyResolver} from "property-resolver";
@@ -11,7 +12,7 @@ describe("Validation Rules", function(){
             modelResolver.model.validEmail = "test@test.com";
 
             const rule = new EmailValidationRule();
-            rule.validate(modelResolver,'validEmail').then(function(isValid){
+            rule.validate(modelResolver,'validEmail').then(function(isValid: boolean){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
@@ -22,7 +23,7 @@ describe("Validation Rules", function(){
             modelResolver.model.null = null;
 
             const rule = new EmailValidationRule();
-            rule.validate(modelResolver,'null').then(function(isValid){
+            rule.validate(modelResolver,'null').then(function(isValid: boolean){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
@@ -33,7 +34,7 @@ describe("Validation Rules", function(){
             modelResolver.model.someString = "";
 
             const rule = new EmailValidationRule();
-            rule.validate(modelResolver, 'someString').then(function(isValid){
+            rule.validate(modelResolver, 'someString').then(function(isValid: boolean){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
@@ -44,7 +45,7 @@ describe("Validation Rules", function(){
             modelResolver.model.invalidEmail = "this isn't an email";
 
             const rule = new EmailValidationRule();
-            rule.validate(modelResolver,'invalidEmail').then(function(isValid){
+            rule.validate(modelResolver,'invalidEmail').then(function(isValid: boolean){
                 expect(isValid).to.be.false;
                 done();
             }).catch(done);

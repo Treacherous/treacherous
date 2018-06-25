@@ -1,3 +1,4 @@
+import 'mocha';
 import {expect} from "chai";
 import {RequiredValidationRule} from "../../../src/rules/required-validation-rule";
 import {PropertyResolver} from "property-resolver";
@@ -11,7 +12,7 @@ describe("Validation Rules", function(){
             modelResolver.model.validString = "1";
 
             const rule = new RequiredValidationRule();
-            rule.validate(modelResolver,'validString', true).then(function(isValid){
+            rule.validate(modelResolver,'validString', true).then(function(isValid: boolean){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
@@ -22,7 +23,7 @@ describe("Validation Rules", function(){
             modelResolver.model.validArray = [0,1,2,3,4,5,6,7,8,9];
 
             const rule = new RequiredValidationRule();
-            rule.validate(modelResolver,'validArray', true).then(function(isValid){
+            rule.validate(modelResolver,'validArray', true).then(function(isValid: boolean){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
@@ -33,7 +34,7 @@ describe("Validation Rules", function(){
             modelResolver.model.validNumber = 1;
 
             const rule = new RequiredValidationRule();
-            rule.validate(modelResolver,'validNumber', true).then(function(isValid){
+            rule.validate(modelResolver,'validNumber', true).then(function(isValid: boolean){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
@@ -44,7 +45,7 @@ describe("Validation Rules", function(){
             modelResolver.model.invalidString = "";
 
             const rule = new RequiredValidationRule();
-            rule.validate(modelResolver,'invalidString', true).then(function(isValid){
+            rule.validate(modelResolver,'invalidString', true).then(function(isValid: boolean){
                 expect(isValid).to.be.false;
                 done();
             }).catch(done);
@@ -55,7 +56,7 @@ describe("Validation Rules", function(){
             modelResolver.model.invalidArray = [];
 
             const rule = new RequiredValidationRule();
-            rule.validate(modelResolver,'invalidArray', true).then(function(isValid){
+            rule.validate(modelResolver,'invalidArray', true).then(function(isValid: boolean){
                 expect(isValid).to.be.false;
                 done();
             }).catch(done);
@@ -66,7 +67,7 @@ describe("Validation Rules", function(){
             modelResolver.model.a = null;
 
             const rule = new RequiredValidationRule();
-            rule.validate(modelResolver, 'a', true).then(function(isValid){
+            rule.validate(modelResolver, 'a', true).then(function(isValid: boolean){
                 expect(isValid).to.be.false;
                 done();
             }).catch(done);
@@ -76,7 +77,7 @@ describe("Validation Rules", function(){
             const modelResolver = new ModelResolver(new PropertyResolver(), {});
 
             const rule = new RequiredValidationRule();
-            rule.validate(modelResolver, 'a', true).then(function(isValid){
+            rule.validate(modelResolver, 'a', true).then(function(isValid: boolean){
                 expect(isValid).to.be.false;
                 done();
             }).catch(done);
@@ -87,7 +88,7 @@ describe("Validation Rules", function(){
             modelResolver.model.validString = "";
 
             const rule = new RequiredValidationRule();
-            rule.validate(modelResolver,'validString', false).then(function(isValid){
+            rule.validate(modelResolver,'validString', false).then(function(isValid: boolean){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
@@ -98,7 +99,7 @@ describe("Validation Rules", function(){
             modelResolver.model.validArray = [];
 
             const rule = new RequiredValidationRule();
-            rule.validate(modelResolver,'validArray', false).then(function(isValid){
+            rule.validate(modelResolver,'validArray', false).then(function(isValid: boolean){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
@@ -109,7 +110,7 @@ describe("Validation Rules", function(){
             modelResolver.model.validArray = [];
 
             const rule = new RequiredValidationRule();
-            rule.validate(modelResolver,'validArray', false).then(function(isValid){
+            rule.validate(modelResolver,'validArray', false).then(function(isValid: boolean){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
@@ -120,7 +121,7 @@ describe("Validation Rules", function(){
             modelResolver.model.a = null;
 
             const rule = new RequiredValidationRule();
-            rule.validate(modelResolver, 'a', false).then(function(isValid){
+            rule.validate(modelResolver, 'a', false).then(function(isValid: boolean){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
@@ -130,7 +131,7 @@ describe("Validation Rules", function(){
             const modelResolver = new ModelResolver(new PropertyResolver(), {});
 
             const rule = new RequiredValidationRule();
-            rule.validate(modelResolver, 'undefined', false).then(function(isValid){
+            rule.validate(modelResolver, 'undefined', false).then(function(isValid: boolean){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
@@ -141,7 +142,7 @@ describe("Validation Rules", function(){
             modelResolver.model.someString = "hello";
 
             const rule = new RequiredValidationRule();
-            rule.validate(modelResolver,'someString', false).then(function(isValid){
+            rule.validate(modelResolver,'someString', false).then(function(isValid: boolean){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
@@ -153,7 +154,7 @@ describe("Validation Rules", function(){
             modelResolver.model.someString = "hello";
 
             const rule = new RequiredValidationRule();
-            rule.validate(modelResolver,'someString', false).then(function(isValid){
+            rule.validate(modelResolver,'someString', false).then(function(isValid: boolean){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
@@ -164,7 +165,7 @@ describe("Validation Rules", function(){
             modelResolver.model.someArray = [1];
 
             const rule = new RequiredValidationRule();
-            rule.validate(modelResolver,'someArray', false).then(function(isValid){
+            rule.validate(modelResolver,'someArray', false).then(function(isValid: boolean){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);

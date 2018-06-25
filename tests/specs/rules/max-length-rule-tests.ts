@@ -1,3 +1,4 @@
+import 'mocha';
 import {expect} from "chai";
 import {MaxLengthValidationRule} from "../../../src/rules/max-length-validation-rule";
 import {PropertyResolver} from "property-resolver";
@@ -11,7 +12,7 @@ describe("Validation Rules", function(){
             modelResolver.model.validString = "0123456789";
 
             const rule = new MaxLengthValidationRule();
-            rule.validate(modelResolver,'validString', 10).then(function(isValid){
+            rule.validate(modelResolver,'validString', 10).then(function(isValid: boolean){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
@@ -22,7 +23,7 @@ describe("Validation Rules", function(){
             modelResolver.model.validArray = [0,1,2,3,4,5,6,7,8,9];
 
             const rule = new MaxLengthValidationRule();
-            rule.validate(modelResolver,'validArray', 10).then(function(isValid){
+            rule.validate(modelResolver,'validArray', 10).then(function(isValid: boolean){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
@@ -33,7 +34,7 @@ describe("Validation Rules", function(){
             modelResolver.model.a = null;
 
             const rule = new MaxLengthValidationRule();
-            rule.validate(modelResolver,'a', 10).then(function(isValid){
+            rule.validate(modelResolver,'a', 10).then(function(isValid: boolean){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
@@ -44,7 +45,7 @@ describe("Validation Rules", function(){
             modelResolver.model.empty = "";
 
             const rule = new MaxLengthValidationRule();
-            rule.validate(modelResolver,'empty', 10).then(function(isValid){
+            rule.validate(modelResolver,'empty', 10).then(function(isValid: boolean){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
@@ -55,7 +56,7 @@ describe("Validation Rules", function(){
             modelResolver.model.invalidString = "0123456789";
 
             const rule = new MaxLengthValidationRule();
-            rule.validate(modelResolver,'invalidString', 9).then(function(isValid){
+            rule.validate(modelResolver,'invalidString', 9).then(function(isValid: boolean){
                 expect(isValid).to.be.false;
                 done();
             }).catch(done);
@@ -66,7 +67,7 @@ describe("Validation Rules", function(){
             modelResolver.model.invalidArray = [0,1,2,3,4,5,6,7,8,9];
 
             const rule = new MaxLengthValidationRule();
-            rule.validate(modelResolver,'invalidArray', 9).then(function(isValid){
+            rule.validate(modelResolver,'invalidArray', 9).then(function(isValid: boolean){
                 expect(isValid).to.be.false;
                 done();
             }).catch(done);

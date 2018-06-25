@@ -1,3 +1,4 @@
+import 'mocha';
 import {expect} from "chai";
 import {DateValidationRule} from "../../../src/rules/date-validation-rule";
 import {PropertyResolver} from "property-resolver";
@@ -11,7 +12,7 @@ describe("Validation Rules", function(){
             modelResolver.model.validDate = Date.now();
 
             const rule = new DateValidationRule();
-            rule.validate(modelResolver,'validDate').then(function(isValid){
+            rule.validate(modelResolver,'validDate').then(function(isValid: boolean){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
@@ -22,7 +23,7 @@ describe("Validation Rules", function(){
             modelResolver.model.invalidDate = null;
 
             const rule = new DateValidationRule();
-            rule.validate(modelResolver,'invalidDate').then(function(isValid){
+            rule.validate(modelResolver,'invalidDate').then(function(isValid: boolean){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
@@ -33,7 +34,7 @@ describe("Validation Rules", function(){
             modelResolver.model.invalidDate = "";
 
             const rule = new DateValidationRule();
-            rule.validate(modelResolver,'invalidDate').then(function(isValid){
+            rule.validate(modelResolver,'invalidDate').then(function(isValid: boolean){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
@@ -44,7 +45,7 @@ describe("Validation Rules", function(){
             modelResolver.model.invalidDate = "this isn't a date";
 
             const rule = new DateValidationRule();
-            rule.validate(modelResolver,'invalidDate').then(function(isValid){
+            rule.validate(modelResolver,'invalidDate').then(function(isValid: boolean){
                 expect(isValid).to.be.false;
                 done();
             }).catch(done);

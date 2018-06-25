@@ -1,3 +1,4 @@
+import 'mocha';
 import {expect} from "chai";
 import {DecimalValidationRule} from "../../../src/rules/decimal-validation-rule";
 import {PropertyResolver} from "property-resolver";
@@ -11,7 +12,7 @@ describe("Validation Rules", function(){
             modelResolver.model.validNumber = 10;
 
             const rule = new DecimalValidationRule();
-            rule.validate(modelResolver,'validNumber').then(function(isValid){
+            rule.validate(modelResolver,'validNumber').then(function(isValid: boolean){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
@@ -22,7 +23,7 @@ describe("Validation Rules", function(){
             modelResolver.model.validStringNumber = "10";
 
             const rule = new DecimalValidationRule();
-            rule.validate(modelResolver,'validStringNumber').then(function(isValid){
+            rule.validate(modelResolver,'validStringNumber').then(function(isValid: boolean){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
@@ -33,7 +34,7 @@ describe("Validation Rules", function(){
             modelResolver.model.validDecimal = 10.25;
 
             const rule = new DecimalValidationRule();
-            rule.validate(modelResolver,'validDecimal').then(function(isValid){
+            rule.validate(modelResolver,'validDecimal').then(function(isValid: boolean){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
@@ -44,7 +45,7 @@ describe("Validation Rules", function(){
             modelResolver.model.validDecimalString = "10.25";
 
             const rule = new DecimalValidationRule();
-            rule.validate(modelResolver,'validDecimalString').then(function(isValid){
+            rule.validate(modelResolver,'validDecimalString').then(function(isValid: boolean){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
@@ -55,7 +56,7 @@ describe("Validation Rules", function(){
             modelResolver.model.null = null;
 
             const rule = new DecimalValidationRule();
-            rule.validate(modelResolver,'null').then(function(isValid){
+            rule.validate(modelResolver,'null').then(function(isValid: boolean){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
@@ -66,7 +67,7 @@ describe("Validation Rules", function(){
             modelResolver.model.empty = "";
 
             const rule = new DecimalValidationRule();
-            rule.validate(modelResolver,'empty').then(function(isValid){
+            rule.validate(modelResolver,'empty').then(function(isValid: boolean){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
@@ -77,7 +78,7 @@ describe("Validation Rules", function(){
             modelResolver.model.invalidNumber = "not a number";
 
             const rule = new DecimalValidationRule();
-            rule.validate(modelResolver,'invalidNumber').then(function(isValid){
+            rule.validate(modelResolver,'invalidNumber').then(function(isValid: boolean){
                 expect(isValid).to.be.false;
                 done();
             }).catch(done);
