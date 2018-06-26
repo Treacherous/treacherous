@@ -1,4 +1,4 @@
-import 'mocha';
+import {describe, it} from "mocha";
 import {expect} from "chai";
 import {ISODateValidationRule} from "../../../src/rules/iso-date-validation-rule";
 import {PropertyResolver} from "property-resolver";

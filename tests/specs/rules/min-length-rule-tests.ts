@@ -1,4 +1,4 @@
-import 'mocha';
+import {describe, it} from "mocha";
 import {expect} from "chai";
 import {MinLengthValidationRule} from "../../../src/rules/min-length-validation-rule";
 import {PropertyResolver} from "property-resolver";

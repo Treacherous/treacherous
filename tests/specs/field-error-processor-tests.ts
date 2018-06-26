@@ -1,4 +1,4 @@
-import 'mocha';
+import {describe, it} from "mocha";
 import {use, expect, assert, spy} from "chai";
 import {RuleRegistry} from "../../src/rules/rule-registry";
 import {MaxLengthValidationRule} from "../../src/rules/max-length-validation-rule";

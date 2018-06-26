@@ -1,4 +1,4 @@
-import 'mocha';
+import {describe, it} from "mocha";
 import {expect} from "chai";
 import {FieldErrorProcessor} from "../../src/processors/field-error-processor";
 import {RulesetBuilder} from "../../src/builders/ruleset-builder";
@@ -847,25 +847,6 @@ describe('Validation Group', function () {
         });
 
         validationGroup.getPropertyError(validationName, true);
-    });
-
-    it('should correctly get property display name', function () {
-        const displayName = "User's name";
-        const rulesetBuilder = new RulesetBuilder();
-        const ruleset = rulesetBuilder.create()
-            .forProperty("username")
-                .addRule("required")
-                .withDisplayName(displayName)
-            .build();
-
-        const dummyModel = {
-            username: ""
-        };
-
-        const validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        const actualDisplayName = validationGroup.getPropertyDisplayName("username");
-
-        expect(actualDisplayName).to.equal(displayName);
     });
 
     it('should correctly check if property is within group', function () {

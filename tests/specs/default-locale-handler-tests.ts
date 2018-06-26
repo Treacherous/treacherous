@@ -1,4 +1,4 @@
-import 'mocha';
+import {describe, it} from "mocha";
 import {use, expect, spy} from "chai";
 import {RulesetBuilder} from "../../src/builders/ruleset-builder";
 import {ModelWatcher} from "../../src/watcher/model-watcher";

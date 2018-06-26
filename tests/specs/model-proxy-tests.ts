@@ -1,8 +1,9 @@
-import 'mocha';
+import {describe, it} from "mocha";
 import {use, expect, spy} from "chai";
 import {RulesetBuilder} from "../../src/builders/ruleset-builder";
 import {ModelProxy} from "../../src/proxy/model-proxy";
 import * as spies from "chai-spies";
+import {ModelWatcher} from "../../src/watcher/model-watcher";
 use(spies);
 
 describe('Model Proxy', function () {
@@ -37,7 +38,6 @@ describe('Model Proxy', function () {
         proxyModel.bar[2] = 10;
 
         setTimeout(function(){
-            // once for foo, once for bar[2]
             expect(spySubscription).to.have.been.called.exactly(2);
             done();
         }, 250);
@@ -79,5 +79,37 @@ describe('Model Proxy', function () {
             done();
         }, 250);
     });
+
+    it('should correctly notice array size changes', function (done) {
+        const dummyModel = {
+            foo: 10,
+            bar: [ 10, 20 ]
+        };
+
+        const rulesetBuilder = new RulesetBuilder();
+        const ruleset = rulesetBuilder.create()
+            .forProperty("foo")
+            .addRule("required", true)
+            .forProperty("bar")
+            .addRule("minLength", 1)
+            .addRuleForEach("maxValue", 20)
+            .build();
+
+        const modelProxy = new ModelProxy();
+        const proxyModel = modelProxy.proxyObject(dummyModel, ruleset);
+        const spySubscription = spy(function(eventArgs: any){
+            console.log("Raised", eventArgs);
+        });
+
+        modelProxy.onPropertyChanged.subscribe(spySubscription);
+
+        proxyModel.bar.push(30);
+
+        setTimeout(function(){
+            expect(spySubscription).to.have.been.called.exactly(1);
+            done();
+        }, 250);
+    });
+
 
 });

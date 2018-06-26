@@ -1,4 +1,4 @@
-import 'mocha';
+import {describe, it} from "mocha";
 import {expect} from "chai";
 import {RuleRegistry} from "../../src/rules/rule-registry";
 import {RuleLink} from "../../src/rulesets/rule-link";

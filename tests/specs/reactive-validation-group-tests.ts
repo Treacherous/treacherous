@@ -1,4 +1,4 @@
-import 'mocha';
+import {describe, it} from "mocha";
 import {expect} from "chai";
 import {PropertyResolver} from "property-resolver";
 import {FieldErrorProcessor} from "../../src/processors/field-error-processor";

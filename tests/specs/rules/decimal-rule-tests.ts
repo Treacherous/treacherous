@@ -1,4 +1,4 @@
-import 'mocha';
+import {describe, it} from "mocha";
 import {expect} from "chai";
 import {DecimalValidationRule} from "../../../src/rules/decimal-validation-rule";
 import {PropertyResolver} from "property-resolver";

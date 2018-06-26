@@ -13,6 +13,8 @@ import {ModelStateChangedEvent} from "../events/model-state-changed-event";
 import {EventHandler} from "event-js";
 import {ICompositeValidationRule} from "../rules/composite/icomposite-validation-rule";
 import {ILocaleHandler} from "../localization/ilocale-handler";
+import {IDisplayNameCache} from "./idisplay-name-cache";
+import {DisplayNameCache} from "./display-name-cache";
 
 // TODO: This class should be simplified further if possible
 export class ValidationGroup implements IValidationGroup
@@ -23,8 +25,7 @@ export class ValidationGroup implements IValidationGroup
     protected propertyErrors: any = {};
     protected promiseCounter: PromiseCounter;
     protected modelResolver: IModelResolver;
-
-    protected propertyNameOverrideCache: any = {};
+    protected displayNameCache: IDisplayNameCache;
 
     constructor(protected fieldErrorProcessor: IFieldErrorProcessor,
                 protected ruleResolver: IRuleResolver = new RuleResolver(),
@@ -36,44 +37,11 @@ export class ValidationGroup implements IValidationGroup
 
         this.propertyStateChangedEvent = new EventHandler(this);
         this.modelStateChangedEvent = new EventHandler(this);
+        this.displayNameCache = new DisplayNameCache();
 
         this.promiseCounter = new PromiseCounter();
         this.modelResolver = this.modelResolverFactory.createModelResolver(model);
-        this.populateDisplayNameCache();
-    }
-
-    protected static isRuleset(possibleRuleset: any): boolean {
-        return (typeof(possibleRuleset.addRule) == "function");
-    }
-
-    protected static isForEach(possibleForEach: any): boolean {
-        return possibleForEach.isForEach;
-    }
-
-    protected populateDisplayNameCache = () => {
-        const recurseTree = (ruleset: Ruleset, currentPropertyRoute: string) => {
-            if(Object.keys(ruleset.propertyDisplayNames).length == 0)
-            { return; }
-
-            for (const propertyKey in ruleset.rules){
-                const nextRoute = `${currentPropertyRoute}.${propertyKey}`;
-                const nextRule = ruleset.rules[propertyKey];
-
-                if(ValidationGroup.isForEach(nextRule) && ValidationGroup.isRuleset(nextRule.internalRule))
-                { recurseTree(nextRule.internalRule, nextRoute); }
-
-                if(ValidationGroup.isRuleset(nextRule))
-                { recurseTree(nextRule, nextRoute); }
-            }
-
-            for(const propertyKey in ruleset.propertyDisplayNames)
-            {
-                const routeName = `${currentPropertyRoute}.${propertyKey}`;
-                this.propertyNameOverrideCache[routeName] = ruleset.propertyDisplayNames[propertyKey];
-            }
-        };
-
-        recurseTree(this.ruleset, "");
+        this.displayNameCache.cacheDisplayNamesFor(ruleset);
     }
 
     protected validatePropertyWithRuleLinks = async (propertyName: string, propertyRules: Array<RuleLink>) => {
@@ -137,7 +105,7 @@ export class ValidationGroup implements IValidationGroup
         }
 
         const routeEachRule = (ruleLinkOrSet: any) => {
-            if(ValidationGroup.isForEach(ruleLinkOrSet))
+            if(TypeHelper.isForEach(ruleLinkOrSet))
             {
                 const isCurrentlyAnArray = TypeHelper.isArrayType(currentValue);
 
@@ -149,13 +117,13 @@ export class ValidationGroup implements IValidationGroup
                 }
                 else
                 {
-                    if(ValidationGroup.isRuleset(ruleLinkOrSet.internalRule))
+                    if(TypeHelper.isRuleset(ruleLinkOrSet.internalRule))
                     { ruleSets.push(ruleLinkOrSet.internalRule); }
                     else
                     { ruleLinks.push(ruleLinkOrSet.internalRule); }
                 }
             }
-            else if(ValidationGroup.isRuleset(ruleLinkOrSet))
+            else if(TypeHelper.isRuleset(ruleLinkOrSet))
             { ruleSets.push(ruleLinkOrSet); }
             else
             { ruleLinks.push(ruleLinkOrSet); }
@@ -273,7 +241,7 @@ export class ValidationGroup implements IValidationGroup
     }
 
     public getPropertyDisplayName = (propertyRoute: string): string => {
-        return this.propertyNameOverrideCache[propertyRoute] || propertyRoute;
+        return this.displayNameCache.getDisplayNameFor(propertyRoute);
     }
 
     public isPropertyInGroup = (propertyRoute: string): boolean => {

@@ -1,4 +1,4 @@
-import 'mocha';
+import {describe, it} from "mocha";
 import {expect} from "chai";
 import {createRuleset, createGroup} from "../../src/exposer";
 import {Ruleset} from "../../src/rulesets/ruleset";

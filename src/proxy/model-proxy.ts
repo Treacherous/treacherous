@@ -19,12 +19,13 @@ export class ModelProxy implements IModelProxy
         return {
             set: function(obj: any, prop: PropertyKey, value: any){
                 const currentValue = obj[prop];
+                console.log("SETTING", prop, value, currentValue);
                 if(currentValue !== value){
-                    obj[prop] = value;
+                    Reflect.set(obj, prop, value);
                     const propertyChangedArgs = new PropertyChangedEvent(propertyRoute, value, currentValue);
                     setTimeout(() => { propertyChangedRaiser.publish(propertyChangedArgs); }, 1);
-                    return true;
                 }
+                return true;
             },
             get: function(obj: any, prop: PropertyKey) {
                 return Reflect.get(obj, prop);
@@ -33,7 +34,6 @@ export class ModelProxy implements IModelProxy
     };
 
     private proxyProperty = (obj: any, propertyRoute: string) => {
-        console.log("PROXYING", propertyRoute);
         return new Proxy(obj, this.createHandler(propertyRoute));
     };
 

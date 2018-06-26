@@ -1,4 +1,4 @@
-import 'mocha';
+import {describe, it} from "mocha";
 import {expect} from "chai";
 import {MaxLengthValidationRule} from "../../../src/rules/max-length-validation-rule";
 import {PropertyResolver} from "property-resolver";

@@ -1,4 +1,4 @@
-import 'mocha';
+import {describe, it} from "mocha";
 import {expect} from "chai";
 import {EqualValidationRule} from "../../../src/rules/equal-validation-rule";
 import {PropertyResolver} from "property-resolver";
