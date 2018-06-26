@@ -1,3 +1,4 @@
+import {describe, it} from "mocha";
 import {expect} from "chai";
 import {FieldErrorProcessor} from "../../src/processors/field-error-processor";
 import {RulesetBuilder} from "../../src/builders/ruleset-builder";
@@ -16,7 +17,7 @@ describe('Validation Group', function () {
 
     const defaultLocaleCode = "en-us";
 
-    const createValidationGroupFor = (model: any, ruleset: any) : IValidationGroup => {
+    const createValidationGroupFor: any = (model: any, ruleset: any) : IValidationGroup => {
         const defaultLocaleHandler = new DefaultLocaleHandler();
         defaultLocaleHandler.registerLocale(defaultLocaleCode, defaultLocale);
         defaultLocaleHandler.useLocale(defaultLocaleCode);
@@ -28,7 +29,7 @@ describe('Validation Group', function () {
             defaultLocaleHandler, model, ruleset);
     };
 
-    const delayedRequiresValid = (retval:any = true, delay:number = 100) => { 
+    const delayedRequiresValid: any = (retval:any = true, delay:number = 100) => { 
         return {
             ruleName: "delayed",
             validate: function(modelResolver: IModelResolver, propertyName: string, options: any){
@@ -54,7 +55,7 @@ describe('Validation Group', function () {
 
         const validationGroup = createValidationGroupFor(dummyModel, ruleset);
         validationGroup.getModelErrors(true)
-            .then(function(errors){
+            .then(function(errors: any){
                 expect(errors).not.to.be.null;
                 expect(errors).to.include.keys("foo");
                 validationGroup.release();
@@ -80,7 +81,7 @@ describe('Validation Group', function () {
 
         const validationGroup = createValidationGroupFor(dummyModel, ruleset);
         validationGroup.getModelErrors(true)
-            .then(function(errors){
+            .then(function(errors: any){
                 expect(errors).not.to.be.null;
                 expect(errors).to.include.keys("foo");
                 validationGroup.release();
@@ -106,7 +107,7 @@ describe('Validation Group', function () {
 
         const validationGroup = createValidationGroupFor(dummyModel, ruleset);
         validationGroup.getModelErrors()
-            .then(function(errors){
+            .then(function(errors: any){
                 expect(errors).not.to.be.null;
                 expect(errors).not.to.include.keys("foo");
                 validationGroup.release();
@@ -137,7 +138,7 @@ describe('Validation Group', function () {
         validationGroup.validate()
             .then(() => {
                 validationGroup.getModelErrors()
-                    .then(function(errors){
+                    .then(function(errors: any){
                         expect(errors).not.to.be.null;
                         expect(errors).to.include.keys("foo.bar");
                         expect(errors["foo.bar"]).to.contain("5");
@@ -173,7 +174,7 @@ describe('Validation Group', function () {
 
         const validationGroup = createValidationGroupFor(dummyModel, ruleset);
         validationGroup.getModelErrors(true)
-            .then(function(errors){
+            .then(function(errors: any){
                 console.log(dummyModel);
                 console.log(errors);
                 expect(errors).not.to.be.null;
@@ -202,7 +203,7 @@ describe('Validation Group', function () {
 
         const validationGroup = createValidationGroupFor(dummyModel, ruleset);
         validationGroup.getModelErrors(true)
-            .then(function(errors){
+            .then(function(errors: any){
                 expect(errors).not.to.be.null;
                 expect(errors).to.include.keys("foo[2]");
                 expect(errors["foo[2]"]).to.contain("25");
@@ -225,9 +226,9 @@ describe('Validation Group', function () {
         };
 
         const validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.validate().then(v => {
+        validationGroup.validate().then((v: any) => {
             validationGroup.getPropertyError("foo")
-                .then(function (error) {
+                .then(function(error: any) {
                     expect(error).not.to.be.null;
                     expect(error).to.contain("2");
                     expect(error).to.contain("5");
@@ -256,9 +257,9 @@ describe('Validation Group', function () {
         };
 
         const validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.validate().then(v => {
+        validationGroup.validate().then((v: any) => {
             validationGroup.getPropertyError("foo.bar")
-            .then(function(error){
+            .then(function(error: any){
                 expect(error).not.to.be.null;
                 expect(error).to.contain("9");
                 expect(error).to.contain("5");
@@ -292,16 +293,16 @@ describe('Validation Group', function () {
 
         const validationGroup = createValidationGroupFor(dummyModel, ruleset);
         const checkOne = validationGroup.validate()
-        .then(v => {
+        .then((v: any) => {
             validationGroup.getPropertyError("foo[1].bar")
-                .then(function(error){
+                .then(function(error: any){
                     console.log(error);
                     expect(error).not.to.be.null;
                     expect(error).to.contain("required");
                 });
 
             const checkTwo = validationGroup.getPropertyError("foo[2].bar")
-                .then(function(error){
+                .then(function(error: any){
                     console.log(error);
                     expect(error).not.to.be.null;
                     expect(error).to.contain("8");
@@ -329,14 +330,14 @@ describe('Validation Group', function () {
             foo: [ 10, 20, 30 ]
         };
 
-        const validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.validate().then(v => {
+        const validationGroup: any = createValidationGroupFor(dummyModel, ruleset);
+        validationGroup.validate().then((v: any) => {
             validationGroup.validateProperty("foo[2]")
-            .then(v => {
+            .then((v: any) => {
                 console.log(validationGroup["propertyErrors"]);
                 return validationGroup.getPropertyError("foo[2]");
             })
-            .then(function(error){
+            .then(function(error: any){
                 expect(error).not.to.be.null;
                 expect(error).to.contain("25");
                 expect(error).to.contain("30");
@@ -361,7 +362,7 @@ describe('Validation Group', function () {
         const validationGroup = createValidationGroupFor(dummyModel, ruleset);
         validationGroup.validateProperty("nothing")
             .then(() => validationGroup.getPropertyError("nothing"))
-            .then(error => {
+            .then((error: any) => {
                 expect(error).to.be.undefined;
                 validationGroup.release();
                 done();
@@ -383,7 +384,7 @@ describe('Validation Group', function () {
 
         const validationGroup = createValidationGroupFor(dummyModel, ruleset);
         validationGroup.getModelErrors(true)
-            .then(function(errors){
+            .then(function(errors: any){
                 console.log(errors);
                 expect(errors).not.to.be.null;
                 expect(Object.keys(errors).length).to.equal(1);
@@ -422,7 +423,7 @@ describe('Validation Group', function () {
 
         setTimeout(function(){
             validationGroup.getModelErrors(true)
-                .then((errors) => {
+                .then((errors: any) => {
                     console.log(errors);
                     expect(errors).not.to.be.null;
                     expect(errors).to.include.keys("foo[1].bar");
@@ -450,7 +451,7 @@ describe('Validation Group', function () {
 
         const validationGroup = createValidationGroupFor(dummyModel, ruleset);
         validationGroup.getModelErrors(true)
-            .then((errors) => {
+            .then((errors: any) => {
                 expect(errors).not.to.be.null;
                 expect(errors).to.include.keys("foo");
                 expect(errors.foo).to.contain("32");
@@ -474,7 +475,7 @@ describe('Validation Group', function () {
 
         const validationGroup = createValidationGroupFor(dummyModel, ruleset);
         validationGroup.getModelErrors(true)
-            .then(function(errors){
+            .then(function(errors: any){
                 expect(errors).not.to.be.null;
                 expect(errors).to.include.keys("foo");
                 expect(errors.foo).to.contain("32");
@@ -510,7 +511,7 @@ describe('Validation Group', function () {
 
         const validationGroup = createValidationGroupFor(dummyModel, ruleset);
         validationGroup.getModelErrors()
-            .then(function(errors){
+            .then(function(errors: any){
                 expect(errors).to.be.empty;
                 validationGroup.release();
                 done();
@@ -536,7 +537,7 @@ describe('Validation Group', function () {
 
         const validationGroup = createValidationGroupFor(dummyModel, ruleset);
         validationGroup.validate()
-            .then(function(isValid){
+            .then(function(isValid: boolean){
                 console.log("isValid", isValid);
                 expect(isValid).to.be.true;
                 validationGroup.release();
@@ -576,14 +577,14 @@ describe('Validation Group', function () {
 
         // This starts the initial validation chain so delays it
         const promise1 = validationGroup.getModelErrors()
-            .then(function(errors){
+            .then(function(errors: any){
                 expect(errors).to.be.empty;
             }).catch(done);
 
         dummyModel.foo = 10;
 
         const promise2 = validationGroup.getModelErrors()
-            .then(function(errors){
+            .then(function(errors: any){
                 expect(errors).to.be.empty;
             }).catch(done);
 
@@ -592,7 +593,7 @@ describe('Validation Group', function () {
                 validationGroup.release();
                 done();
             })
-            .catch(function(error){
+            .catch(function(error: any){
                 validationGroup.release();
                 done(error);
             });
@@ -609,7 +610,7 @@ describe('Validation Group', function () {
         const validationGroup = createValidationGroupFor({ foo: "invalid" }, ruleset);
         validationGroup.changeValidationTarget({ foo: "ok" });
         validationGroup.getModelErrors()
-            .then(function(errors){
+            .then(function(errors: any){
                 expect(errors).to.be.empty;
                 validationGroup.release();
                 done();
@@ -629,7 +630,7 @@ describe('Validation Group', function () {
         const validationGroup = createValidationGroupFor(null, ruleset);
         validationGroup.changeValidationTarget({ foo: "not ok", bar: [ 20, 10 ]  });
         validationGroup.getModelErrors(true)
-            .then(function(errors){
+            .then(function(errors: any){
                 expect(errors).not.to.be.null;
                 expect(errors).to.include.keys("foo");
                 expect(errors.foo).to.contain("6");
@@ -660,7 +661,7 @@ describe('Validation Group', function () {
         console.log("model updated", changingModel);
         setTimeout(function(){
             validationGroup.getModelErrors(true)
-                .then(function(errors){
+                .then(function(errors: any){
                     console.log("ended model", changingModel);
                     console.log("errors", errors);
                     expect(errors).not.to.be.null;
@@ -692,7 +693,7 @@ describe('Validation Group', function () {
         model.foo = "valid";
 
         validationGroup.getModelErrors()
-            .then((errors) => {
+            .then((errors: any) => {
                 console.log("errors", errors);
                 expect(errors).to.be.empty;
                 done();
@@ -713,7 +714,7 @@ describe('Validation Group', function () {
         };
 
         const validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.propertyStateChangedEvent.subscribe(function(args){
+        validationGroup.propertyStateChangedEvent.subscribe(function(args: any){
             console.log("DATA", args);
             expect(args.isValid).to.be.false;
             expect(args.error).contains("15");
@@ -739,7 +740,7 @@ describe('Validation Group', function () {
         };
 
         const validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.modelStateChangedEvent.subscribe(function(args){
+        validationGroup.modelStateChangedEvent.subscribe(function(args: any){
             expect(args.isValid).to.be.false;
             validationGroup.release();
             done();
@@ -774,7 +775,7 @@ describe('Validation Group', function () {
         localeHandler.supplementLocaleFrom(defaultLocaleCode, compositeLocales);
 
         validationGroup.getPropertyError(validationName, true)
-            .then((error) => {
+            .then((error: any) => {
                 expect(error).to.equal(expectedError);
                 validationGroup.release();
                 done();
@@ -805,7 +806,7 @@ describe('Validation Group', function () {
         compositeLocales[validationName] = expectedError;
         localeHandler.supplementLocaleFrom(defaultLocaleCode, compositeLocales);
 
-        validationGroup.modelStateChangedEvent.subscribe(function(args){
+        validationGroup.modelStateChangedEvent.subscribe(function(args: any){
             expect(args.isValid).to.be.false;
             validationGroup.release();
             done();
@@ -846,25 +847,6 @@ describe('Validation Group', function () {
         });
 
         validationGroup.getPropertyError(validationName, true);
-    });
-
-    it('should correctly get property display name', function () {
-        const displayName = "User's name";
-        const rulesetBuilder = new RulesetBuilder();
-        const ruleset = rulesetBuilder.create()
-            .forProperty("username")
-                .addRule("required")
-                .withDisplayName(displayName)
-            .build();
-
-        const dummyModel = {
-            username: ""
-        };
-
-        const validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        const actualDisplayName = validationGroup.getPropertyDisplayName("username");
-
-        expect(actualDisplayName).to.equal(displayName);
     });
 
     it('should correctly check if property is within group', function () {

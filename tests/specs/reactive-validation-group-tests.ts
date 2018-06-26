@@ -1,3 +1,4 @@
+import {describe, it} from "mocha";
 import {expect} from "chai";
 import {PropertyResolver} from "property-resolver";
 import {FieldErrorProcessor} from "../../src/processors/field-error-processor";
@@ -39,7 +40,7 @@ describe('Reactive Validation Group', function () {
         };
 
         const validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.propertyStateChangedEvent.subscribe(function(args){
+        validationGroup.propertyStateChangedEvent.subscribe(function(args: any){
             expect(args.isValid).to.be.false;
             expect(args.error).contains("15");
             expect(args.property).to.equal("foo");
@@ -78,7 +79,7 @@ describe('Reactive Validation Group', function () {
         };
 
         const validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.propertyStateChangedEvent.subscribe(function(args){
+        validationGroup.propertyStateChangedEvent.subscribe(function(args: any){
             expect(args.isValid).to.be.false;
             expect(args.error).contains("27");
             expect(args.property).to.equal("foo.bar");
@@ -108,7 +109,7 @@ describe('Reactive Validation Group', function () {
         };
 
         const validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.propertyStateChangedEvent.subscribe(function(args){
+        validationGroup.propertyStateChangedEvent.subscribe(function(args: any){
             console.log("args", args);
             expect(args.isValid).to.be.false;
             expect(args.error).contains("15");
@@ -142,7 +143,7 @@ describe('Reactive Validation Group', function () {
         };
 
         const validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.propertyStateChangedEvent.subscribe(function(args){
+        validationGroup.propertyStateChangedEvent.subscribe(function(args: any){
             console.log("triggered", args);
             expect(args.isValid).to.be.false;
             expect(args.error).contains("3");
@@ -168,7 +169,7 @@ describe('Reactive Validation Group', function () {
         };
 
         const validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.modelStateChangedEvent.subscribe(function(args){
+        validationGroup.modelStateChangedEvent.subscribe(function(args: any){
             expect(args.isValid).to.be.false;
             validationGroup.release();
             done();

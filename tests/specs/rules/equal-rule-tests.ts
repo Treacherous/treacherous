@@ -1,3 +1,4 @@
+import {describe, it} from "mocha";
 import {expect} from "chai";
 import {EqualValidationRule} from "../../../src/rules/equal-validation-rule";
 import {PropertyResolver} from "property-resolver";
@@ -11,7 +12,7 @@ describe("Validation Rules", function(){
             modelResolver.model.a = 10;
 
             const rule = new EqualValidationRule();
-            rule.validate(modelResolver, "a", () => 10).then(function(isValid){
+            rule.validate(modelResolver, "a", () => 10).then(function(isValid: boolean){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
@@ -22,7 +23,7 @@ describe("Validation Rules", function(){
             modelResolver.model.a = 10;
 
             const rule = new EqualValidationRule();
-            rule.validate(modelResolver,"a", 10).then(function(isValid){
+            rule.validate(modelResolver,"a", 10).then(function(isValid: boolean){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
@@ -33,7 +34,7 @@ describe("Validation Rules", function(){
             modelResolver.model.a = "hello";
 
             const rule = new EqualValidationRule();
-            rule.validate(modelResolver, "a", "hello").then(function(isValid){
+            rule.validate(modelResolver, "a", "hello").then(function(isValid: boolean){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
@@ -44,7 +45,7 @@ describe("Validation Rules", function(){
             modelResolver.model.a = 10;
 
             const rule = new EqualValidationRule();
-            rule.validate(modelResolver, "a", { value: "10", weakEquality: true }).then(function(isValid){
+            rule.validate(modelResolver, "a", { value: "10", weakEquality: true }).then(function(isValid: boolean){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
@@ -55,7 +56,7 @@ describe("Validation Rules", function(){
             modelResolver.model.a = new Date(1995, 11, 17);
 
             const rule = new EqualValidationRule();
-            rule.validate(modelResolver, "a", new Date(1995, 11, 17)).then(function(isValid){
+            rule.validate(modelResolver, "a", new Date(1995, 11, 17)).then(function(isValid: boolean){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
@@ -66,7 +67,7 @@ describe("Validation Rules", function(){
             modelResolver.model.a = null;
 
             const rule = new EqualValidationRule();
-            rule.validate(modelResolver, "a", {}).then(function(isValid){
+            rule.validate(modelResolver, "a", {}).then(function(isValid: boolean){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
@@ -77,7 +78,7 @@ describe("Validation Rules", function(){
             modelResolver.model.a = "";
 
             const rule = new EqualValidationRule();
-            rule.validate(modelResolver, "a", {}).then(function(isValid){
+            rule.validate(modelResolver, "a", {}).then(function(isValid: boolean){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
@@ -88,7 +89,7 @@ describe("Validation Rules", function(){
             modelResolver.model.a = 10;
 
             const rule = new EqualValidationRule();
-            rule.validate(modelResolver, "a", "10").then(function(isValid){
+            rule.validate(modelResolver, "a", "10").then(function(isValid: boolean){
                 expect(isValid).to.be.false;
                 done();
             }).catch(done);
@@ -99,7 +100,7 @@ describe("Validation Rules", function(){
             modelResolver.model.a = 10;
 
             const rule = new EqualValidationRule();
-            rule.validate(modelResolver, "a", 20).then(function(isValid){
+            rule.validate(modelResolver, "a", 20).then(function(isValid: boolean){
                 expect(isValid).to.be.false;
                 done();
             }).catch(done);

@@ -1,3 +1,4 @@
+import {describe, it} from "mocha";
 import {expect} from "chai";
 import {MatchesValidationRule} from "../../../src/rules/matches-validation-rule";
 import {PropertyResolver} from "property-resolver";
@@ -12,7 +13,7 @@ describe("Validation Rules", function(){
             modelResolver.model.b = 10;
 
             const rule = new MatchesValidationRule();
-            rule.validate(modelResolver,'a', 'b').then(function(isValid){
+            rule.validate(modelResolver,'a', 'b').then(function(isValid: boolean){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
@@ -24,7 +25,7 @@ describe("Validation Rules", function(){
             modelResolver.model.b = 10;
 
             const rule = new MatchesValidationRule();
-            rule.validate(modelResolver, "a", { property: "b", weakEquality: true }).then(function(isValid){
+            rule.validate(modelResolver, "a", { property: "b", weakEquality: true }).then(function(isValid: boolean){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
@@ -36,7 +37,7 @@ describe("Validation Rules", function(){
             modelResolver.model.b = "10";
 
             const rule = new MatchesValidationRule();
-            rule.validate(modelResolver, "a", "b").then(function(isValid){
+            rule.validate(modelResolver, "a", "b").then(function(isValid: boolean){
                 expect(isValid).to.be.false;
                 done();
             }).catch(done);
@@ -48,7 +49,7 @@ describe("Validation Rules", function(){
             modelResolver.model.b = new Date(1995, 11, 17);
 
             const rule = new MatchesValidationRule();
-            rule.validate(modelResolver, "a", "b").then(function(isValid){
+            rule.validate(modelResolver, "a", "b").then(function(isValid: boolean){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
@@ -60,7 +61,7 @@ describe("Validation Rules", function(){
             modelResolver.model.b = null;
 
             const rule = new MatchesValidationRule();
-            rule.validate(modelResolver, "a", "b").then(function(isValid){
+            rule.validate(modelResolver, "a", "b").then(function(isValid: boolean){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
@@ -72,7 +73,7 @@ describe("Validation Rules", function(){
             modelResolver.model.a = "different";
 
             const rule = new MatchesValidationRule();
-            rule.validate(modelResolver, "a", "b").then(function(isValid){
+            rule.validate(modelResolver, "a", "b").then(function(isValid: boolean){
                 expect(isValid).to.be.false;
                 done();
             }).catch(done);

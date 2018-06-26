@@ -2,9 +2,11 @@ import {RuleLink} from "./rule-link";
 import {ForEachRule} from "./for-each-rule";
 import {ICompositeValidationRule} from "../rules/composite/icomposite-validation-rule";
 
+export type RulesetRulesType = { [key: string]: Array<any> };
+
 export class Ruleset
 {
-    public rules: any = {};
+    public rules: RulesetRulesType = {};
     public compositeRules: any = {};
     public propertyDisplayNames: any = {};
 
@@ -35,7 +37,4 @@ export class Ruleset
 
     public getCompositeRulesRulesForProperty = (propertyName: string): Array<any> =>
     { return this.compositeRules[propertyName]; }
-
-    public getPropertyDisplayName = (propertyName: string): string =>
-    { return this.propertyDisplayNames[propertyName] || propertyName; }
 }

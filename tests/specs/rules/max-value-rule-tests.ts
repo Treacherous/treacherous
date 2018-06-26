@@ -1,3 +1,4 @@
+import {describe, it} from "mocha";
 import {expect} from "chai";
 import {MaxValueValidationRule} from "../../../src/rules/max-value-validation-rule";
 import {PropertyResolver} from "property-resolver";
@@ -11,7 +12,7 @@ describe("Validation Rules", function(){
             modelResolver.model.validNumber = 10;
 
             const rule = new MaxValueValidationRule();
-            rule.validate(modelResolver,'validNumber', 10).then(function(isValid){
+            rule.validate(modelResolver,'validNumber', 10).then(function(isValid: boolean){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
@@ -22,7 +23,7 @@ describe("Validation Rules", function(){
             modelResolver.model.validNumberString = "10";
 
             const rule = new MaxValueValidationRule();
-            rule.validate(modelResolver,'validNumberString', 10).then(function(isValid){
+            rule.validate(modelResolver,'validNumberString', 10).then(function(isValid: boolean){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
@@ -34,7 +35,7 @@ describe("Validation Rules", function(){
 
             const rule = new MaxValueValidationRule();
             const maximumDate = new Date(2000, 1, 1);
-            rule.validate(modelResolver,'validDate', maximumDate).then(function(isValid){
+            rule.validate(modelResolver,'validDate', maximumDate).then(function(isValid: boolean){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
@@ -45,7 +46,7 @@ describe("Validation Rules", function(){
             modelResolver.model.a = null;
 
             const rule = new MaxValueValidationRule();
-            rule.validate(modelResolver,'a', 10).then(function(isValid){
+            rule.validate(modelResolver,'a', 10).then(function(isValid: boolean){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
@@ -56,7 +57,7 @@ describe("Validation Rules", function(){
             modelResolver.model.a = "";
 
             const rule = new MaxValueValidationRule();
-            rule.validate(modelResolver,'a', 10).then(function(isValid){
+            rule.validate(modelResolver,'a', 10).then(function(isValid: boolean){
                 expect(isValid).to.be.true;
                 done();
             }).catch(done);
@@ -68,7 +69,7 @@ describe("Validation Rules", function(){
             modelResolver.model.invalidNumber = 11;
 
             const rule = new MaxValueValidationRule();
-            rule.validate(modelResolver,'invalidNumber', 10).then(function(isValid){
+            rule.validate(modelResolver,'invalidNumber', 10).then(function(isValid: boolean){
                 expect(isValid).to.be.false;
                 done();
             }).catch(done);
@@ -79,7 +80,7 @@ describe("Validation Rules", function(){
             modelResolver.model.invalidStringNumber = "11";
 
             const rule = new MaxValueValidationRule();
-            rule.validate(modelResolver,'invalidStringNumber', 10).then(function(isValid){
+            rule.validate(modelResolver,'invalidStringNumber', 10).then(function(isValid: boolean){
                 expect(isValid).to.be.false;
                 done();
             }).catch(done);
@@ -91,7 +92,7 @@ describe("Validation Rules", function(){
 
             const rule = new MaxValueValidationRule();
             const maximumDate = new Date(2000, 1, 1);
-            rule.validate(modelResolver,'invalidDate', maximumDate).then(function(isValid){
+            rule.validate(modelResolver,'invalidDate', maximumDate).then(function(isValid: boolean){
                 expect(isValid).to.be.false;
                 done();
             }).catch(done);

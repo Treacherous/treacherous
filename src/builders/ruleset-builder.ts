@@ -78,6 +78,17 @@ export class RulesetBuilder<T>
         return this.addRuleset(ruleset);
     };
 
+    public thenForEach = (builderMethod: (builder: RulesetBuilder<T>) => void): RulesetBuilder<T> =>
+    {
+        this.verifyExistingProperty();
+
+        const subBuilder = new RulesetBuilder<T>().create();
+        builderMethod(subBuilder);
+        const ruleset = subBuilder.build();
+
+        return this.addRulesetForEach(ruleset);
+    };
+
     public addRule = (rule: string, ruleOptions?: any): RulesetBuilder<T> =>
     {
         this.verifyRuleNameIsValid(rule);

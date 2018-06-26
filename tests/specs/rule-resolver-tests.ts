@@ -1,3 +1,4 @@
+import {describe, it} from "mocha";
 import {expect} from "chai";
 import {RulesetBuilder} from "../../src/builders/ruleset-builder";
 import {RuleResolver} from "../../src/rulesets/rule-resolver";
