@@ -18,6 +18,15 @@ var TypeHelper = /** @class */ (function () {
     TypeHelper.isEmptyValue = function (value) {
         return value === undefined || value === null || value.length == 0;
     };
+    TypeHelper.isObjectOrArray = function (value) {
+        return (!!value) && (value.constructor === Array || value.constructor === Object);
+    };
+    TypeHelper.isRuleset = function (possibleRuleset) {
+        return (typeof (possibleRuleset.addRule) == "function");
+    };
+    TypeHelper.isForEach = function (possibleForEach) {
+        return possibleForEach.isForEach;
+    };
     return TypeHelper;
 }());
 exports.TypeHelper = TypeHelper;

@@ -14,4 +14,13 @@ export class TypeHelper {
     static isEmptyValue(value) {
         return value === undefined || value === null || value.length == 0;
     }
+    static isObjectOrArray(value) {
+        return (!!value) && (value.constructor === Array || value.constructor === Object);
+    }
+    static isRuleset(possibleRuleset) {
+        return (typeof (possibleRuleset.addRule) == "function");
+    }
+    static isForEach(possibleForEach) {
+        return possibleForEach.isForEach;
+    }
 }

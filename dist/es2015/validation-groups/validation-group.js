@@ -5,6 +5,7 @@ import { PromiseCounter } from "../promises/promise-counter";
 import { PropertyStateChangedEvent } from "../events/property-state-changed-event";
 import { ModelStateChangedEvent } from "../events/model-state-changed-event";
 import { EventHandler } from "event-js";
+import { DisplayNameCache } from "./display-name-cache";
 // TODO: This class should be simplified further if possible
 export class ValidationGroup {
     constructor(fieldErrorProcessor, ruleResolver = new RuleResolver(), modelResolverFactory, localeHandler, model, ruleset) {
@@ -60,7 +61,7 @@ export class ValidationGroup {
                 throw (ex);
             }
             const routeEachRule = (ruleLinkOrSet) => {
-                if (ValidationGroup.isForEach(ruleLinkOrSet)) {
+                if (TypeHelper.isForEach(ruleLinkOrSet)) {
                     const isCurrentlyAnArray = TypeHelper.isArrayType(currentValue);
                     if (isCurrentlyAnArray) {
                         currentValue.forEach((element, index) => {
@@ -69,7 +70,7 @@ export class ValidationGroup {
                         });
                     }
                     else {
-                        if (ValidationGroup.isRuleset(ruleLinkOrSet.internalRule)) {
+                        if (TypeHelper.isRuleset(ruleLinkOrSet.internalRule)) {
                             ruleSets.push(ruleLinkOrSet.internalRule);
                         }
                         else {
@@ -77,7 +78,7 @@ export class ValidationGroup {
                         }
                     }
                 }
-                else if (ValidationGroup.isRuleset(ruleLinkOrSet)) {
+                else if (TypeHelper.isRuleset(ruleLinkOrSet)) {
                     ruleSets.push(ruleLinkOrSet);
                 }
                 else {
@@ -169,7 +170,7 @@ export class ValidationGroup {
             return this.propertyErrors[propertyRoute];
         });
         this.getPropertyDisplayName = (propertyRoute) => {
-            return this.ruleset.getPropertyDisplayName(propertyRoute);
+            return this.displayNameCache.getDisplayNameFor(propertyRoute);
         };
         this.isPropertyInGroup = (propertyRoute) => {
             const applicableRules = this.ruleResolver.resolvePropertyRules(propertyRoute, this.ruleset);
@@ -178,14 +179,10 @@ export class ValidationGroup {
         this.release = () => { };
         this.propertyStateChangedEvent = new EventHandler(this);
         this.modelStateChangedEvent = new EventHandler(this);
+        this.displayNameCache = new DisplayNameCache();
         this.promiseCounter = new PromiseCounter();
         this.modelResolver = this.modelResolverFactory.createModelResolver(model);
-    }
-    static isRuleset(possibleRuleset) {
-        return (typeof (possibleRuleset.addRule) == "function");
-    }
-    static isForEach(possibleForEach) {
-        return possibleForEach.isForEach;
+        this.displayNameCache.cacheDisplayNamesFor(ruleset);
     }
     hasErrors() {
         return (Object.keys(this.propertyErrors).length > 0);

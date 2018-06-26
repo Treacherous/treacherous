@@ -19,7 +19,6 @@ export class ModelProxy implements IModelProxy
         return {
             set: function(obj: any, prop: PropertyKey, value: any){
                 const currentValue = obj[prop];
-                console.log("SETTING", prop, value, currentValue);
                 if(currentValue !== value){
                     Reflect.set(obj, prop, value);
                     const propertyChangedArgs = new PropertyChangedEvent(propertyRoute, value, currentValue);

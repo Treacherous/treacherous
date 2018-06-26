@@ -20,6 +20,5 @@ export class Ruleset {
         this.addPropertyDisplayName = (propertyName, displayName) => { return this.propertyDisplayNames[propertyName] = displayName; };
         this.getRulesForProperty = (property) => { return this.rules[property]; };
         this.getCompositeRulesRulesForProperty = (propertyName) => { return this.compositeRules[propertyName]; };
-        this.getPropertyDisplayName = (propertyName) => { return this.propertyDisplayNames[propertyName] || propertyName; };
     }
 }

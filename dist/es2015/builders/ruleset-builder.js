@@ -49,6 +49,13 @@ export class RulesetBuilder {
             const ruleset = subBuilder.build();
             return this.addRuleset(ruleset);
         };
+        this.thenForEach = (builderMethod) => {
+            this.verifyExistingProperty();
+            const subBuilder = new RulesetBuilder().create();
+            builderMethod(subBuilder);
+            const ruleset = subBuilder.build();
+            return this.addRulesetForEach(ruleset);
+        };
         this.addRule = (rule, ruleOptions) => {
             this.verifyRuleNameIsValid(rule);
             this.verifyExistingProperty();

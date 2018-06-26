@@ -53,6 +53,13 @@ var RulesetBuilder = /** @class */ (function () {
             var ruleset = subBuilder.build();
             return _this.addRuleset(ruleset);
         };
+        this.thenForEach = function (builderMethod) {
+            _this.verifyExistingProperty();
+            var subBuilder = new RulesetBuilder().create();
+            builderMethod(subBuilder);
+            var ruleset = subBuilder.build();
+            return _this.addRulesetForEach(ruleset);
+        };
         this.addRule = function (rule, ruleOptions) {
             _this.verifyRuleNameIsValid(rule);
             _this.verifyExistingProperty();

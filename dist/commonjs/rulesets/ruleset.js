@@ -23,7 +23,6 @@ var Ruleset = /** @class */ (function () {
         this.addPropertyDisplayName = function (propertyName, displayName) { return _this.propertyDisplayNames[propertyName] = displayName; };
         this.getRulesForProperty = function (property) { return _this.rules[property]; };
         this.getCompositeRulesRulesForProperty = function (propertyName) { return _this.compositeRules[propertyName]; };
-        this.getPropertyDisplayName = function (propertyName) { return _this.propertyDisplayNames[propertyName] || propertyName; };
     }
     return Ruleset;
 }());

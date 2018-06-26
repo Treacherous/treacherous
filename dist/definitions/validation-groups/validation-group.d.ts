@@ -9,6 +9,7 @@ import { IModelResolverFactory } from "../factories/imodel-resolver-factory";
 import { EventHandler } from "event-js";
 import { ICompositeValidationRule } from "../rules/composite/icomposite-validation-rule";
 import { ILocaleHandler } from "../localization/ilocale-handler";
+import { IDisplayNameCache } from "./idisplay-name-cache";
 export declare class ValidationGroup implements IValidationGroup {
     protected fieldErrorProcessor: IFieldErrorProcessor;
     protected ruleResolver: IRuleResolver;
@@ -20,9 +21,8 @@ export declare class ValidationGroup implements IValidationGroup {
     protected propertyErrors: any;
     protected promiseCounter: PromiseCounter;
     protected modelResolver: IModelResolver;
+    protected displayNameCache: IDisplayNameCache;
     constructor(fieldErrorProcessor: IFieldErrorProcessor, ruleResolver: IRuleResolver, modelResolverFactory: IModelResolverFactory, localeHandler: ILocaleHandler, model: any, ruleset: Ruleset);
-    protected static isRuleset(possibleRuleset: any): boolean;
-    protected static isForEach(possibleForEach: any): boolean;
     protected validatePropertyWithRuleLinks: (propertyName: string, propertyRules: RuleLink[]) => Promise<any>;
     protected validatePropertyWithRuleSet: (propertyRoute: string, ruleset: Ruleset) => void;
     protected validatePropertyWithRules: (propertyRoute: string, rules: any) => void;

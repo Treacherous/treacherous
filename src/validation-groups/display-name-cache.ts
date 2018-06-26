@@ -41,7 +41,6 @@ export class DisplayNameCache implements IDisplayNameCache
 
     public getDisplayNameFor = (propertyRoute: string): string => {
         const sanitisedDisplayName = propertyRoute.replace(this.propertySanitizerRegex, "");
-        console.log(sanitisedDisplayName);
         return this.propertyNameOverrideCache[sanitisedDisplayName] || propertyRoute;
     };
 }

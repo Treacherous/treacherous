@@ -7,6 +7,7 @@ var promise_counter_1 = require("../promises/promise-counter");
 var property_state_changed_event_1 = require("../events/property-state-changed-event");
 var model_state_changed_event_1 = require("../events/model-state-changed-event");
 var event_js_1 = require("event-js");
+var display_name_cache_1 = require("./display-name-cache");
 // TODO: This class should be simplified further if possible
 var ValidationGroup = /** @class */ (function () {
     function ValidationGroup(fieldErrorProcessor, ruleResolver, modelResolverFactory, localeHandler, model, ruleset) {
@@ -72,7 +73,7 @@ var ValidationGroup = /** @class */ (function () {
                 throw (ex);
             }
             var routeEachRule = function (ruleLinkOrSet) {
-                if (ValidationGroup.isForEach(ruleLinkOrSet)) {
+                if (type_helper_1.TypeHelper.isForEach(ruleLinkOrSet)) {
                     var isCurrentlyAnArray = type_helper_1.TypeHelper.isArrayType(currentValue);
                     if (isCurrentlyAnArray) {
                         currentValue.forEach(function (element, index) {
@@ -81,7 +82,7 @@ var ValidationGroup = /** @class */ (function () {
                         });
                     }
                     else {
-                        if (ValidationGroup.isRuleset(ruleLinkOrSet.internalRule)) {
+                        if (type_helper_1.TypeHelper.isRuleset(ruleLinkOrSet.internalRule)) {
                             ruleSets.push(ruleLinkOrSet.internalRule);
                         }
                         else {
@@ -89,7 +90,7 @@ var ValidationGroup = /** @class */ (function () {
                         }
                     }
                 }
-                else if (ValidationGroup.isRuleset(ruleLinkOrSet)) {
+                else if (type_helper_1.TypeHelper.isRuleset(ruleLinkOrSet)) {
                     ruleSets.push(ruleLinkOrSet);
                 }
                 else {
@@ -278,7 +279,7 @@ var ValidationGroup = /** @class */ (function () {
             });
         };
         this.getPropertyDisplayName = function (propertyRoute) {
-            return _this.ruleset.getPropertyDisplayName(propertyRoute);
+            return _this.displayNameCache.getDisplayNameFor(propertyRoute);
         };
         this.isPropertyInGroup = function (propertyRoute) {
             var applicableRules = _this.ruleResolver.resolvePropertyRules(propertyRoute, _this.ruleset);
@@ -287,15 +288,11 @@ var ValidationGroup = /** @class */ (function () {
         this.release = function () { };
         this.propertyStateChangedEvent = new event_js_1.EventHandler(this);
         this.modelStateChangedEvent = new event_js_1.EventHandler(this);
+        this.displayNameCache = new display_name_cache_1.DisplayNameCache();
         this.promiseCounter = new promise_counter_1.PromiseCounter();
         this.modelResolver = this.modelResolverFactory.createModelResolver(model);
+        this.displayNameCache.cacheDisplayNamesFor(ruleset);
     }
-    ValidationGroup.isRuleset = function (possibleRuleset) {
-        return (typeof (possibleRuleset.addRule) == "function");
-    };
-    ValidationGroup.isForEach = function (possibleForEach) {
-        return possibleForEach.isForEach;
-    };
     ValidationGroup.prototype.hasErrors = function () {
         return (Object.keys(this.propertyErrors).length > 0);
     };

@@ -4,7 +4,7 @@ import { EventHandler } from "event-js";
 export declare class ModelProxy implements IModelProxy {
     onPropertyChanged: EventHandler;
     constructor();
-    proxyObject: (model: any, ruleset: Ruleset) => void;
+    proxyObject: (model: any, ruleset: Ruleset) => any;
     createHandler: (propertyRoute: string) => any;
     private proxyProperty;
     private walkModelAndProxy;
