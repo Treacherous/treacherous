@@ -52,7 +52,7 @@ Don't worry if you dont use/like typescript, you can still use all of treacherou
 
 ### Via NPM
 
-Just do an `npm install treacherous`
+Just do an `npm install @treacherous/core`
 
 ### In browser
 
@@ -68,7 +68,7 @@ this functionality for UMD modules out of the box.
 ### Validating simple models
 
 ```js
-import {createRuleset, createGroup} from "treacherous";
+import {createRuleset, createGroup} from "@treacherous/core";
 
 const simpleModel = {
     foo: 20,
@@ -258,15 +258,15 @@ Just look in the `docs` folder for more documentation on certain scenarios or su
 
 This library is the core treacherous framework, which purely handles the validation of models, however there are a few other libraries which build on top of this such as:
 
-- [treacherous-decorators](https://github.com/grofit/treacherous-decorators) (Allows validation rules to be defined by decorators i.e `@withRule(..)`)
+- [treacherous-decorators](https://github.com/treacherous/treacherous-decorators) (Allows validation rules to be defined by decorators i.e `@withRule(..)`)
 
-- [treacherous-view](https://github.com/grofit/treacherous-view) (Convention based classes for view framework integration)
+- [treacherous-view](https://github.com/treacherous/treacherous-view) (Convention based classes for view framework integration)
 
-- [treacherous-knockout](https://github.com/grofit/treacherous-knockout) (Knockout bindings for treacherous)
+- [treacherous-knockout](https://github.com/treacherous/treacherous-knockout) (Knockout bindings for treacherous)
 
-- [treacherous-vue](https://github.com/grofit/treacherous-vue) (Vue plugin for treacherous)
+- [treacherous-vue](https://github.com/treacherous/treacherous-vue) (Vue plugin for treacherous)
 
-- [treacherous-aurelia](https://github.com/grofit/treacherous-aurelia) (Aurelia plugin for treacherous)
+- [treacherous-aurelia](https://github.com/treacherous/treacherous-aurelia) (Aurelia plugin for treacherous)
 
 ---
 

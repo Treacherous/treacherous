@@ -2169,30 +2169,30 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "PropertyChangedEvent", function() { return __WEBPACK_IMPORTED_MODULE_6__events_property_changed_event__["a"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__events_property_state_changed_event__ = __webpack_require__(14);
 /* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "PropertyStateChangedEvent", function() { return __WEBPACK_IMPORTED_MODULE_7__events_property_state_changed_event__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__factories_model_resolver_factory__ = __webpack_require__(8);
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "ModelResolverFactory", function() { return __WEBPACK_IMPORTED_MODULE_8__factories_model_resolver_factory__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__factories_model_watcher_factory__ = __webpack_require__(20);
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "ModelWatcherFactory", function() { return __WEBPACK_IMPORTED_MODULE_9__factories_model_watcher_factory__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__helpers_comparer_helper__ = __webpack_require__(3);
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "ComparerHelper", function() { return __WEBPACK_IMPORTED_MODULE_10__helpers_comparer_helper__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__helpers_type_helper__ = __webpack_require__(1);
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "TypeHelper", function() { return __WEBPACK_IMPORTED_MODULE_11__helpers_type_helper__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__helpers_comparer_helper__ = __webpack_require__(3);
+/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "ComparerHelper", function() { return __WEBPACK_IMPORTED_MODULE_8__helpers_comparer_helper__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__helpers_type_helper__ = __webpack_require__(1);
+/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "TypeHelper", function() { return __WEBPACK_IMPORTED_MODULE_9__helpers_type_helper__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__factories_model_resolver_factory__ = __webpack_require__(8);
+/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "ModelResolverFactory", function() { return __WEBPACK_IMPORTED_MODULE_10__factories_model_resolver_factory__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__factories_model_watcher_factory__ = __webpack_require__(20);
+/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "ModelWatcherFactory", function() { return __WEBPACK_IMPORTED_MODULE_11__factories_model_watcher_factory__["a"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__locales_en_us__ = __webpack_require__(46);
 /* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "locale", function() { return __WEBPACK_IMPORTED_MODULE_12__locales_en_us__["a"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__localization_default_locale_handler__ = __webpack_require__(45);
 /* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "DefaultLocaleHandler", function() { return __WEBPACK_IMPORTED_MODULE_13__localization_default_locale_handler__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__promises_promise_counter__ = __webpack_require__(13);
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "PromiseCounter", function() { return __WEBPACK_IMPORTED_MODULE_14__promises_promise_counter__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__resolvers_model_resolver__ = __webpack_require__(23);
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "ModelResolver", function() { return __WEBPACK_IMPORTED_MODULE_15__resolvers_model_resolver__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__proxy_model_proxy__ = __webpack_require__(51);
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "ModelProxy", function() { return __WEBPACK_IMPORTED_MODULE_16__proxy_model_proxy__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__processors_field_error_processor__ = __webpack_require__(10);
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "FieldErrorProcessor", function() { return __WEBPACK_IMPORTED_MODULE_17__processors_field_error_processor__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__processors_field_has_error__ = __webpack_require__(11);
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "FieldHasError", function() { return __WEBPACK_IMPORTED_MODULE_18__processors_field_has_error__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_19__processors_validation_error__ = __webpack_require__(52);
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "ValidationError", function() { return __WEBPACK_IMPORTED_MODULE_19__processors_validation_error__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__processors_field_error_processor__ = __webpack_require__(10);
+/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "FieldErrorProcessor", function() { return __WEBPACK_IMPORTED_MODULE_14__processors_field_error_processor__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__processors_field_has_error__ = __webpack_require__(11);
+/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "FieldHasError", function() { return __WEBPACK_IMPORTED_MODULE_15__processors_field_has_error__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__processors_validation_error__ = __webpack_require__(51);
+/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "ValidationError", function() { return __WEBPACK_IMPORTED_MODULE_16__processors_validation_error__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__promises_promise_counter__ = __webpack_require__(13);
+/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "PromiseCounter", function() { return __WEBPACK_IMPORTED_MODULE_17__promises_promise_counter__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__proxy_model_proxy__ = __webpack_require__(52);
+/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "ModelProxy", function() { return __WEBPACK_IMPORTED_MODULE_18__proxy_model_proxy__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_19__resolvers_model_resolver__ = __webpack_require__(23);
+/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "ModelResolver", function() { return __WEBPACK_IMPORTED_MODULE_19__resolvers_model_resolver__["a"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_20__rules_advanced_regex_rule__ = __webpack_require__(53);
 /* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "AdvancedRegexValidationRule", function() { return __WEBPACK_IMPORTED_MODULE_20__rules_advanced_regex_rule__["a"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_21__rules_date_validation_rule__ = __webpack_require__(26);
@@ -2518,6 +2518,21 @@ exports.EventHandler = EventHandler;
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+class ValidationError {
+    constructor(propertyName, message) {
+        this.propertyName = propertyName;
+        this.message = message;
+    }
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = ValidationError;
+
+
+
+/***/ }),
+/* 52 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_event_js__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_event_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_event_js__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__events_property_changed_event__ = __webpack_require__(7);
@@ -2581,21 +2596,6 @@ class ModelProxy {
     }
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = ModelProxy;
-
-
-
-/***/ }),
-/* 52 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-class ValidationError {
-    constructor(propertyName, message) {
-        this.propertyName = propertyName;
-        this.message = message;
-    }
-}
-/* harmony export (immutable) */ __webpack_exports__["a"] = ValidationError;
 
 
 

@@ -1,5 +1,5 @@
 {
-  "name": "treacherous",
+  "name": "@treacherous/core",
   "version": "0.17.6",
   "license": "MIT",
   "dependencies": {
