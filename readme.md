@@ -5,6 +5,7 @@ A modern async validation framework with a raft of features for node or the brow
 ![treacherous-image](https://user-images.githubusercontent.com/927201/29661471-03b5ee16-88bc-11e7-880d-d8c027b264c8.png)
 
 [![Build Status][build-status-image]][build-status-url]
+[![Codacy Badge][codacy-image]][codacy-url]
 [![Npm Version][npm-version-image]][npm-version-url]
 [![Npm Downloads][npm-downloads-image]][npm-version-url]
 [![Join Gitter Chat][gitter-image]][gitter-url]
@@ -286,6 +287,8 @@ You can also run `gulp run-tests` which will run the tests to make sure everythi
 
 [build-status-image]: https://travis-ci.org/Treacherous/treacherous.svg?branch=master
 [build-status-url]: https://travis-ci.org/Treacherous/treacherous
+[codacy-url]: https://www.codacy.com/app/grofit/treacherous?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Treacherous/treacherous&amp;utm_campaign=Badge_Grade
+[codacy-image]: https://api.codacy.com/project/badge/Grade/dc4da5b1a6fc40b7bedc7c75f8bf360f
 [gitter-image]: https://badges.gitter.im/grofit/treacherous.svg
 [gitter-url]: https://gitter.im/grofit/treacherous
 [npm-version-image]: https://badge.fury.io/js/treacherous.svg
