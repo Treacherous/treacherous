@@ -192,22 +192,28 @@ var ValidationGroup = /** @class */ (function () {
             return tslib_1.__generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
+                        if (!(Object.keys(this.ruleset.compositeRules).length > 0)) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.validateCompositeRules()];
+                    case 1:
+                        _c.sent();
+                        _c.label = 2;
+                    case 2:
                         _a = [];
                         for (_b in this.ruleset.rules)
                             _a.push(_b);
                         _i = 0;
-                        _c.label = 1;
-                    case 1:
-                        if (!(_i < _a.length)) return [3 /*break*/, 4];
-                        parameterName = _a[_i];
-                        return [4 /*yield*/, this.startValidateProperty(parameterName)];
-                    case 2:
-                        _c.sent();
                         _c.label = 3;
                     case 3:
+                        if (!(_i < _a.length)) return [3 /*break*/, 6];
+                        parameterName = _a[_i];
+                        return [4 /*yield*/, this.startValidateProperty(parameterName)];
+                    case 4:
+                        _c.sent();
+                        _c.label = 5;
+                    case 5:
                         _i++;
-                        return [3 /*break*/, 1];
-                    case 4: return [2 /*return*/];
+                        return [3 /*break*/, 3];
+                    case 6: return [2 /*return*/];
                 }
             });
         }); };
