@@ -195,6 +195,9 @@ export class ValidationGroup implements IValidationGroup
     }
 
     protected startValidateModel = async () => {
+        if(Object.keys(this.ruleset.compositeRules).length > 0)
+        { await this.validateCompositeRules(); }
+
         for(const parameterName in this.ruleset.rules) {
             await this.startValidateProperty(parameterName);
         }

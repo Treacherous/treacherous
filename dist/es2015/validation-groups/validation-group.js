@@ -138,6 +138,9 @@ export class ValidationGroup {
             }
         });
         this.startValidateModel = () => tslib_1.__awaiter(this, void 0, void 0, function* () {
+            if (Object.keys(this.ruleset.compositeRules).length > 0) {
+                yield this.validateCompositeRules();
+            }
             for (const parameterName in this.ruleset.rules) {
                 yield this.startValidateProperty(parameterName);
             }

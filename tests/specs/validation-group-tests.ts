@@ -782,6 +782,41 @@ describe('Validation Group', function () {
             });
     });
 
+    it('should correctly return errors for composite rules with getModelErrors', function (done) {
+        const validationName = "testCompositeRule";
+        const expectedError = "validation triggered by getModelErrors";
+
+        const compositeRule = new DynamicCompositeValidationRule(
+            validationName,
+            () => { return Promise.resolve(false); });
+
+        const rulesetBuilder = new RulesetBuilder();
+        const ruleset = rulesetBuilder.create()
+            .addCompositeRule(compositeRule)
+            .build();
+
+        const dummyModel = {
+            foo: ""
+        };
+
+        const validationGroup = createValidationGroupFor(dummyModel, ruleset);
+        const localeHandler = <DefaultLocaleHandler>validationGroup["localeHandler"];
+
+        const compositeLocales: any = {};
+        compositeLocales[validationName] = expectedError;
+        localeHandler.supplementLocaleFrom(defaultLocaleCode, compositeLocales);
+
+        validationGroup.getModelErrors(true)
+            .then((errors: any) => {
+                expect(errors).to.include.keys(validationName);
+
+                const validationError = errors[validationName];
+                expect(validationError).to.equal(expectedError);
+                validationGroup.release();
+                done();
+            });
+    });
+
     it('should correctly raise model validation changes for composite rule changes', function (done) {
         const validationName = "testCompositeRule";
         const expectedError = "validation triggered from rule change";
