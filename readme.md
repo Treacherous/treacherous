@@ -291,6 +291,6 @@ You can also run `gulp run-tests` which will run the tests to make sure everythi
 [codacy-image]: https://api.codacy.com/project/badge/Grade/dc4da5b1a6fc40b7bedc7c75f8bf360f
 [gitter-image]: https://badges.gitter.im/grofit/treacherous.svg
 [gitter-url]: https://gitter.im/grofit/treacherous
-[npm-version-image]: https://badge.fury.io/js/treacherous.svg
-[npm-version-url]: https://www.npmjs.com/package/treacherous
+[npm-version-image]: https://badge.fury.io/js/%40treacherous%2Fcore.svg
+[npm-version-url]: https://www.npmjs.com/package/%40treacherous%2Fcore
 [npm-downloads-image]: https://img.shields.io/npm/dm/treacherous.svg?maxAge=2592000
