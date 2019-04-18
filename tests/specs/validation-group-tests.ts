@@ -213,6 +213,31 @@ describe('Validation Group', function () {
             }).catch(done);
     });
 
+    it('should correctly remove errors from array indexes that no longer exist', async function () {
+
+        const rulesetBuilder = new RulesetBuilder();
+        const ruleset = rulesetBuilder.create()
+            .forProperty("foo")
+            .addRuleForEach("maxValue", 25)
+            .build();
+
+        const dummyModel = {
+            foo: [ 10, 20, 30 ]
+        };
+
+        const validationGroup = createValidationGroupFor(dummyModel, ruleset);
+        let modelErrors = await validationGroup.getModelErrors(true);
+        expect(modelErrors).not.to.be.null;
+        expect(modelErrors).to.include.keys("foo[2]");
+
+        delete dummyModel.foo[2];
+        modelErrors = await validationGroup.getModelErrors(true);
+        expect(modelErrors).not.to.be.null;
+        expect(modelErrors).to.not.include.keys("foo[2]");
+
+        validationGroup.release();
+    });
+
     it('should correctly get property error', function (done) {
 
         const rulesetBuilder = new RulesetBuilder();

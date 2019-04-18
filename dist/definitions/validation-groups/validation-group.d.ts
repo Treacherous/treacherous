@@ -25,6 +25,7 @@ export declare class ValidationGroup implements IValidationGroup {
     constructor(fieldErrorProcessor: IFieldErrorProcessor, ruleResolver: IRuleResolver, modelResolverFactory: IModelResolverFactory, localeHandler: ILocaleHandler, model: any, ruleset: Ruleset);
     protected validatePropertyWithRuleLinks: (propertyName: string, propertyRules: RuleLink[]) => Promise<any>;
     protected validatePropertyWithRuleSet: (propertyRoute: string, ruleset: Ruleset) => void;
+    protected clearPotentiallyStaleChildErrors: (propertyRoute: string) => void;
     protected validatePropertyWithRules: (propertyRoute: string, rules: any) => void;
     protected startValidateProperty: (propertyRoute: string) => Promise<void>;
     protected validateCompositeRule: (compositeRule: ICompositeValidationRule) => Promise<any>;

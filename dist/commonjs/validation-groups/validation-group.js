@@ -61,6 +61,15 @@ var ValidationGroup = /** @class */ (function () {
                 _this.validatePropertyWithRules(transformedPropertyName, ruleset.getRulesForProperty(childPropertyName));
             }
         };
+        // This is in case an array element is removed, but there is an error already on the model errors for it
+        this.clearPotentiallyStaleChildErrors = function (propertyRoute) {
+            var keys = Object.keys(_this.propertyErrors);
+            for (var i = 0; i < keys.length; i++) {
+                if (keys[i].indexOf(propertyRoute) >= 0) {
+                    delete _this.propertyErrors[keys[i]];
+                }
+            }
+        };
         this.validatePropertyWithRules = function (propertyRoute, rules) {
             var ruleLinks = [];
             var ruleSets = [];
@@ -76,6 +85,7 @@ var ValidationGroup = /** @class */ (function () {
                 if (type_helper_1.TypeHelper.isForEach(ruleLinkOrSet)) {
                     var isCurrentlyAnArray = type_helper_1.TypeHelper.isArrayType(currentValue);
                     if (isCurrentlyAnArray) {
+                        _this.clearPotentiallyStaleChildErrors(propertyRoute);
                         currentValue.forEach(function (element, index) {
                             var childPropertyName = propertyRoute + "[" + index + "]";
                             _this.validatePropertyWithRules(childPropertyName, [ruleLinkOrSet.internalRule]);
