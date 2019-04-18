@@ -35,7 +35,7 @@ function HelloValidationRule()
 {
     this.ruleName = "hello";
 
-    this.validate(modelResolver, propertyName, optionsOrValue)
+    this.validate = (modelResolver, propertyName, optionsOrValue) =>
     {
         var value = modelResolver.resolve(propertyName);
         return Promise.resolve(value == "hello"); 
