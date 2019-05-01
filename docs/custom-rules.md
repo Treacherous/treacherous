@@ -166,3 +166,17 @@ let ruleset = Treacherous.createRuleset()
 ```
 
 That is all that you need to do and your rules just work.
+
+## Related Helpers
+
+As a lot of common use cases are basically regex rules that are more specific there is an `AdvancedRegexValidationRule` class that lets you dynamically create a regex rule without having to instantiate one directly.
+
+This will still need you to register the required locale entries for your new rule, but it can speed up creation of simple regex rules, like so:
+
+```js
+const alphaNumericRule = new AdvancedRegexValidationRule("alphanumeric", "[a-zA-Z0-9]*");
+Treacherous.ruleRegistry.registerRule(alphaNumericRule);
+// register locale message for "alphanumeric" rule
+```
+
+As you can see the first argument is the rule name, and the second is the regex string, but this allows you to quickly create many regex rules without manually implementing the entire class.

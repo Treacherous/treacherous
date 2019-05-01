@@ -1,6 +1,6 @@
 {
   "name": "@treacherous/core",
-  "version": "0.17.8",
+  "version": "0.17.9",
   "license": "MIT",
   "dependencies": {
     "property-resolver": "^0.0.11",

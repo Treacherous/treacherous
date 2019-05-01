@@ -18,6 +18,17 @@ describe("Validation Rules", function(){
             }).catch(done);
         });
 
+        it('should be valid when email is provided with various case', function (done) {
+            const modelResolver = new ModelResolver(new PropertyResolver(), {});
+            modelResolver.model.validEmail = "TeST@TeSt.cOm";
+
+            const rule = new EmailValidationRule();
+            rule.validate(modelResolver,'validEmail').then(function(isValid: boolean){
+                expect(isValid).to.be.true;
+                done();
+            }).catch(done);
+        });
+
         it('should be valid when provided a null value', function (done) {
             const modelResolver = new ModelResolver(new PropertyResolver(), {});
             modelResolver.model.null = null;
