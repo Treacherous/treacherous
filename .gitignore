@@ -3,3 +3,7 @@
 /_output
 /typings
 /.vscode
+
+\.nyc_output/
+
+coverage/

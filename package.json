@@ -24,7 +24,7 @@
   ],
   "scripts": {
     "build": "gulp compile",
-    "test": "mocha -r ts-node/register tests/specs/**/*.ts"
+    "test": "nyc mocha --exit -r ts-node/register -r source-map-support/register --recursive tests/specs/**/*.ts"
   },
   "repository": {
     "type": "git",
@@ -58,6 +58,25 @@
     "@types/bluebird": "^3.5.20",
     "@types/chai": "^4.1.4",
     "@types/chai-spies": "^0.0.1",
-    "@types/mocha": "~5.2.2"
+    "@types/mocha": "~5.2.2",
+    "nyc": "^14.0.0",
+    "source-map-support": "^0.5.12"
+  },
+  "nyc": {
+    "extension": [
+      ".ts",
+      ".tsx"
+    ],
+    "include": [
+      "src/**/*.ts"
+    ],
+    "exclude": [
+      "**/*.d.ts",
+      "**/locales/*.ts"
+    ],
+    "reporter": [
+      "html"
+    ],
+    "all": true
   }
 }
