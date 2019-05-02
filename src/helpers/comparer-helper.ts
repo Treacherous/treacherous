@@ -9,5 +9,5 @@ export class ComparerHelper
     }
 
     public static dateTimeCompararer(value1: Date, value2: Date): boolean
-    { return (value1.getTime() == value2.getTime()); }
+    { return (value1.getTime() === value2.getTime()); }
 }
