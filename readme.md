@@ -8,7 +8,7 @@ A modern async validation framework with a raft of features for node or the brow
 [![Codacy Badge][codacy-image]][codacy-url]
 [![Npm Version][npm-version-image]][npm-version-url]
 [![Npm Downloads][npm-downloads-image]][npm-version-url]
-[![Join Gitter Chat][gitter-image]][gitter-url]
+[![Join Discord Chat][discord-image]][discord-url]
 
 Treacherous is an attempt to bring some consistency to validation in the javascript world, allowing you to write your validation rules for your models once, and re-use them on any platform with any framework.
 
@@ -289,8 +289,8 @@ You can also run `gulp run-tests` which will run the tests to make sure everythi
 [build-status-url]: https://travis-ci.org/Treacherous/treacherous
 [codacy-url]: https://www.codacy.com/app/grofit/treacherous?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Treacherous/treacherous&amp;utm_campaign=Badge_Grade
 [codacy-image]: https://api.codacy.com/project/badge/Grade/dc4da5b1a6fc40b7bedc7c75f8bf360f
-[gitter-image]: https://badges.gitter.im/grofit/treacherous.svg
-[gitter-url]: https://gitter.im/grofit/treacherous
+[discord-image]:https://img.shields.io/discord/488609938399297536.svg
+[discord-url]: https://discord.gg/xwkz3TT
 [npm-version-image]: https://badge.fury.io/js/%40treacherous%2Fcore.svg
 [npm-version-url]: https://www.npmjs.com/package/%40treacherous%2Fcore
 [npm-downloads-image]: https://img.shields.io/npm/dm/treacherous.svg?maxAge=2592000
