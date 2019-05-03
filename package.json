@@ -24,7 +24,9 @@
   ],
   "scripts": {
     "build": "gulp compile",
-    "test": "nyc mocha --exit -r ts-node/register -r source-map-support/register --recursive tests/specs/**/*.ts"
+    "test": "mocha --exit -r ts-node/register tests/specs/**/*.ts",
+    "test-with-coverage": "nyc mocha --exit -r ts-node/register -r source-map-support/register --recursive tests/specs/**/*.ts",
+    "test-with-codacy": "nyc --reporter=lcov mocha -R spec --exit -r ts-node/register -r source-map-support/register --recursive tests/specs/**/*.ts && cat ./coverage/lcov.info | codacy-coverage"
   },
   "repository": {
     "type": "git",
@@ -60,7 +62,8 @@
     "@types/chai-spies": "^0.0.1",
     "@types/mocha": "~5.2.2",
     "nyc": "^14.0.0",
-    "source-map-support": "^0.5.12"
+    "source-map-support": "^0.5.12",
+    "codacy-coverage": "^3.4.0"
   },
   "nyc": {
     "extension": [
