@@ -26,7 +26,7 @@
     "build": "gulp compile",
     "test": "mocha --exit -r ts-node/register tests/specs/**/*.ts",
     "test-with-coverage": "nyc mocha --exit -r ts-node/register -r source-map-support/register --recursive tests/specs/**/*.ts",
-    "test-with-codacy": "nyc mocha --report lcovonly -R spec --exit -r ts-node/register -r source-map-support/register --recursive tests/specs/**/*.ts && cat ./coverage/lcov.info | codacy-coverage"
+    "test-with-codacy": "nyc --reporter=lcov mocha -R spec --exit -r ts-node/register -r source-map-support/register --recursive tests/specs/**/*.ts && cat ./coverage/lcov.info | codacy-coverage"
   },
   "repository": {
     "type": "git",
